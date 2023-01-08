@@ -2,7 +2,7 @@
   "name": "backend",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
-  "sourceRoot": "packages/backend/src",
+  "sourceRoot": "apps/backend/src",
   "targets": {
     "serve": {
       "executor": "@nx-extend/strapi:serve",
@@ -14,7 +14,7 @@
         "{options.outputPath}"
       ],
       "options": {
-        "outputPath": "dist/packages/backend"
+        "outputPath": "dist/apps/backend"
       },
       "configurations": {
         "production": {
