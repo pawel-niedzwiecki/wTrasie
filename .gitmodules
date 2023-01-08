@@ -1,0 +1,3 @@
+[submodule "uxu-utils"]
+	path = uxu-utils
+	url = git@github.com:GroupUXU/uxu-utils.git
