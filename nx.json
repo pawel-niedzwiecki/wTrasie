@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
-  "npmScope": "uxu-starter-nextjs-strapi",
+  "npmScope": "wTrasie_frontEnd",
   "tasksRunnerOptions": {
     "default": {
       "runner": "@nrwl/nx-cloud",
