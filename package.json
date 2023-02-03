@@ -1,17 +1,13 @@
 {
-  "name": "uxu-starter-nextjs",
+  "name": "uxu-starter-nextjs-strapi",
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "prepare": "husky install",
-    "build": "nx build backend",
-    "start": "nx serve backend"
+    "prepare": "husky install"
   },
   "private": true,
   "dependencies": {
     "@nrwl/next": "15.4.2",
-    "@nrwl/nx-cloud": "latest",
-    "react-select": "^5.7.0",
     "core-js": "^3.6.5",
     "next": "13.0.0",
     "react": "18.2.0",
@@ -19,7 +15,7 @@
     "react-is": "18.2.0",
     "regenerator-runtime": "0.13.7",
     "styled-components": "5.3.6",
-    "tslib": "^2.3.0"
+    "tslib": "^2.3.0",
   },
   "devDependencies": {
     "@babel/preset-react": "^7.14.5",
