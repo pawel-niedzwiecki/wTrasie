@@ -1,6 +1,7 @@
 import { AppProps } from 'next/app';
 import Head from 'next/head';
-import './styles.css';
+import { WrapperProvider } from 'design-system';
+
 
 function CustomApp({ Component, pageProps }: AppProps) {
   return (
@@ -8,8 +9,10 @@ function CustomApp({ Component, pageProps }: AppProps) {
       <Head>
         <title>Welcome to frontend!</title>
       </Head>
-      <main className="app">
-        <Component {...pageProps} />
+      <main className='app'>
+        <WrapperProvider>
+          <Component {...pageProps} />
+        </WrapperProvider>
       </main>
     </>
   );
