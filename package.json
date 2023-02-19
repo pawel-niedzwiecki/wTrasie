@@ -4,8 +4,8 @@
   "license": "MIT",
   "scripts": {
     "prepare": "husky install",
-    "build": "nx build backend",
-    "start": "nx serve backend"
+    "build": "nx build frontend",
+    "start": "nx serve frontend"
   },
   "private": true,
   "dependencies": {
