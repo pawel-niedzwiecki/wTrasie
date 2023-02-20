@@ -1,6 +1,7 @@
 import { AppProps } from 'next/app';
 import Head from 'next/head';
-import { WrapperProvider } from 'design-system';
+import { WrapperProvider } from '@uxu-utils';
+import { ApolloCLientProvider } from 'providers';
 
 
 function CustomApp({ Component, pageProps }: AppProps) {
@@ -11,7 +12,9 @@ function CustomApp({ Component, pageProps }: AppProps) {
       </Head>
       <main className='app'>
         <WrapperProvider>
-          <Component {...pageProps} />
+          <ApolloCLientProvider>
+            <Component {...pageProps} />
+          </ApolloCLientProvider>
         </WrapperProvider>
       </main>
     </>

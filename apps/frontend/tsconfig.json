@@ -12,7 +12,10 @@
     "isolatedModules": true,
     "incremental": true,
     "types": ["jest", "node"],
-    "baseUrl": "src"
+    "baseUrl": "src",
+    "paths": {
+      "@uxu-utils": ["uxu-utils"]
+    }
   },
   "include": ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx", "next-env.d.ts"],
   "exclude": [
