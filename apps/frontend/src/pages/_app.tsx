@@ -11,7 +11,7 @@ function CustomApp({ Component, pageProps }: AppProps) {
       </Head>
       <main className='app'>
         <WrapperProvider>
-            <Component {...pageProps} />
+          <Component {...pageProps} />
         </WrapperProvider>
       </main>
     </>
