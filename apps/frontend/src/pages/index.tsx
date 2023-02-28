@@ -1,4 +1,4 @@
-import { Header } from '@uxu-utils';
+import { Header } from 'uxu-utils';
 import { useQuery } from '@apollo/client';
 import { GET_SEARCH } from 'gql';
 import { GitBranch, GitHub } from 'react-feather';
