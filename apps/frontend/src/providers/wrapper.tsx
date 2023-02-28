@@ -7,11 +7,10 @@ type Props = { children: JSX.Element | JSX.Element[] };
 
 
 export const WrapperProviders = ({ children }: Props) => {
-console.log(theme)
   return (
     <ThemeProvider theme={theme}>
-      {/*<GlobalStyle />*/}
-      {/*<ApolloCLientProvider>{children}</ApolloCLientProvider>*/}
+      <GlobalStyle />
+      <ApolloCLientProvider>{children}</ApolloCLientProvider>
     </ThemeProvider>
   );
 };

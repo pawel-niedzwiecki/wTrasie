@@ -5,7 +5,6 @@ import { GitBranch, GitHub } from 'react-feather';
 
 export function Index() {
   const { loading, error, data } = useQuery(GET_SEARCH, { variables: { query: 'testy' } });
-  console.log(data);
   return (
     <>
       <Header
