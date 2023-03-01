@@ -1,6 +1,6 @@
 import React from 'react';
 import { ApolloCLientProvider } from './apollo';
-import { GlobalStyle, theme } from '@uxu-utils';
+import { GlobalStyle, theme } from 'uxu-utils';
 import { ThemeProvider } from 'styled-components';
 
 type Props = { children: JSX.Element | JSX.Element[] };
