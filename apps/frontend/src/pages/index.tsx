@@ -11,7 +11,7 @@ export function Index() {
         res={{ data: [], query: '' }}
         tabs={[
           { title: 'GitLab', value: 'https://www.uxu.pl', active: true },
-          { title: 'GitHub', value: () => alert('UXU'), icon: <GitHub />, active: false },
+          { title: 'GitHub', value: "/", icon: <GitHub />, active: false },
           { title: 'Bitbucket', value: 'https://www.uxu.pl', icon: <GitBranch />, active: false },
         ]}
         callBack={(search: string) => {
