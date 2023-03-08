@@ -1,24 +1,12 @@
-import { Header } from 'uxu-utils';
-import { useQuery } from '@apollo/client';
-import { GET_SEARCH } from 'gql';
-import { GitBranch, GitHub } from 'react-feather';
+import {Layout} from 'layout'
+
 
 export function Index() {
-  const { loading, error, data } = useQuery(GET_SEARCH, { variables: { query: 'testy' } });
+
   return (
-    <>
-      <Header
-        res={{ data: [], query: '' }}
-        tabs={[
-          { title: 'GitLab', value: 'https://www.uxu.pl', active: true },
-          { title: 'GitHub', value: "/", icon: <GitHub />, active: false },
-          { title: 'Bitbucket', value: 'https://www.uxu.pl', icon: <GitBranch />, active: false },
-        ]}
-        callBack={(search: string) => {
-          console.log({ query: search });
-        }}
-      />
-    </>
+    <Layout>
+      <p>ok</p>
+    </Layout>
   );
 }
 
