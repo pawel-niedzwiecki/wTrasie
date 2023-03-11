@@ -3,12 +3,12 @@ import { Headphones, Home, Tool } from 'react-feather';
 import { useHookSearch } from 'hooks';
 
 export const Layout = ({ children }: any) => {
-  const { setQuery } = useHookSearch();
-
+  const { setQuery, res } = useHookSearch();
+console.log(res, 'res')
   return (
     <>
       <Header
-        res={{ data: [], query: '' }}
+        res={res}
         tabs={[
           { title: 'Home', value: '/', icon: <Home />, active: true },
           { title: 'Usługi', value: '/uslugi', icon: <Tool />, active: false },
