@@ -5,7 +5,7 @@ export function Index() {
 
   return (
     <Layout>
-      <p>ok</p>
+      <p>UXU</p>
     </Layout>
   );
 }
