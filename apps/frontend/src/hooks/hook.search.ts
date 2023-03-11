@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { GET_SEARCH, GET_SEARCH_TYPE } from 'gql';
 import {
-  ResData,
-} from '../uxu-utils/libs/design-system/src/lib/components/organisms/form/search/component.search.types';
+  ResData
+} from 'uxu-utils/libs/design-system/src/lib/components/organisms/form/search/component.search.types';
 
 const resInitialState: { data: ResData, query: string } = { data: [], query: '' };
 
@@ -19,7 +19,7 @@ setTimeout(() =>     refetch({ query }), 1000)
   console.log(res)
 
   useEffect(() => {
-    let newRes = resInitialState;
+    const newRes = resInitialState;
     newRes.query = query;
     data?.search?.articles?.data.map((art) => {
       newRes.data.push({
