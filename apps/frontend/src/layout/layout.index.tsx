@@ -4,7 +4,7 @@ import { useHookSearch } from 'hooks';
 
 export const Layout = ({ children }: any) => {
   const { setQuery, res } = useHookSearch();
-console.log(res, 'res')
+
   return (
     <>
       <Header
@@ -15,7 +15,6 @@ console.log(res, 'res')
           { title: 'Kontakt', value: '/kontakt', icon: <Headphones />, active: false },
         ]}
         callBack={(search: string) => {
-          console.log(search);
           setQuery(search);
         }}
       />

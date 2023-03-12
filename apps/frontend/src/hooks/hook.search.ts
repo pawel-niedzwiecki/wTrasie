@@ -2,8 +2,9 @@ import { useEffect, useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { GET_SEARCH, GET_SEARCH_TYPE } from 'gql';
 import {
-  ResData
+  ResData,
 } from 'uxu-utils/libs/design-system/src/lib/components/organisms/form/search/component.search.types';
+import { throttle } from 'uxu-utils';
 
 const resInitialState: { data: ResData, query: string } = { data: [], query: '' };
 
@@ -13,22 +14,27 @@ export const useHookSearch = () => {
   const { loading, error, data, refetch } = useQuery<GET_SEARCH_TYPE>(GET_SEARCH, { variables: { query: '' } });
 
   useEffect(() => {
-setTimeout(() =>     refetch({ query }), 1000)
+
+    throttle(() => {
+      console.log('ok');
+      refetch({ query });
+    }, 100);
   }, [query]);
 
-  console.log(res)
 
   useEffect(() => {
-    const newRes = resInitialState;
-    newRes.query = query;
-    data?.search?.articles?.data.map((art) => {
-      newRes.data.push({
-        title: art.attributes.title,
-        slug: '',
-        cover: null,
+    throttle(() => {
+      const newRes = resInitialState;
+      newRes.query = query;
+      data?.search?.articles?.data.map((art) => {
+        newRes.data.push({
+          title: art.attributes.title,
+          slug: '',
+          cover: null,
+        });
       });
-    });
-    setRes(newRes);
+      setRes(newRes);
+    }, 100);
   }, [data, query]);
 
 
