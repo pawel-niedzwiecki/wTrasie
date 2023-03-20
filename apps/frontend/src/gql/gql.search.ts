@@ -9,11 +9,28 @@ export const GET_SEARCH = gql`
                     id
                     attributes {
                         title
+                        type
+                        lead {
+                            __typename
+                            ... on ComponentContentPartsLead {
+                                id
+                                lead
+                            }
+                        }
                         views {
                             __typename
                             ... on ComponentStatsViews {
                                 id
                                 views
+                            }
+                        }
+                        cover{
+                            data{
+                                id
+                                attributes{
+                                    alternativeText
+                                    formats
+                                }
                             }
                         }
                         tags {
