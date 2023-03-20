@@ -8,6 +8,7 @@ const resInitialState: { data: ResData, query: string } = { data: [], query: '' 
 import { throttle, createSlug } from 'uxu-utils';
 import { createSlugForType } from 'utils';
 
+
 export const useHookSearch = () => {
   const [res, setRes] = useState(resInitialState);
   const [query, setQuery] = useState('');
@@ -37,4 +38,5 @@ export const useHookSearch = () => {
 
 
   return { setQuery, res, loading };
+
 };
