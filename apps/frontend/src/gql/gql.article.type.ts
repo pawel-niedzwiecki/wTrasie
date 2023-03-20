@@ -13,7 +13,6 @@ export type FRAGMENT_ARTICLE_LEAD_TYPE = {
   __typename: 'ComponentContentPartsLead', id: string, lead: string | null
 } | null
 
-
 export type FRAGMENT_ATTRIBUTES_ARTICLE_TYPE = {
   __typename: 'Article',
   title: string,
