@@ -1,6 +1,7 @@
-import { Header } from '../uxu-utils';
-import { Headphones, Home, Tool } from 'react-feather';
+import { Box, Grid, Header, SiteBar } from '../uxu-utils';
+import { Headphones, Home } from 'react-feather';
 import { useHookSearch } from 'hooks';
+import { contents, spaces } from 'uxu-utils';
 
 export const Layout = ({ children }: any) => {
   const { setQuery, res } = useHookSearch();
@@ -11,14 +12,20 @@ export const Layout = ({ children }: any) => {
         res={res}
         tabs={[
           { title: 'Home', value: '/', icon: <Home />, active: true },
-          { title: 'Usługi', value: '/uslugi', icon: <Tool />, active: false },
           { title: 'Kontakt', value: '/kontakt', icon: <Headphones />, active: false },
         ]}
         callBack={(search: string) => {
           setQuery(search);
         }}
       />
-      {children}
+      <Grid gridTemplateColumns='220px 1fr' gridGap={spaces.default}
+            style={{ maxWidth: contents.maxWidth, padding: spaces.default, margin: '0 auto' }} container>
+        <SiteBar />
+        <Box position='relative' height='300vh'>
+          {children}
+        </Box>
+      </Grid>
+
     </>
   );
 };
