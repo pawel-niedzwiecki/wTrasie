@@ -14,4 +14,9 @@ const nextConfig = {
   },
 };
 
-module.exports = withNx(nextConfig);
+module.exports = {
+  ...withNx(nextConfig),
+  images: {
+    domains: ['wtrasiepl.s3.eu-west-1.amazonaws.com'],
+  },
+};
