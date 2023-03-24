@@ -28,6 +28,35 @@ export const Layout = ({ children }: any) => {
               url: 'https://wtrasiepl.s3.eu-west-1.amazonaws.com/MAM_Logo_heart_9fd4e546cf.jpg?updated_at=2023-01-31T20:39:35.217Z',
             },
           },
+          filter: {
+            isLoading: false,
+            links: [
+              {
+                slug: '/',
+                title: 'test',
+                active: true,
+                score: 20,
+              }, {
+                slug: '/',
+                title: 'tesddt',
+                active: false,
+                score: 10,
+              }],
+          },
+          socialMedia: {
+            isLoading: false,
+            list: [
+              {
+                typ: 'facebook',
+                url: 'https://www.facebook.com',
+              },
+              {
+                typ: 'twitter',
+                url: 'https://www.facebook.com',
+              },
+              
+            ],
+          },
         }} />
         <Box position='relative' height='300vh'>
           {children}
