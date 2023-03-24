@@ -5,13 +5,11 @@ import { ResData } from 'uxu-utils/libs/design-system/src/lib/components/organis
 import { createSlug, Throttle } from 'uxu-utils';
 import { createSlugForType } from 'utils';
 
-
 const resInitialState: { data: ResData, query: string } = { data: [], query: '' };
 
 export const useHookSearch = () => {
   const [res, setRes] = useState(resInitialState);
   const [query, setQuery] = useState('');
-
   const throttle = new Throttle({ wait: 100 });
   const { loading, data, refetch } = useQuery<GET_SEARCH_TYPE>(GET_SEARCH, { variables: { query: '' } });
 
