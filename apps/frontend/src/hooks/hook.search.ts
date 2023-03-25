@@ -6,6 +6,7 @@ import { ResData } from 'uxu-utils/libs/design-system/src/lib/components/organis
 import { createSlug, Throttle } from 'uxu-utils';
 import { createSlugForType } from 'utils';
 
+
 const resInitialState: { data: ResData, query: string } = { data: [], query: '' };
 
 export const useHookSearch = () => {
