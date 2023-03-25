@@ -6,6 +6,7 @@ import { useRouter } from 'next/router';
 import { Props } from './layout.props';
 import { NextSeo } from 'next-seo';
 
+
 export const Layout: Props = ({ siteBar, seo, children }) => {
   const { asPath } = useRouter();
   const { setQuery, res } = useHookSearch();
