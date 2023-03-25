@@ -1,4 +1,4 @@
-import { FRAGMENT_ARTICLES_TYPE } from '.';
+import { FRAGMENT_ARTICLES_TYPE } from '../index';
 
 
 export type GET_SEARCH_TYPE = {
