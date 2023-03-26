@@ -1,6 +1,5 @@
 import { gql } from '@apollo/client';
 
-
 export const GET_ARICLES_META_FILTRTYPE_TYPE = gql`
   query ArticlesMetaFiltrType($type: String!) {
     articles(filters: { type: { eq: $type } }) {
