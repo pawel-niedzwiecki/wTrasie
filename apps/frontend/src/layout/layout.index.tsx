@@ -29,7 +29,6 @@ export const Layout: Props = ({ siteBar, seo, children }) => {
           {children}
         </Box>
       </Grid>
-
     </>
   );
 };
