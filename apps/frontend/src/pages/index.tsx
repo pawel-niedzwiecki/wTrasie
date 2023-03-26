@@ -3,7 +3,7 @@ import { client } from 'config';
 import { NextSeoProps } from 'next-seo';
 import { createSlugForType } from 'utils';
 import type { FRAGMENT_ARTICLES_META, GET_SETTING_PAGE_TYPE } from 'gql';
-import { GET_ARICLES_META, GET_SETTING_PAGE } from 'gql';
+import { GET_ARICLES_META_FILTRTYPE_TYPE, GET_ARICLES_META_FILTRTYPETAG_TYPE, GET_SETTING_PAGE } from 'gql';
 import type {
   SpecialProps as SiteBarType,
 } from 'uxu-utils/libs/design-system/src/lib/components/templates/siteBar/component.siteBar.props';
@@ -40,6 +40,7 @@ export async function getStaticProps() {
     query: GET_SETTING_PAGE,
     variables: { page: 'home' },
   });
+
   const attributes = querySettings?.data?.setting?.data?.attributes;
   data.seo = { ...attributes?.settingsPages[0]?.seo };
   data.siteBar.socialMedia.list = attributes?.socialMedia?.map((item) => ({ typ: item.typ, url: item.url }));
@@ -49,8 +50,9 @@ export async function getStaticProps() {
     for (const filtr of filter) {
       const { slug, title } = filtr;
       const countArticle = await client.query<FRAGMENT_ARTICLES_META>({
-        query: GET_ARICLES_META,
-        variables: { type: 'article', tag: slug === '/' ? '' : slug },
+        query: slug === '/' ? GET_ARICLES_META_FILTRTYPE_TYPE : GET_ARICLES_META_FILTRTYPETAG_TYPE,
+        variables: slug === '/' ? { type: 'article' } : { type: 'article', tag: slug },
+        fetchPolicy: 'no-cache',
       });
 
       const score = countArticle?.data?.articles?.meta?.pagination?.total;
@@ -59,7 +61,8 @@ export async function getStaticProps() {
         title,
         score,
         active: slug === '/',
-        slug: slug === '/' ? slug : createSlugForType('tag') + '/' + slug,
+        slug: slug === '/' ? slug : createSlugForType('tag') + '' + slug,
+        fetchPolicy: 'no-cache',
       });
     }
   }
