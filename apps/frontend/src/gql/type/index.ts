@@ -4,3 +4,4 @@ export * from './gql.tags.type';
 export * from './gql.cover.type';
 export * from './gql.article.type';
 export * from './gql.setting.type';
+export * from './gql.author.type';
