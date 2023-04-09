@@ -1,5 +1,5 @@
 import { Box, Grid, Header, SiteBar } from '../uxu-utils';
-import { Headphones, Home } from 'react-feather';
+import { Home } from 'react-feather';
 import { useHookSearch } from 'hooks';
 import { contents } from 'uxu-utils';
 import { useRouter } from 'next/router';
@@ -18,7 +18,6 @@ export const Layout: Props = ({ siteBar, seo, children }) => {
         res={res}
         tabs={[
           { title: 'Home', value: '/', icon: <Home />, active: asPath === '/' },
-          { title: 'Kontakt', value: '/kontakt', icon: <Headphones />, active: asPath === '/kontakt' },
         ]}
         callBack={(search: string) => setQuery(search)}
       />

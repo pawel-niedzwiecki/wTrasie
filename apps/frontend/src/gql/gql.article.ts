@@ -71,3 +71,109 @@ export const GET_LIST_ARICLES = gql`
     }
   }
 `;
+
+
+export const GET_ARICLE_BY_ID = gql`
+  query Article($id: ID) {
+    article(id: $id) {
+      data {
+        __typename
+        id
+        attributes {
+          __typename
+          seo {
+            id
+            title
+            description
+          }
+          type
+          title
+          createdAt
+          cover {
+            __typename
+            data {
+              __typename
+              id
+              attributes {
+                __typename
+                alternativeText
+                formats
+              }
+            }
+          }
+          lead {
+            __typename
+            ... on ComponentContentPartsLead {
+              id
+              lead
+            }
+          }
+          tags {
+            __typename
+            data {
+              id
+              attributes {
+                __typename
+                title
+              }
+            }
+          }
+          author {
+            __typename
+            data {
+              id
+              __typename
+              attributes {
+                __typename
+                username
+                avatar {
+                  __typename
+                  data {
+                    attributes {
+                      alternativeText
+                      formats
+                    }
+                  }
+                }
+              }
+            }
+          }
+          views {
+            id
+            __typename
+            ... on ComponentStatsViews {
+              id
+              views
+            }
+          }
+          contentparts {
+            __typename
+            ... on ComponentContentPartsTxt {
+              id
+              txt
+            }
+            ... on ComponentContentPartsMedia {
+              id
+              media {
+                __typename
+                data {
+                  __typename
+                  id
+                  attributes {
+                    __typename
+                    alternativeText
+                    formats
+                  }
+                }
+              }
+            }
+            ... on ComponentContentPartsQuote {
+              id
+              quote
+            }
+          }
+        }
+      }
+    }
+  }
+`;
