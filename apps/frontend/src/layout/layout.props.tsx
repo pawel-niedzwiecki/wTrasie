@@ -7,7 +7,11 @@ import type {
 
 export type SpecialProps = {
   siteBar?: SiteBarType,
-  seo?: NextSeoProps | null
+  seo?: NextSeoProps
+  alert?: {
+    tel?: string
+    title: string
+  }
 }
 
 export type Props = FC<FunctionComponentDiv & SpecialProps>
