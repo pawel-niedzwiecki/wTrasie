@@ -2,7 +2,9 @@ import { Layout } from 'layout';
 import { client } from 'config';
 import { NextSeoProps } from 'next-seo';
 import { createSlugForType } from 'utils';
-import type { FRAGMENT_ARTICLES_META, FRAGMENT_ARTICLES_TYPE, GET_SETTING_PAGE_TYPE } from 'gql';
+import type { ArticleShortDataType } from 'uxu-utils';
+import { createSlug, SectionListingArticles } from 'uxu-utils';
+import type { GET_LISTING_ARTICLES_META_TYPE, GET_LISTING_ARTICLES_TYPE, GET_SETTING_PAGE_TYPE } from 'gql';
 import {
   GET_ARICLES_META_FILTRTYPE_TYPE,
   GET_ARICLES_META_FILTRTYPETAG_TYPE,
@@ -13,19 +15,18 @@ import {
 import type {
   SpecialProps as SiteBarType,
 } from 'uxu-utils/libs/design-system/src/lib/components/templates/siteBar/component.siteBar.props';
-import { createSlug, ListingArticles } from 'uxu-utils';
 
 
 type Props = {
   seo: NextSeoProps,
   siteBar: SiteBarType,
-  articles: any
+  articles: ArticleShortDataType[]
 }
 
-export function Index({ siteBar, seo, articles }: Props) {
+function Index({ siteBar, seo, articles }: Props) {
   return (
     <Layout siteBar={siteBar} seo={seo}>
-      <ListingArticles data={articles} isLoading={false} />
+      <SectionListingArticles data={articles} isLoading={false} />
     </Layout>
   );
 }
@@ -44,15 +45,17 @@ export async function getStaticProps() {
     },
   };
 
-  const queryListArticles = await client.query<{ articles: FRAGMENT_ARTICLES_TYPE }>({
+  const queryListArticles = await client.query<{ articles: GET_LISTING_ARTICLES_TYPE }>({
     query: GET_LIST_ARICLES,
     variables: { page: 1 },
   });
 
+
   data.articles = queryListArticles?.data?.articles?.data ? queryListArticles?.data?.articles?.data.map((art) => ({
     content: {
+      id: art.id,
       title: art.attributes.title,
-      slug: `${createSlugForType(art.attributes.type)}/${createSlug(art.attributes.title)}`,
+      slug: `${createSlugForType(art.attributes.type)}/${createSlug(art.attributes.title)}-${art.id}`,
       createdAt: art.attributes.createdAt,
       author: {
         name: art.attributes?.author.data.attributes.username || 'autor',
@@ -87,7 +90,7 @@ export async function getStaticProps() {
   if (filter) {
     for (const filtr of filter) {
       const { slug, title } = filtr;
-      const countArticle = await client.query<FRAGMENT_ARTICLES_META>({
+      const countArticle = await client.query<GET_LISTING_ARTICLES_META_TYPE>({
         query: slug === '/' ? GET_ARICLES_META_FILTRTYPE_TYPE : GET_ARICLES_META_FILTRTYPETAG_TYPE,
         variables: slug === '/' ? { type: 'article' } : { type: 'article', tag: slug },
         fetchPolicy: 'no-cache',

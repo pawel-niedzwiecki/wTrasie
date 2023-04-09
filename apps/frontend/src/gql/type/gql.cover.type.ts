@@ -1,5 +1,7 @@
 export type FRAGMENT_COVER = {
+  __typename: string,
   data: {
+    __typename: string,
     id: string,
     attributes: {
       alternativeText: string | null
