@@ -7,7 +7,7 @@ import { Props } from './layout.props';
 import { NextSeo } from 'next-seo';
 
 
-export const Layout: Props = ({ siteBar, seo, children }) => {
+export const Layout: Props = ({ siteBar, seo, alert, children }) => {
   const { asPath } = useRouter();
   const { setQuery, res } = useHookSearch();
 
@@ -15,6 +15,7 @@ export const Layout: Props = ({ siteBar, seo, children }) => {
     <>
       <NextSeo {...seo} />
       <Header
+        alert={alert}
         res={res}
         tabs={[
           { title: 'Home', value: '/', icon: <Home />, active: asPath === '/' },
@@ -23,7 +24,7 @@ export const Layout: Props = ({ siteBar, seo, children }) => {
       />
       <Grid gridTemplateColumns={{ xs: '1fr', m: siteBar ? '220px 1fr' : '1rf' }}
             style={{ maxWidth: contents.maxWidth, margin: '0 auto' }} container>
-        <SiteBar {...siteBar} />
+        <SiteBar alert={!alert} {...siteBar} />
         <Box position='relative'>
           {children}
         </Box>
