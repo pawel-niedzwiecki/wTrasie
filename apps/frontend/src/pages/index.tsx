@@ -35,7 +35,7 @@ function Index({ siteBar, seo, articles }: Props) {
 export async function getStaticProps() {
   const data = {
     seo: {},
-    articles: {},
+    articles: [],
     siteBar: {
       filter: {
         isLoading: false,
