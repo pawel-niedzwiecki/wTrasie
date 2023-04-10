@@ -16,6 +16,7 @@ export const useHookSearch = () => {
   const throttle = new Throttle({ wait: 100 });
   const { loading, data, refetch } = useQuery<GET_SEARCH_TYPE>(GET_SEARCH, { variables: { query: '' } });
 
+
   useEffect(() => throttle.setLastTimeOut(() => query?.length && refetch({ query })), [query]);
   useEffect(() => {
     if (query?.length && data?.search?.articles?.data?.length) {
@@ -28,10 +29,11 @@ export const useHookSearch = () => {
         } = art.attributes;
 
         return {
+          id: art.id,
           cover: url,
           title: title,
           excerpt: lead,
-          slug: `/${createSlugForType(type)}/${createSlug(title)}`,
+          slug: `/${createSlugForType(type)}/${createSlug(title)}-${art.id}`,
         };
       });
       setRes({ data: resData, query });
