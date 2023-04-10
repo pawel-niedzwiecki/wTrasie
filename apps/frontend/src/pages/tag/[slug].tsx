@@ -1,40 +1,55 @@
 import { Layout } from 'layout';
 import { client } from 'config';
-import { NextSeoProps } from 'next-seo';
-import { createSlugForType } from 'utils';
-import type { ArticleShortDataType } from 'uxu-utils';
-import { createSlug, SectionListingArticles } from 'uxu-utils';
-import type { GET_LISTING_ARTICLES_META_TYPE, GET_LISTING_ARTICLES_TYPE, GET_SETTING_PAGE_TYPE } from 'gql';
 import {
+  FRAGMENT_TAG_TYPE,
+  FRAGMENT_TAGS_TYPE,
   GET_ARICLES_META_FILTRTYPE_TYPE,
   GET_ARICLES_META_FILTRTYPETAG_TYPE,
-  GET_LIST_ARICLES,
+  GET_LIST_ARICLES_WITH_TAG,
+  GET_LIST_TAGS,
+  GET_LISTING_ARTICLES_META_TYPE,
+  GET_LISTING_ARTICLES_TYPE,
   GET_SETTING_PAGE,
+  GET_SETTING_PAGE_TYPE,
+  GET_TAG_DATA,
 } from 'gql';
-
+import { ArticleShortDataType, createSlug, SectionListingArticles } from 'uxu-utils';
+import { createSlugForType } from '../../utils';
+import { NextSeoProps } from 'next-seo';
 import type {
   SpecialProps as SiteBarType,
 } from 'uxu-utils/libs/design-system/src/lib/components/templates/siteBar/component.siteBar.props';
 
 
-type Props = {
-  seo: NextSeoProps,
-  siteBar: SiteBarType,
-  articles: ArticleShortDataType[]
+export async function getStaticPaths() {
+
+  const queryListTags = await client.query<{ tags: FRAGMENT_TAGS_TYPE }>({
+    query: GET_LIST_TAGS,
+    variables: { page: 1 },
+  });
+
+  return {
+    paths: queryListTags?.data?.tags?.data?.map((tag) => ({
+      params: { slug: `${createSlug(tag.attributes.title)}-${tag.id}` },
+    })),
+    fallback: false,
+  };
 }
 
-function Index({ siteBar, seo, articles }: Props) {
-  return (
-    <Layout siteBar={siteBar} seo={seo}>
-      <SectionListingArticles data={articles} isLoading={false} />
-    </Layout>
-  );
-}
+export async function getStaticProps(context) {
+  const { slug } = context.params;
+  const getId = /(\d*)$/.exec(slug)[0];
 
+  const getDataTag = await client.query<{ tag: FRAGMENT_TAG_TYPE }>({
+    query: GET_TAG_DATA,
+    variables: { idTag: getId },
+  });
 
-export async function getStaticProps() {
   const data = {
-    seo: {},
+    seo: {
+      title: getDataTag?.data?.tag?.data?.attributes?.seo.title,
+      description: getDataTag?.data?.tag?.data?.attributes?.seo.description,
+    },
     articles: {},
     siteBar: {
       filter: {
@@ -45,13 +60,12 @@ export async function getStaticProps() {
     },
   };
 
-  const queryListArticles = await client.query<{ articles: GET_LISTING_ARTICLES_TYPE }>({
-    query: GET_LIST_ARICLES,
-    variables: { page: 1 },
+  const getListArticles = await client.query<{ articles: GET_LISTING_ARTICLES_TYPE }>({
+    query: GET_LIST_ARICLES_WITH_TAG,
+    variables: { page: 1, idTag: getId },
   });
 
-
-  data.articles = queryListArticles?.data?.articles?.data ? queryListArticles?.data?.articles?.data.map((art) => ({
+  data.articles = getListArticles?.data?.articles?.data ? getListArticles?.data?.articles?.data.map((art) => ({
     content: {
       id: art.id,
       title: art.attributes.title,
@@ -76,14 +90,12 @@ export async function getStaticProps() {
     },
   })) : [];
 
-
   const querySettings = await client.query<GET_SETTING_PAGE_TYPE>({
     query: GET_SETTING_PAGE,
     variables: { page: 'home' },
   });
 
   const attributes = querySettings?.data?.setting?.data?.attributes;
-  data.seo = { ...attributes?.settingsPages[0]?.seo };
   data.siteBar.socialMedia.list = attributes?.socialMedia?.map((item) => ({ typ: item.typ, url: item.url }));
 
   const filter = attributes?.settingsPages[0]?.filter;
@@ -108,11 +120,26 @@ export async function getStaticProps() {
     }
   }
 
-
   return {
+    // Passed to the page component as props
     props: { ...data },
   };
 }
 
+type Props = {
+  seo: NextSeoProps,
+  siteBar: SiteBarType,
+  articles: ArticleShortDataType[]
+}
 
-export default Index;
+export default function Tag({ siteBar, seo, articles }: Props) {
+
+
+  return (
+    <Layout seo={seo} siteBar={siteBar}>
+      <SectionListingArticles data={articles} isLoading={false} />
+    </Layout>
+  );
+}
+
+

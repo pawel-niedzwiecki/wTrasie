@@ -26,6 +26,8 @@ export const GET_SETTING_PAGE = gql`
             }
             filter {
               __typename
+              id
+              key
               typ
               title
               slug

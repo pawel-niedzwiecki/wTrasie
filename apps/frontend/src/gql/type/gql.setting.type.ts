@@ -23,10 +23,12 @@ export type GET_SETTING_PAGE_TYPE = {
             },
             filter?: {
               __typename: string,
+              id: string,
+              key?: string,
               typ: string,
               title: string,
               slug: string
-            }[] | null
+            }[]
           }
         ] | null
       }
