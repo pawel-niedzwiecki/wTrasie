@@ -86,7 +86,7 @@ export async function getStaticProps(context) {
       },
       tags: tags?.data?.map((tag) => ({
         title: tag.attributes.title,
-        slug: `${createSlugForType(tag.attributes.title)}/${createSlug(tag.attributes.title)}}`,
+        slug: `${createSlugForType('tag')}/${createSlug(tag.attributes.title)}-${tag.id}`,
       })) || [],
       stats: { ratings: 0, comments: 0, views: 0 },
       contentparts: contentparts?.map((content) => {
@@ -127,7 +127,7 @@ export async function getStaticProps(context) {
   const filter = attributes?.settingsPages[0]?.filter;
   if (filter) {
     for (const filtr of filter) {
-      const { slug, title } = filtr;
+      const { key, slug, title } = filtr;
       const countArticle = await client.query<GET_LISTING_ARTICLES_META_TYPE>({
         query: slug === '/' ? GET_ARICLES_META_FILTRTYPE_TYPE : GET_ARICLES_META_FILTRTYPETAG_TYPE,
         variables: slug === '/' ? { type: 'article' } : { type: 'article', tag: slug },
@@ -136,11 +136,11 @@ export async function getStaticProps(context) {
 
       const score = countArticle?.data?.articles?.meta?.pagination?.total;
 
-      data?.siteBar?.filter?.links?.push({
+      score && data?.siteBar?.filter?.links?.push({
         title,
         score,
         active: slug === '/',
-        slug: slug === '/' ? slug : createSlugForType('tag') + '' + slug,
+        slug: slug === '/' ? slug : `${createSlugForType('tag')}/${slug}${key ? `-${key}` : ''}`,
       });
     }
   }
@@ -153,15 +153,8 @@ export async function getStaticProps(context) {
 
 
 export default function Slug({ seo, siteBar, content }: Props) {
-  const alert = {
-    title: content.title,
-  };
-
-  if (content.tags.some((tag) => tag.title === 'lubuskie')) alert['tel'] = '+48 601 586 295';
-  else alert['tel'] = '+48 796 310 680';
-
   return (
-    <Layout seo={seo} siteBar={siteBar} alert={alert}>
+    <Layout seo={seo} siteBar={siteBar}>
       <SectionArticleFull data={{ content }} isLoading={false} />
     </Layout>
   );

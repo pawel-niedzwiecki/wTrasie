@@ -1,12 +1,12 @@
 export const createSlugForType = (type: string) => {
   switch (type) {
-    case "article":
-      return '/a'
-    case "tag":
-      return "/t"
-    case "service":
-      return "/s"
+    case 'article':
+      return '/article';
+    case 'tag':
+      return '/tag';
+    case 'service':
+      return '/service';
     default:
-      return ""
+      return '';
   }
 };
