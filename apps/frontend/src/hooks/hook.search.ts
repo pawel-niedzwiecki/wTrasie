@@ -28,10 +28,11 @@ export const useHookSearch = () => {
         } = art.attributes;
 
         return {
+          id: art.id,
           cover: url,
           title: title,
           excerpt: lead,
-          slug: `/${createSlugForType(type)}/${createSlug(title)}`,
+          slug: `/${createSlugForType(type)}/${createSlug(title)}-${art.id}`,
         };
       });
       setRes({ data: resData, query });
