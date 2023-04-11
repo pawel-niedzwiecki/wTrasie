@@ -5,23 +5,15 @@ import { createSlugForType } from 'utils';
 import type { ArticleShortDataType } from 'uxu-utils';
 import { createSlug, SectionListingArticles } from 'uxu-utils';
 import type { GET_LISTING_ARTICLES_META_TYPE, GET_LISTING_ARTICLES_TYPE, GET_SETTING_PAGE_TYPE } from 'gql';
-import {
-  GET_ARICLES_META_FILTRTYPE_TYPE,
-  GET_ARICLES_META_FILTRTYPETAG_TYPE,
-  GET_LIST_ARICLES,
-  GET_SETTING_PAGE,
-} from 'gql';
+import { GET_ARICLES_META_FILTRTYPE_TYPE, GET_ARICLES_META_FILTRTYPETAG_TYPE, GET_LIST_ARICLES, GET_SETTING_PAGE } from 'gql';
 
-import type {
-  SpecialProps as SiteBarType,
-} from 'uxu-utils/libs/design-system/src/lib/components/templates/siteBar/component.siteBar.props';
-
+import type { SpecialProps as SiteBarType } from 'uxu-utils/libs/design-system/src/lib/components/templates/siteBar/component.siteBar.props';
 
 type Props = {
-  seo: NextSeoProps,
-  siteBar: SiteBarType,
-  articles: ArticleShortDataType[]
-}
+  seo: NextSeoProps;
+  siteBar: SiteBarType;
+  articles: ArticleShortDataType[];
+};
 
 function Index({ siteBar, seo, articles }: Props) {
   return (
@@ -30,7 +22,6 @@ function Index({ siteBar, seo, articles }: Props) {
     </Layout>
   );
 }
-
 
 export async function getStaticProps() {
   const data = {
@@ -50,32 +41,33 @@ export async function getStaticProps() {
     variables: { page: 1 },
   });
 
-
-  data.articles = queryListArticles?.data?.articles?.data ? queryListArticles?.data?.articles?.data.map((art) => ({
-    content: {
-      id: art.id,
-      title: art.attributes.title,
-      slug: `${createSlugForType(art.attributes.type)}/${createSlug(art.attributes.title)}-${art.id}`,
-      createdAt: art.attributes.createdAt,
-      author: {
-        name: art.attributes?.author.data.attributes.username || 'autor',
-        avatar: {
-          src: art.attributes?.author.data.attributes.avatar.data.attributes.formats.thumbnail.url,
-          alt: art.attributes?.author.data.attributes.avatar.data.attributes.alternativeText,
+  data.articles = queryListArticles?.data?.articles?.data
+    ? queryListArticles?.data?.articles?.data.map(art => ({
+        content: {
+          id: art.id,
+          title: art.attributes.title,
+          slug: `${createSlugForType(art.attributes.type)}/${createSlug(art.attributes.title)}-${art.id}`,
+          createdAt: art.attributes.createdAt,
+          author: {
+            name: art.attributes?.author.data.attributes.username || 'autor',
+            avatar: {
+              src: art.attributes?.author.data.attributes.avatar.data.attributes.formats.thumbnail.url,
+              alt: art.attributes?.author.data.attributes.avatar.data.attributes.alternativeText,
+            },
+          },
+          cover: {
+            src: art?.attributes?.cover?.data?.attributes?.formats?.medium?.url || null,
+            alt: art?.attributes?.cover?.data?.attributes?.alternativeText || null,
+          },
+          tags:
+            art?.attributes?.tags?.data?.map(tag => ({
+              title: tag.attributes.title,
+              slug: `${createSlugForType(`tag`)}/${createSlug(tag.attributes.title)}-${tag.id}`,
+            })) || [],
+          stats: { ratings: 0, comments: 0, views: 0 },
         },
-      },
-      cover: {
-        src: art?.attributes?.cover?.data?.attributes?.formats?.large?.url || null,
-        alt: art?.attributes?.cover?.data?.attributes?.alternativeText || null,
-      },
-      tags: art?.attributes?.tags?.data?.map((tag) => ({
-        title: tag.attributes.title,
-        slug: `${createSlugForType(`tag`)}/${createSlug(tag.attributes.title)}-${tag.id}`,
-      })) || [],
-      stats: { ratings: 0, comments: 0, views: 0 },
-    },
-  })) : [];
-
+      }))
+    : [];
 
   const querySettings = await client.query<GET_SETTING_PAGE_TYPE>({
     query: GET_SETTING_PAGE,
@@ -84,7 +76,11 @@ export async function getStaticProps() {
 
   const attributes = querySettings?.data?.setting?.data?.attributes;
   data.seo = { ...attributes?.settingsPages[0]?.seo };
-  data.siteBar.socialMedia.list = attributes?.socialMedia?.map((item) => ({ typ: item.typ, url: item.url }));
+  attributes?.socialMedia &&
+    (data.siteBar.socialMedia.list = attributes?.socialMedia?.map(item => ({
+      typ: item.typ,
+      url: item.url,
+    })));
 
   const filter = attributes?.settingsPages[0]?.filter;
   if (filter) {
@@ -98,21 +94,20 @@ export async function getStaticProps() {
 
       const score = countArticle?.data?.articles?.meta?.pagination?.total;
 
-      score && data?.siteBar?.filter?.links?.push({
-        title,
-        score,
-        active: slug === '/',
-        slug: slug === '/' ? slug : `${createSlugForType('tag')}/${slug}${key ? `-${key}` : ''}`,
-        fetchPolicy: 'no-cache',
-      });
+      score &&
+        data?.siteBar?.filter?.links?.push({
+          title,
+          score,
+          active: slug === '/',
+          slug: slug === '/' ? slug : `${createSlugForType('tag')}/${slug}${key ? `-${key}` : ''}`,
+          fetchPolicy: 'no-cache',
+        });
     }
   }
-
 
   return {
     props: { ...data },
   };
 }
-
 
 export default Index;
