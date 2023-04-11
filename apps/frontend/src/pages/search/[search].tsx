@@ -72,7 +72,6 @@ export async function getServerSideProps(context) {
       });
 
       const score = countArticle?.data?.articles?.meta?.pagination?.total;
-
       score &&
         data?.siteBar?.filter?.links?.push({
           title,
