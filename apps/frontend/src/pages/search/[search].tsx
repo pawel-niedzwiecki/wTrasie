@@ -35,7 +35,7 @@ export async function getServerSideProps(context) {
           author: {
             name: art.attributes?.author.data.attributes.username || 'autor',
             avatar: {
-              src: art.attributes?.author.data.attributes.avatar.data.attributes.formats.thumbnail.url,
+              src: art.attributes?.author?.data?.attributes?.avatar?.data?.attributes?.formats?.thumbnail?.url || undefined,
               alt: art.attributes?.author.data.attributes.avatar.data.attributes.alternativeText,
             },
           },
