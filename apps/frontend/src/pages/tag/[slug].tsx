@@ -13,10 +13,11 @@ import {
   GET_SETTING_PAGE_TYPE,
   GET_TAG_DATA,
 } from 'gql';
-import { ArticleShortDataType, createSlug, SectionListingArticles } from 'uxu-utils';
-import { createSlugForType } from '../../utils';
 import { NextSeoProps } from 'next-seo';
-import type { SpecialProps as SiteBarType } from 'uxu-utils/libs/design-system/src/lib/components/templates/siteBar/component.siteBar.props';
+import { createSlugForType } from '../../utils';
+import { ArticleShortDataType, createSlug, SectionListingArticles } from 'uxu-utils';
+import type { SpecialProps as SiteBarPrimaryType } from 'uxu-utils/libs/design-system/src/lib/components/templates/siteBar/primary/component.siteBar.primary.types';
+import type { SpecialProps as SiteBarSecondaryType } from 'uxu-utils/libs/design-system/src/lib/components/templates/siteBar/secondary/component.siteBar.types';
 
 export async function getStaticPaths() {
   const queryListTags = await client.query<{ tags: FRAGMENT_TAGS_TYPE }>({
@@ -47,12 +48,15 @@ export async function getStaticProps(context) {
       description: getDataTag?.data?.tag?.data?.attributes?.seo.description,
     },
     articles: {},
-    siteBar: {
+    siteBarPrimary: {
       filter: {
         isLoading: false,
         links: [],
       },
       socialMedia: { isLoading: false, list: [] },
+    },
+    siteBarSecondary: {
+      ads: false,
     },
   };
 
@@ -95,7 +99,7 @@ export async function getStaticProps(context) {
   });
 
   const attributes = querySettings?.data?.setting?.data?.attributes;
-  data.siteBar.socialMedia.list = attributes?.socialMedia?.map(item => ({ typ: item.typ, url: item.url }));
+  data.siteBarPrimary.socialMedia.list = attributes?.socialMedia?.map(item => ({ typ: item.typ, url: item.url }));
 
   const filter = attributes?.settingsPages[0]?.filter;
   if (filter) {
@@ -110,7 +114,7 @@ export async function getStaticProps(context) {
       const score = countArticle?.data?.articles?.meta?.pagination?.total;
 
       score &&
-        data?.siteBar?.filter?.links?.push({
+        data?.siteBarPrimary?.filter?.links?.push({
           title,
           score,
           active: slug === '/',
@@ -128,13 +132,14 @@ export async function getStaticProps(context) {
 
 type Props = {
   seo: NextSeoProps;
-  siteBar: SiteBarType;
+  siteBarPrimary: SiteBarPrimaryType;
+  siteBarSecondary: SiteBarSecondaryType;
   articles: ArticleShortDataType[];
 };
 
-export default function Tag({ siteBar, seo, articles }: Props) {
+export default function Tag({ siteBarPrimary, siteBarSecondary, seo, articles }: Props) {
   return (
-    <Layout seo={seo} siteBar={siteBar}>
+    <Layout seo={seo} siteBarPrimary={siteBarPrimary} siteBarSecondary={siteBarSecondary}>
       <SectionListingArticles data={articles} isLoading={false} />
     </Layout>
   );
