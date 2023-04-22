@@ -6,18 +6,19 @@ import type { ArticleShortDataType } from 'uxu-utils';
 import { createSlug, SectionListingArticles } from 'uxu-utils';
 import type { GET_LISTING_ARTICLES_META_TYPE, GET_LISTING_ARTICLES_TYPE, GET_SETTING_PAGE_TYPE } from 'gql';
 import { GET_ARICLES_META_FILTRTYPE_TYPE, GET_ARICLES_META_FILTRTYPETAG_TYPE, GET_LIST_ARICLES, GET_SETTING_PAGE } from 'gql';
-
-import type { SpecialProps as SiteBarType } from 'uxu-utils/libs/design-system/src/lib/components/templates/siteBar/component.siteBar.props';
+import type { SpecialProps as SiteBarPrimaryType } from 'uxu-utils/libs/design-system/src/lib/components/templates/siteBar/primary/component.siteBar.primary.types';
+import type { SpecialProps as SiteBarSecondaryType } from 'uxu-utils/libs/design-system/src/lib/components/templates/siteBar/secondary/component.siteBar.types';
 
 type Props = {
   seo: NextSeoProps;
-  siteBar: SiteBarType;
+  siteBarPrimary: SiteBarPrimaryType;
+  siteBarSecondary: SiteBarSecondaryType;
   articles: ArticleShortDataType[];
 };
 
-function Index({ siteBar, seo, articles }: Props) {
+function Index({ siteBarPrimary, siteBarSecondary, seo, articles }: Props) {
   return (
-    <Layout siteBar={siteBar} seo={seo}>
+    <Layout siteBarPrimary={siteBarPrimary} siteBarSecondary={siteBarSecondary} seo={seo}>
       <SectionListingArticles data={articles} isLoading={false} />
     </Layout>
   );
@@ -27,12 +28,15 @@ export async function getStaticProps() {
   const data = {
     seo: {},
     articles: [],
-    siteBar: {
+    siteBarPrimary: {
       filter: {
         isLoading: false,
         links: [],
       },
       socialMedia: { isLoading: false, list: [] },
+    },
+    siteBarSecondary: {
+      ads: true,
     },
   };
 
@@ -77,7 +81,7 @@ export async function getStaticProps() {
   const attributes = querySettings?.data?.setting?.data?.attributes;
   data.seo = { ...attributes?.settingsPages[0]?.seo };
   attributes?.socialMedia &&
-    (data.siteBar.socialMedia.list = attributes?.socialMedia?.map(item => ({
+    (data.siteBarPrimary.socialMedia.list = attributes?.socialMedia?.map(item => ({
       typ: item.typ,
       url: item.url,
     })));
@@ -95,7 +99,7 @@ export async function getStaticProps() {
       const score = countArticle?.data?.articles?.meta?.pagination?.total;
 
       score &&
-        data?.siteBar?.filter?.links?.push({
+        data?.siteBarPrimary?.filter?.links?.push({
           title,
           score,
           active: slug === '/',
