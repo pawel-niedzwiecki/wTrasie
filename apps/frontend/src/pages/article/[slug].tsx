@@ -60,14 +60,14 @@ export async function getStaticProps(context) {
       lead: lead.lead,
       createdAt,
       cover: {
-        src: cover?.data?.attributes?.formats?.medium?.url,
-        alt: cover?.data?.attributes?.alternativeText,
+        src: cover?.data?.attributes?.formats?.medium?.url || null,
+        alt: cover?.data?.attributes?.alternativeText || null,
       },
       author: {
         name: author?.data?.attributes?.username,
         avatar: {
-          src: author?.data?.attributes?.avatar?.data?.attributes?.formats?.thumbnail?.url,
-          alt: author?.data?.attributes?.avatar?.data?.attributes?.alternativeText,
+          src: author?.data?.attributes?.avatar?.data?.attributes?.formats?.thumbnail?.url || null,
+          alt: author?.data?.attributes?.avatar?.data?.attributes?.alternativeText || null,
         },
       },
       tags:
@@ -92,7 +92,7 @@ export async function getStaticProps(context) {
             break;
           case 'ComponentContentPartsMedia':
             data['__typename'] = 'img';
-            data['src'] = content?.media?.data?.attributes?.formats?.medium?.url;
+            data['src'] = content?.media?.data?.attributes?.formats?.medium?.url || null;
             content?.media?.data?.attributes?.alternativeText && (data['alt'] = content.media.data.attributes.alternativeText);
             break;
         }

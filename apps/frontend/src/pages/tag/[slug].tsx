@@ -71,8 +71,8 @@ export async function getStaticProps(context) {
           author: {
             name: art.attributes?.author.data.attributes.username || 'autor',
             avatar: {
-              src: art.attributes?.author.data.attributes.avatar.data.attributes.formats.thumbnail.url,
-              alt: art.attributes?.author.data.attributes.avatar.data.attributes.alternativeText,
+              src: art.attributes?.author?.data?.attributes?.avatar?.data?.attributes?.formats?.thumbnail?.url || null,
+              alt: art.attributes?.author?.data?.attributes?.avatar?.data?.attributes?.alternativeText,
             },
           },
           cover: {

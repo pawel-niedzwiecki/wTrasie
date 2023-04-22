@@ -60,13 +60,13 @@ export async function getStaticProps(context) {
       lead: lead.lead,
       createdAt,
       cover: {
-        src: cover?.data?.attributes?.formats?.medium?.url,
+        src: cover?.data?.attributes?.formats?.medium?.url || null,
         alt: cover?.data?.attributes?.alternativeText,
       },
       author: {
         name: author?.data?.attributes?.username,
         avatar: {
-          src: author?.data?.attributes?.avatar?.data?.attributes?.formats?.thumbnail?.url,
+          src: author?.data?.attributes?.avatar?.data?.attributes?.formats?.thumbnail?.url || null,
           alt: author?.data?.attributes?.avatar?.data?.attributes?.alternativeText,
         },
       },
