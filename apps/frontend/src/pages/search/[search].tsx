@@ -3,19 +3,24 @@ import { client } from '../../config';
 import { GET_ARICLES_META_FILTRTYPE_TYPE, GET_ARICLES_META_FILTRTYPETAG_TYPE, GET_LISTING_ARTICLES_META_TYPE, GET_SEARCH, GET_SEARCH_TYPE, GET_SETTING_PAGE, GET_SETTING_PAGE_TYPE } from '../../gql';
 import { createSlugForType } from '../../utils';
 import { NextSeoProps } from 'next-seo';
-import type { SpecialProps as SiteBarType } from 'uxu-utils/libs/design-system/src/lib/components/templates/siteBar/component.siteBar.props';
 import { ArticleShortDataType, createSlug, SectionListingArticles } from 'uxu-utils';
+import type { SpecialProps as SiteBarPrimaryType } from 'uxu-utils/libs/design-system/src/lib/components/templates/siteBar/primary/component.siteBar.primary.types';
+import type { SpecialProps as SiteBarSecondaryType } from 'uxu-utils/libs/design-system/src/lib/components/templates/siteBar/secondary/component.siteBar.types';
 
 export async function getServerSideProps(context) {
   const { search } = context.query;
   const data = {
     seo: { title: `Wyniki wyszukiwania dla ${search} - wTrasie.pl` },
-    siteBar: {
+    siteBarPrimary: {
       filter: {
         isLoading: false,
         links: [],
       },
+
       socialMedia: { isLoading: false, list: [] },
+    },
+    siteBarSecondary: {
+      ads: true,
     },
     search: [],
   };
@@ -59,7 +64,7 @@ export async function getServerSideProps(context) {
   });
 
   const attributes = querySettings?.data?.setting?.data?.attributes;
-  data.siteBar.socialMedia.list = attributes?.socialMedia?.map(item => ({ typ: item.typ, url: item.url }));
+  data.siteBarPrimary.socialMedia.list = attributes?.socialMedia?.map(item => ({ typ: item.typ, url: item.url }));
 
   const filter = attributes?.settingsPages[0]?.filter;
   if (filter) {
@@ -73,7 +78,7 @@ export async function getServerSideProps(context) {
 
       const score = countArticle?.data?.articles?.meta?.pagination?.total;
       score &&
-        data?.siteBar?.filter?.links?.push({
+        data?.siteBarPrimary?.filter?.links?.push({
           title,
           score,
           active: slug === '/',
@@ -89,13 +94,14 @@ export async function getServerSideProps(context) {
 
 type Props = {
   seo: NextSeoProps;
-  siteBar: SiteBarType;
+  siteBarPrimary: SiteBarPrimaryType;
+  siteBarSecondary: SiteBarSecondaryType;
   search: ArticleShortDataType[];
 };
 
-export default function Search({ seo, siteBar, search }: Props) {
+export default function Search({ seo, siteBarPrimary, siteBarSecondary, search }: Props) {
   return (
-    <Layout seo={seo} siteBar={siteBar}>
+    <Layout seo={seo} siteBarPrimary={siteBarPrimary} siteBarSecondary={siteBarSecondary}>
       <SectionListingArticles data={search} isLoading={false} />
     </Layout>
   );

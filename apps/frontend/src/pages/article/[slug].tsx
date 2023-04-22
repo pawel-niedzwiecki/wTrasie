@@ -15,11 +15,13 @@ import {
   GET_SETTING_PAGE,
   GET_SETTING_PAGE_TYPE,
 } from '../../gql';
-import type { SpecialProps as SiteBarType } from 'uxu-utils/libs/design-system/src/lib/components/templates/siteBar/component.siteBar.props';
+import type { SpecialProps as SiteBarPrimaryType } from 'uxu-utils/libs/design-system/src/lib/components/templates/siteBar/primary/component.siteBar.primary.types';
+import type { SpecialProps as SiteBarSecondaryType } from 'uxu-utils/libs/design-system/src/lib/components/templates/siteBar/secondary/component.siteBar.types';
 
 type Props = {
   seo: NextSeoProps;
-  siteBar: SiteBarType;
+  siteBarPrimary: SiteBarPrimaryType;
+  siteBarSecondary: SiteBarSecondaryType;
 } & ArticleDataType;
 
 export async function getStaticPaths() {
@@ -47,7 +49,10 @@ export async function getStaticProps(context) {
 
   const data: Props = {
     seo: { title: seo?.title, description: seo.description },
-    siteBar: {
+    siteBarSecondary: {
+      ads: true,
+    },
+    siteBarPrimary: {
       filter: {
         isLoading: false,
         links: [],
@@ -108,7 +113,7 @@ export async function getStaticProps(context) {
   });
 
   const attributes = querySettings?.data?.setting?.data?.attributes;
-  data.siteBar.socialMedia.list = attributes?.socialMedia?.map(item => ({ typ: item.typ, url: item.url }));
+  data.siteBarPrimary.socialMedia.list = attributes?.socialMedia?.map(item => ({ typ: item.typ, url: item.url }));
 
   const filter = attributes?.settingsPages[0]?.filter;
   if (filter) {
@@ -123,7 +128,7 @@ export async function getStaticProps(context) {
       const score = countArticle?.data?.articles?.meta?.pagination?.total;
 
       score &&
-        data?.siteBar?.filter?.links?.push({
+        data.siteBarPrimary.filter.links?.push({
           title,
           score,
           active: slug === '/',
@@ -138,9 +143,9 @@ export async function getStaticProps(context) {
   };
 }
 
-export default function Slug({ seo, siteBar, content }: Props) {
+export default function Slug({ seo, siteBarPrimary, siteBarSecondary, content }: Props) {
   return (
-    <Layout seo={seo} siteBar={siteBar}>
+    <Layout seo={seo} siteBarPrimary={siteBarPrimary} siteBarSecondary={siteBarSecondary}>
       <SectionArticleFull data={{ content }} isLoading={false} />
     </Layout>
   );
