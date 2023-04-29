@@ -1,6 +1,5 @@
 import { gql } from '@apollo/client';
 
-
 export const GET_SETTING_PAGE = gql`
   query SettingPage($page: String!) {
     setting {
@@ -31,6 +30,19 @@ export const GET_SETTING_PAGE = gql`
               typ
               title
               slug
+            }
+          }
+          footer {
+            ... on ComponentFooterColumn {
+              id
+              header
+              link {
+                id
+                url
+                rel
+                target
+                title
+              }
             }
           }
         }

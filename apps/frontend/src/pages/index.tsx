@@ -8,17 +8,19 @@ import type { GET_LISTING_ARTICLES_META_TYPE, GET_LISTING_ARTICLES_TYPE, GET_SET
 import { GET_ARICLES_META_FILTRTYPE_TYPE, GET_ARICLES_META_FILTRTYPETAG_TYPE, GET_LIST_ARICLES, GET_SETTING_PAGE } from 'gql';
 import type { SpecialProps as SiteBarPrimaryType } from 'uxu-utils/libs/design-system/src/lib/components/templates/siteBar/primary/component.siteBar.primary.types';
 import type { SpecialProps as SiteBarSecondaryType } from 'uxu-utils/libs/design-system/src/lib/components/templates/siteBar/secondary/component.siteBar.types';
+import type { FooterDataType } from 'uxu-utils/libs/design-system/src/lib/components/templates/footer/component.footer.types';
 
 type Props = {
   seo: NextSeoProps;
+  dataFooter: FooterDataType;
   siteBarPrimary: SiteBarPrimaryType;
   siteBarSecondary: SiteBarSecondaryType;
   articles: ArticleShortDataType[];
 };
 
-function Index({ siteBarPrimary, siteBarSecondary, seo, articles }: Props) {
+function Index({ siteBarPrimary, siteBarSecondary, dataFooter, seo, articles }: Props) {
   return (
-    <Layout siteBarPrimary={siteBarPrimary} siteBarSecondary={siteBarSecondary} seo={seo}>
+    <Layout siteBarPrimary={siteBarPrimary} siteBarSecondary={siteBarSecondary} seo={seo} dataFooter={dataFooter}>
       <SectionListingArticles data={articles} isLoading={false} />
     </Layout>
   );
@@ -27,6 +29,9 @@ function Index({ siteBarPrimary, siteBarSecondary, seo, articles }: Props) {
 export async function getStaticProps() {
   const data = {
     seo: {},
+    dataFooter: {
+      columns: [],
+    },
     articles: [],
     siteBarPrimary: {
       filter: {
@@ -79,6 +84,13 @@ export async function getStaticProps() {
   });
 
   const attributes = querySettings?.data?.setting?.data?.attributes;
+
+  data.dataFooter.columns = attributes.footer.map(column => ({
+    id: column.id,
+    header: column?.header || '',
+    link: column.link.map(data => ({ id: data.id, title: data.title, url: data.url })),
+  }));
+
   data.seo = { ...attributes?.settingsPages[0]?.seo };
   attributes?.socialMedia &&
     (data.siteBarPrimary.socialMedia.list = attributes?.socialMedia?.map(item => ({
