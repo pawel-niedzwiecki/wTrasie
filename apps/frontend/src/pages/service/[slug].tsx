@@ -1,4 +1,4 @@
-import { Layout } from 'layout';
+import { LayoutDefault } from 'layout';
 import { NextSeoProps } from 'next-seo';
 import { client } from '../../config';
 import type { ArticleDataType } from 'uxu-utils';
@@ -162,8 +162,8 @@ export default function Service({ seo, dataFooter, siteBarPrimary, content }: Pr
   else alert['tel'] = '+48 796 310 680';
 
   return (
-    <Layout seo={seo} siteBarPrimary={siteBarPrimary} alert={alert} dataFooter={dataFooter}>
+    <LayoutDefault seo={seo} siteBarPrimary={siteBarPrimary} alert={alert} dataFooter={dataFooter}>
       <SectionArticleFull data={{ content }} isLoading={false} />
-    </Layout>
+    </LayoutDefault>
   );
 }

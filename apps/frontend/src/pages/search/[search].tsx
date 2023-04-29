@@ -1,4 +1,4 @@
-import { Layout } from 'layout';
+import { LayoutDefault } from 'layout';
 import { client } from '../../config';
 import { GET_ARICLES_META_FILTRTYPE_TYPE, GET_ARICLES_META_FILTRTYPETAG_TYPE, GET_LISTING_ARTICLES_META_TYPE, GET_SEARCH, GET_SEARCH_TYPE, GET_SETTING_PAGE, GET_SETTING_PAGE_TYPE } from '../../gql';
 import { createSlugForType } from '../../utils';
@@ -111,8 +111,8 @@ type Props = {
 
 export default function Search({ seo, dataFooter, siteBarPrimary, siteBarSecondary, search }: Props) {
   return (
-    <Layout seo={seo} siteBarPrimary={siteBarPrimary} siteBarSecondary={siteBarSecondary} dataFooter={dataFooter}>
+    <LayoutDefault seo={seo} siteBarPrimary={siteBarPrimary} siteBarSecondary={siteBarSecondary} dataFooter={dataFooter}>
       <SectionListingArticles data={search} isLoading={false} />
-    </Layout>
+    </LayoutDefault>
   );
 }

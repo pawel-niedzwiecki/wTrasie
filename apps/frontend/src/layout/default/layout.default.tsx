@@ -2,10 +2,10 @@ import { Box, contents, Footer, Grid, Header, SiteBarPrimary, SiteBarSecondary, 
 import { Home } from 'react-feather';
 import { useHookSearch } from 'hooks';
 import { useRouter } from 'next/router';
-import { Props } from './layout.types';
+import { Props } from './layout.default.types';
 import { NextSeo } from 'next-seo';
 
-export const Layout: Props = ({ siteBarPrimary, siteBarSecondary, dataFooter, seo, alert, children }) => {
+export const LayoutDefault: Props = ({ siteBarPrimary, siteBarSecondary, dataFooter, seo, alert, children }) => {
   const { asPath } = useRouter();
   const { setQuery, res } = useHookSearch();
   const { isDesktopOrLaptop } = useBreakpoints();

@@ -1,4 +1,4 @@
-import { Layout } from 'layout';
+import { LayoutDefault } from 'layout';
 import { client } from 'config';
 import { NextSeoProps } from 'next-seo';
 import { createSlugForType } from 'utils';
@@ -20,9 +20,9 @@ type Props = {
 
 function Index({ siteBarPrimary, siteBarSecondary, dataFooter, seo, articles }: Props) {
   return (
-    <Layout siteBarPrimary={siteBarPrimary} siteBarSecondary={siteBarSecondary} seo={seo} dataFooter={dataFooter}>
+    <LayoutDefault siteBarPrimary={siteBarPrimary} siteBarSecondary={siteBarSecondary} seo={seo} dataFooter={dataFooter}>
       <SectionListingArticles data={articles} isLoading={false} />
-    </Layout>
+    </LayoutDefault>
   );
 }
 

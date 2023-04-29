@@ -1,4 +1,4 @@
-import { Layout } from 'layout';
+import { LayoutWithTwoColumn } from 'layout';
 import { NextSeoProps } from 'next-seo';
 import { client } from '../../config';
 import type { ArticleDataType } from 'uxu-utils';
@@ -155,8 +155,8 @@ export async function getStaticProps(context) {
 
 export default function Slug({ dataFooter, seo, siteBarPrimary, siteBarSecondary, content }: Props) {
   return (
-    <Layout seo={seo} siteBarPrimary={siteBarPrimary} siteBarSecondary={siteBarSecondary} dataFooter={dataFooter}>
+    <LayoutWithTwoColumn seo={seo} siteBarPrimary={siteBarPrimary} siteBarSecondary={siteBarSecondary} dataFooter={dataFooter}>
       <SectionArticleFull data={{ content }} isLoading={false} />
-    </Layout>
+    </LayoutWithTwoColumn>
   );
 }

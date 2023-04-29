@@ -1,4 +1,4 @@
-import { Layout } from 'layout';
+import { LayoutDefault } from 'layout';
 import { client } from 'config';
 import {
   FRAGMENT_TAG_TYPE,
@@ -150,8 +150,8 @@ type Props = {
 
 export default function Tag({ siteBarPrimary, siteBarSecondary, dataFooter, seo, articles }: Props) {
   return (
-    <Layout seo={seo} siteBarPrimary={siteBarPrimary} siteBarSecondary={siteBarSecondary} dataFooter={dataFooter}>
+    <LayoutDefault seo={seo} siteBarPrimary={siteBarPrimary} siteBarSecondary={siteBarSecondary} dataFooter={dataFooter}>
       <SectionListingArticles data={articles} isLoading={false} />
-    </Layout>
+    </LayoutDefault>
   );
 }
