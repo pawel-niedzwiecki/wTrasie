@@ -17,9 +17,11 @@ import {
 } from '../../gql';
 import type { SpecialProps as SiteBarPrimaryType } from 'uxu-utils/libs/design-system/src/lib/components/templates/siteBar/primary/component.siteBar.primary.types';
 import type { SpecialProps as SiteBarSecondaryType } from 'uxu-utils/libs/design-system/src/lib/components/templates/siteBar/secondary/component.siteBar.types';
+import { FooterDataType } from 'uxu-utils/libs/design-system/src/lib/components/templates/footer/component.footer.types';
 
 type Props = {
   seo: NextSeoProps;
+  dataFooter: FooterDataType;
   siteBarPrimary: SiteBarPrimaryType;
   siteBarSecondary: SiteBarSecondaryType;
 } & ArticleDataType;
@@ -49,6 +51,7 @@ export async function getStaticProps(context) {
 
   const data: Props = {
     seo: { title: seo?.title, description: seo.description },
+    dataFooter: { columns: [] },
     siteBarPrimary: {
       filter: {
         isLoading: false,
@@ -113,6 +116,13 @@ export async function getStaticProps(context) {
   });
 
   const attributes = querySettings?.data?.setting?.data?.attributes;
+
+  data.dataFooter.columns = attributes.footer.map(column => ({
+    id: column.id,
+    header: column?.header || '',
+    link: column.link.map(data => ({ id: data.id, title: data.title, url: data.url })),
+  }));
+
   data.siteBarPrimary.socialMedia.list = attributes?.socialMedia?.map(item => ({ typ: item.typ, url: item.url }));
 
   const filter = attributes?.settingsPages[0]?.filter;
@@ -143,7 +153,7 @@ export async function getStaticProps(context) {
   };
 }
 
-export default function Service({ seo, siteBarPrimary, content }: Props) {
+export default function Service({ seo, dataFooter, siteBarPrimary, content }: Props) {
   const alert = {
     title: content.title,
   };
@@ -152,7 +162,7 @@ export default function Service({ seo, siteBarPrimary, content }: Props) {
   else alert['tel'] = '+48 796 310 680';
 
   return (
-    <Layout seo={seo} siteBarPrimary={siteBarPrimary} alert={alert}>
+    <Layout seo={seo} siteBarPrimary={siteBarPrimary} alert={alert} dataFooter={dataFooter}>
       <SectionArticleFull data={{ content }} isLoading={false} />
     </Layout>
   );

@@ -18,6 +18,7 @@ import { createSlugForType } from '../../utils';
 import { ArticleShortDataType, createSlug, SectionListingArticles } from 'uxu-utils';
 import type { SpecialProps as SiteBarPrimaryType } from 'uxu-utils/libs/design-system/src/lib/components/templates/siteBar/primary/component.siteBar.primary.types';
 import type { SpecialProps as SiteBarSecondaryType } from 'uxu-utils/libs/design-system/src/lib/components/templates/siteBar/secondary/component.siteBar.types';
+import type { FooterDataType } from 'uxu-utils/libs/design-system/src/lib/components/templates/footer/component.footer.types';
 
 export async function getStaticPaths() {
   const queryListTags = await client.query<{ tags: FRAGMENT_TAGS_TYPE }>({
@@ -46,6 +47,9 @@ export async function getStaticProps(context) {
     seo: {
       title: getDataTag?.data?.tag?.data?.attributes?.seo.title,
       description: getDataTag?.data?.tag?.data?.attributes?.seo.description,
+    },
+    dataFooter: {
+      columns: [],
     },
     articles: {},
     siteBarPrimary: {
@@ -99,6 +103,12 @@ export async function getStaticProps(context) {
   });
 
   const attributes = querySettings?.data?.setting?.data?.attributes;
+  data.dataFooter.columns = attributes.footer.map(column => ({
+    id: column.id,
+    header: column?.header || '',
+    link: column.link.map(data => ({ id: data.id, title: data.title, url: data.url })),
+  }));
+
   data.siteBarPrimary.socialMedia.list = attributes?.socialMedia?.map(item => ({ typ: item.typ, url: item.url }));
 
   const filter = attributes?.settingsPages[0]?.filter;
@@ -132,14 +142,15 @@ export async function getStaticProps(context) {
 
 type Props = {
   seo: NextSeoProps;
+  dataFooter: FooterDataType;
   siteBarPrimary: SiteBarPrimaryType;
   siteBarSecondary: SiteBarSecondaryType;
   articles: ArticleShortDataType[];
 };
 
-export default function Tag({ siteBarPrimary, siteBarSecondary, seo, articles }: Props) {
+export default function Tag({ siteBarPrimary, siteBarSecondary, dataFooter, seo, articles }: Props) {
   return (
-    <Layout seo={seo} siteBarPrimary={siteBarPrimary} siteBarSecondary={siteBarSecondary}>
+    <Layout seo={seo} siteBarPrimary={siteBarPrimary} siteBarSecondary={siteBarSecondary} dataFooter={dataFooter}>
       <SectionListingArticles data={articles} isLoading={false} />
     </Layout>
   );
