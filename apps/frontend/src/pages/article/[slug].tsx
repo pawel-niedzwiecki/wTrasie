@@ -17,9 +17,11 @@ import {
 } from '../../gql';
 import type { SpecialProps as SiteBarPrimaryType } from 'uxu-utils/libs/design-system/src/lib/components/templates/siteBar/primary/component.siteBar.primary.types';
 import type { SpecialProps as SiteBarSecondaryType } from 'uxu-utils/libs/design-system/src/lib/components/templates/siteBar/secondary/component.siteBar.types';
+import { FooterDataType } from 'uxu-utils/libs/design-system/src/lib/components/templates/footer/component.footer.types';
 
 type Props = {
   seo: NextSeoProps;
+  dataFooter: FooterDataType;
   siteBarPrimary: SiteBarPrimaryType;
   siteBarSecondary: SiteBarSecondaryType;
 } & ArticleDataType;
@@ -49,6 +51,7 @@ export async function getStaticProps(context) {
 
   const data: Props = {
     seo: { title: seo?.title, description: seo.description },
+    dataFooter: { columns: [] },
     siteBarSecondary: {
       ads: true,
     },
@@ -113,6 +116,13 @@ export async function getStaticProps(context) {
   });
 
   const attributes = querySettings?.data?.setting?.data?.attributes;
+
+  data.dataFooter.columns = attributes.footer.map(column => ({
+    id: column.id,
+    header: column?.header || '',
+    link: column.link.map(data => ({ id: data.id, title: data.title, url: data.url })),
+  }));
+
   data.siteBarPrimary.socialMedia.list = attributes?.socialMedia?.map(item => ({ typ: item.typ, url: item.url }));
 
   const filter = attributes?.settingsPages[0]?.filter;
@@ -143,9 +153,9 @@ export async function getStaticProps(context) {
   };
 }
 
-export default function Slug({ seo, siteBarPrimary, siteBarSecondary, content }: Props) {
+export default function Slug({ dataFooter, seo, siteBarPrimary, siteBarSecondary, content }: Props) {
   return (
-    <Layout seo={seo} siteBarPrimary={siteBarPrimary} siteBarSecondary={siteBarSecondary}>
+    <Layout seo={seo} siteBarPrimary={siteBarPrimary} siteBarSecondary={siteBarSecondary} dataFooter={dataFooter}>
       <SectionArticleFull data={{ content }} isLoading={false} />
     </Layout>
   );
