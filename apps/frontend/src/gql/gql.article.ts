@@ -74,10 +74,7 @@ export const GET_LIST_ARICLES = gql`
 
 export const GET_LIST_ARICLES_WITH_TAG = gql`
   query ListArticlesWithTag($page: Int!, $idTag: ID) {
-    articles(
-      pagination: { pageSize: 12, page: $page }
-      filters: { tags: { id: { eq: $idTag } } }
-    ) {
+    articles(pagination: { pageSize: 12, page: $page }, filters: { tags: { id: { eq: $idTag } } }) {
       data {
         id
         attributes {
@@ -147,7 +144,6 @@ export const GET_LIST_ARICLES_WITH_TAG = gql`
   }
 `;
 
-
 export const GET_ARICLE_BY_ID = gql`
   query Article($id: ID) {
     article(id: $id) {
@@ -171,8 +167,9 @@ export const GET_ARICLE_BY_ID = gql`
               id
               attributes {
                 __typename
-                alternativeText
+                caption
                 formats
+                alternativeText
               }
             }
           }
