@@ -1,1 +1,2 @@
-export * from './layout.index';
+export * from './default';
+export * from './withTwoColumn';
