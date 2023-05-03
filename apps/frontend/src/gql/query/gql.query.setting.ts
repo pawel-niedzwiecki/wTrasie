@@ -1,7 +1,9 @@
 import { gql } from '@apollo/client';
+import { FRAGMENT_DATA_FOOTER } from './../fragments';
 
 export const GET_SETTING_PAGE = gql`
-  query SettingPage($page: String!) {
+  ${FRAGMENT_DATA_FOOTER}
+  query GetSettingPage($page: String!) {
     setting {
       __typename
       data {
@@ -33,17 +35,7 @@ export const GET_SETTING_PAGE = gql`
             }
           }
           footer {
-            ... on ComponentFooterColumn {
-              id
-              header
-              link {
-                id
-                url
-                rel
-                target
-                title
-              }
-            }
+            ...FragmentDataFooter
           }
         }
       }

@@ -1,12 +1,14 @@
 import { gql } from '@apollo/client';
-
+import { FRAGMENT_DATA_LEAD, FRAGMENT_DATA_VIEWS } from './../fragments';
 
 export const GET_SEARCH = gql`
-  query Search($query: String!) {
+  ${FRAGMENT_DATA_LEAD}
+  ${FRAGMENT_DATA_VIEWS}
+  query GetSearch($query: String!) {
     search(query: $query) {
       articles {
+        __typename
         data {
-          __typename
           id
           attributes {
             createdAt
@@ -16,24 +18,20 @@ export const GET_SEARCH = gql`
               data {
                 id
                 attributes {
+                  url
+                  caption
                   alternativeText
-                  formats
                 }
               }
             }
             lead {
-              __typename
-              ... on ComponentContentPartsLead {
-                id
-                lead
-              }
+              ...FragmentDataLead
             }
             tags {
               __typename
               data {
                 id
                 attributes {
-                  __typename
                   title
                 }
               }
@@ -42,16 +40,14 @@ export const GET_SEARCH = gql`
               __typename
               data {
                 id
-                __typename
                 attributes {
-                  __typename
                   username
                   avatar {
-                    __typename
                     data {
                       attributes {
+                        url
+                        caption
                         alternativeText
-                        formats
                       }
                     }
                   }
@@ -59,12 +55,7 @@ export const GET_SEARCH = gql`
               }
             }
             views {
-              id
-              __typename
-              ... on ComponentStatsViews {
-                id
-                views
-              }
+              ...FragmentDataViews
             }
           }
         }

@@ -21,7 +21,7 @@
     },
     "serve": {
       "executor": "@nrwl/next:server",
-      "defaultConfiguration": "development npx graphql-codegen",
+      "defaultConfiguration": "development",
       "options": {
         "buildTarget": "frontend:build",
         "dev": true
