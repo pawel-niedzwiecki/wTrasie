@@ -1,0 +1,19 @@
+overwrite: true
+schema:
+  - http://localhost:1337/graphql:
+      method: GET
+documents: [ "apps/frontend/src/gql/fragments/**/*.ts" ,"apps/frontend/src/gql/query/**/*.ts" ]
+generates:
+  ./apps/frontend/src/gql/types/api-gateway.service.generated.ts:
+    plugins:
+      - typescript
+  ./apps/frontend/src/gql/types:
+    preset: near-operation-file
+    presetConfig:
+      folder: ./../types
+      baseTypesPath: api-gateway.service.generated.ts
+      extension: .generated.type.ts
+    plugins:
+      - typescript-operations
+      - typescript-react-apollo
+
