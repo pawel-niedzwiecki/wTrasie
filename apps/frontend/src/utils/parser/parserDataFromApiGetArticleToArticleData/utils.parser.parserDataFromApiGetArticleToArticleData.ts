@@ -1,5 +1,5 @@
 import type { ArticleDataType } from 'uxu-utils';
-import { createSlug } from 'uxu-utils';
+import { ContentPartTypeEnum, createSlug } from 'uxu-utils';
 import { GetArticleQuery } from 'gql';
 import { GetDataTypes, ParserDataForArticleTypes } from './utils.parser.parserDataFromApiGetArticleToArticleData.types';
 import { createSlugForType } from '../../function';
@@ -42,21 +42,19 @@ export class ParserDataFromApiGetArticleToArticleData {
         })) || [],
       stats: { ratings: 0, comments: 0, views: 0 },
       contentparts: content?.contentparts?.map(content => {
-        const data = {
-          type: '',
-        };
+        const data = {};
 
         switch (content.__typename) {
           case 'ComponentContentPartsTxt':
-            data['type'] = 'txt';
-            data['content'] = content.txt;
+            data['type'] = ContentPartTypeEnum.PARAGRAPH;
+            data['value'] = content.txt;
             break;
           case 'ComponentContentPartsQuote':
-            data['type'] = 'quote';
-            data['content'] = content.quote;
+            data['type'] = ContentPartTypeEnum.QUOTE;
+            data['value'] = content.quote;
             break;
           case 'ComponentContentPartsMedia':
-            data['type'] = 'img';
+            data['type'] = ContentPartTypeEnum.IMG;
             data['src'] = content.media.data.attributes.url;
             content?.media?.data?.attributes?.caption && (data['caption'] = content.media.data.attributes.caption);
             content?.media?.data?.attributes?.alternativeText && (data['alt'] = content.media.data.attributes.alternativeText);
@@ -71,8 +69,6 @@ export class ParserDataFromApiGetArticleToArticleData {
   getData(): GetDataTypes {
     const content = this.getArticleData.article.data.attributes;
     this.parserDataForArticle(content);
-
-    console.log(this.data, 'this.data');
 
     return {
       data: this.data,
