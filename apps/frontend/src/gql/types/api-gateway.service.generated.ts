@@ -42,7 +42,7 @@ export type ArticleTagsArgs = {
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
 };
 
-export type ArticleContentpartsDynamicZone = ComponentContentPartsMedia | ComponentContentPartsQuote | ComponentContentPartsTxt | Error;
+export type ArticleContentpartsDynamicZone = ComponentContentPartsMedia | ComponentContentPartsQuote | ComponentContentPartsTxt | ComponentContentPartsYoutube | Error;
 
 export type ArticleEntity = {
   __typename?: 'ArticleEntity';
@@ -246,6 +246,12 @@ export type ComponentContentPartsYouTubeGalleryArgs = {
   filters?: InputMaybe<UploadFileFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+};
+
+export type ComponentContentPartsYoutube = {
+  __typename?: 'ComponentContentPartsYoutube';
+  id: Scalars['ID'];
+  url: Scalars['String'];
 };
 
 export type ComponentFooterColumn = {
@@ -683,7 +689,7 @@ export type FloatFilterInput = {
   startsWith?: InputMaybe<Scalars['Float']>;
 };
 
-export type GenericMorph = Article | Client | ComponentContentPartsLead | ComponentContentPartsMaps | ComponentContentPartsMedia | ComponentContentPartsQuote | ComponentContentPartsTxt | ComponentContentPartsYouTube | ComponentFooterColumn | ComponentOthersAdress | ComponentOthersCompanyData | ComponentOthersEmail | ComponentOthersLink | ComponentOthersLinksList | ComponentOthersPagesSocialMedia | ComponentOthersPhone | ComponentOthersSeo | ComponentOthersSettingPage | ComponentOthersSiteBarFilters | ComponentStatsViews | I18NLocale | Setting | Tag | UploadFile | UploadFolder | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsUser;
+export type GenericMorph = Article | Client | ComponentContentPartsLead | ComponentContentPartsMaps | ComponentContentPartsMedia | ComponentContentPartsQuote | ComponentContentPartsTxt | ComponentContentPartsYouTube | ComponentContentPartsYoutube | ComponentFooterColumn | ComponentOthersAdress | ComponentOthersCompanyData | ComponentOthersEmail | ComponentOthersLink | ComponentOthersLinksList | ComponentOthersPagesSocialMedia | ComponentOthersPhone | ComponentOthersSeo | ComponentOthersSettingPage | ComponentOthersSiteBarFilters | ComponentStatsViews | I18NLocale | Setting | Tag | UploadFile | UploadFolder | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsUser;
 
 export type I18NLocale = {
   __typename?: 'I18NLocale';

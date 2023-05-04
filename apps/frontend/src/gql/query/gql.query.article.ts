@@ -1,5 +1,5 @@
 import { gql } from '@apollo/client';
-import { FRAGMENT_DATA_CONTENT_PART_MEDIA, FRAGMENT_DATA_CONTENT_PART_QUOTE, FRAGMENT_DATA_CONTENT_PART_TXT, FRAGMENT_DATA_LEAD, FRAGMENT_DATA_VIEWS } from './../fragments';
+import { FRAGMENT_DATA_CONTENT_PART_EMBED_YOUTUBE, FRAGMENT_DATA_CONTENT_PART_MEDIA, FRAGMENT_DATA_CONTENT_PART_QUOTE, FRAGMENT_DATA_CONTENT_PART_TXT, FRAGMENT_DATA_LEAD, FRAGMENT_DATA_VIEWS } from './../fragments';
 
 export const GET_ARICLE = gql`
   ${FRAGMENT_DATA_LEAD}
@@ -7,6 +7,7 @@ export const GET_ARICLE = gql`
   ${FRAGMENT_DATA_CONTENT_PART_TXT}
   ${FRAGMENT_DATA_CONTENT_PART_MEDIA}
   ${FRAGMENT_DATA_CONTENT_PART_QUOTE}
+  ${FRAGMENT_DATA_CONTENT_PART_EMBED_YOUTUBE}
   query GetArticle($id: ID) {
     article(id: $id) {
       data {
@@ -69,6 +70,7 @@ export const GET_ARICLE = gql`
             ...FragmentDataContentPartTxt
             ...FragmentDataContentPartMedia
             ...FragmentDataContentPartQuote
+            ...FragmentDataContentPartYouTube
           }
         }
       }

@@ -41,19 +41,29 @@ export class ParserDataFromApiGetArticleToArticleData {
           slug: `${createSlugForType('tag')}/${createSlug(tag.attributes.title)}-${tag.id}`,
         })) || [],
       stats: { ratings: 0, comments: 0, views: 0 },
-      contentparts: content?.contentparts?.map(content => {
-        const data = {};
+      contentparts: content?.contentparts?.map((content, i) => {
+        const data = {
+          id: `${i}`,
+        };
 
         switch (content.__typename) {
           case 'ComponentContentPartsTxt':
-            data['type'] = ContentPartTypeEnum.PARAGRAPH;
+            data['id'] = content?.id || `${i}`;
             data['value'] = content.txt;
+            data['type'] = ContentPartTypeEnum.PARAGRAPH;
+            break;
+          case 'ComponentContentPartsYoutube':
+            data['id'] = content?.id || `${i}`;
+            data['url'] = content?.url;
+            data['type'] = ContentPartTypeEnum.EMBEDYOUTUBE;
             break;
           case 'ComponentContentPartsQuote':
-            data['type'] = ContentPartTypeEnum.QUOTE;
+            data['id'] = content?.id || `${i}`;
             data['value'] = content.quote;
+            data['type'] = ContentPartTypeEnum.QUOTE;
             break;
           case 'ComponentContentPartsMedia':
+            data['id'] = content?.id || `${i}`;
             data['type'] = ContentPartTypeEnum.IMG;
             data['src'] = content.media.data.attributes.url;
             content?.media?.data?.attributes?.caption && (data['caption'] = content.media.data.attributes.caption);
