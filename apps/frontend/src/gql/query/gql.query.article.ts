@@ -8,6 +8,7 @@ export const GET_ARICLE = gql`
   ${FRAGMENT_DATA_CONTENT_PART_MEDIA}
   ${FRAGMENT_DATA_CONTENT_PART_QUOTE}
   ${FRAGMENT_DATA_CONTENT_PART_EMBED_YOUTUBE}
+
   query GetArticle($id: ID) {
     article(id: $id) {
       data {
