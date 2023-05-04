@@ -32,3 +32,11 @@ export const FRAGMENT_DATA_CONTENT_PART_QUOTE = gql`
     quote
   }
 `;
+
+export const FRAGMENT_DATA_CONTENT_PART_EMBED_YOUTUBE = gql`
+  fragment FragmentDataContentPartYouTube on ComponentContentPartsYoutube {
+    __typename
+    id
+    url
+  }
+`;

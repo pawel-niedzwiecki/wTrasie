@@ -77,6 +77,7 @@ export type ParserDataForArticleTypes = {
         id: string;
         txt: string;
       }
+    | { __typename: 'ComponentContentPartsYoutube'; id: string; url: string }
     | { __typename?: 'Error' }
     | null
   >;

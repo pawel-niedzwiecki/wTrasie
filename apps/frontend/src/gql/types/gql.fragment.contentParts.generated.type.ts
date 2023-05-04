@@ -7,6 +7,8 @@ export type FragmentDataContentPartMediaFragment = { __typename?: 'ComponentCont
 
 export type FragmentDataContentPartQuoteFragment = { __typename: 'ComponentContentPartsQuote', id: string, quote: string };
 
+export type FragmentDataContentPartYouTubeFragment = { __typename: 'ComponentContentPartsYoutube', id: string, url: string };
+
 export const FragmentDataContentPartTxtFragmentDoc = gql`
     fragment FragmentDataContentPartTxt on ComponentContentPartsTxt {
   __typename
@@ -35,5 +37,12 @@ export const FragmentDataContentPartQuoteFragmentDoc = gql`
   __typename
   id
   quote
+}
+    `;
+export const FragmentDataContentPartYouTubeFragmentDoc = gql`
+    fragment FragmentDataContentPartYouTube on ComponentContentPartsYoutube {
+  __typename
+  id
+  url
 }
     `;

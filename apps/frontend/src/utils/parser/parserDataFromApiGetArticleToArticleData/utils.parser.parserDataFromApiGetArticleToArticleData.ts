@@ -1,8 +1,8 @@
-import type { ArticleDataType } from 'uxu-utils';
-import { createSlug } from 'uxu-utils';
 import { GetArticleQuery } from 'gql';
-import { GetDataTypes, ParserDataForArticleTypes } from './utils.parser.parserDataFromApiGetArticleToArticleData.types';
+import type { ArticleDataType } from 'uxu-utils';
+import { ContentPartTypeEnum, createSlug } from 'uxu-utils';
 import { createSlugForType } from '../../function';
+import { GetDataTypes, ParserDataForArticleTypes } from './utils.parser.parserDataFromApiGetArticleToArticleData.types';
 
 export class ParserDataFromApiGetArticleToArticleData {
   isLoading: boolean;
@@ -41,22 +41,32 @@ export class ParserDataFromApiGetArticleToArticleData {
           slug: `${createSlugForType('tag')}/${createSlug(tag.attributes.title)}-${tag.id}`,
         })) || [],
       stats: { ratings: 0, comments: 0, views: 0 },
-      contentparts: content?.contentparts?.map(content => {
+
+      contentparts: content?.contentparts?.map((content, i) => {
         const data = {
-          type: '',
+          id: `${i}`,
         };
 
         switch (content.__typename) {
           case 'ComponentContentPartsTxt':
-            data['type'] = 'txt';
-            data['content'] = content.txt;
+            data['id'] = content?.id || `${i}`;
+            data['value'] = content.txt;
+            data['type'] = ContentPartTypeEnum.PARAGRAPH;
+            break;
+          case 'ComponentContentPartsYoutube':
+            data['id'] = content?.id || `${i}`;
+            data['url'] = content?.url;
+            data['type'] = ContentPartTypeEnum.EMBEDYOUTUBE;
             break;
           case 'ComponentContentPartsQuote':
-            data['type'] = 'quote';
-            data['content'] = content.quote;
+            data['id'] = content?.id || `${i}`;
+            data['value'] = content.quote;
+            data['type'] = ContentPartTypeEnum.QUOTE;
             break;
           case 'ComponentContentPartsMedia':
-            data['type'] = 'img';
+            data['id'] = content?.id || `${i}`;
+            data['type'] = ContentPartTypeEnum.IMG;
+
             data['src'] = content.media.data.attributes.url;
             content?.media?.data?.attributes?.caption && (data['caption'] = content.media.data.attributes.caption);
             content?.media?.data?.attributes?.alternativeText && (data['alt'] = content.media.data.attributes.alternativeText);
@@ -71,8 +81,6 @@ export class ParserDataFromApiGetArticleToArticleData {
   getData(): GetDataTypes {
     const content = this.getArticleData.article.data.attributes;
     this.parserDataForArticle(content);
-
-    console.log(this.data, 'this.data');
 
     return {
       data: this.data,
