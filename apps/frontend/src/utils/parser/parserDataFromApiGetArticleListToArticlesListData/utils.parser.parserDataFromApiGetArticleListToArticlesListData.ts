@@ -22,7 +22,7 @@ export class ParserDataFromApiGetArticleListToArticlesListData {
       content: {
         id: art.id,
         title: art.attributes.title,
-        slug: `${createSlugForType(art.attributes.type)}/${createSlug(art.attributes.title)}-${art.id}`,
+        slug: `${createSlugForType(art.attributes.type)}/${art.id}/${createSlug(art.attributes.title)}`,
         createdAt: art.attributes.createdAt,
         author: {
           name: art.attributes?.author.data.attributes.username || 'autor',
@@ -38,7 +38,7 @@ export class ParserDataFromApiGetArticleListToArticlesListData {
         tags:
           art?.attributes?.tags?.data?.map(tag => ({
             title: tag.attributes.title,
-            slug: `${createSlugForType(`tag`)}/${createSlug(tag.attributes.title)}-${tag.id}`,
+            slug: `${createSlugForType(`tag`)}/${tag.id}/${createSlug(tag.attributes.title)}`,
           })) || [],
         stats: { ratings: 0, comments: 0, views: 0 },
       },

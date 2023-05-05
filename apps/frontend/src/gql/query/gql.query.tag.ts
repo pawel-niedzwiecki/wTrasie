@@ -37,13 +37,23 @@ export const GET_TAG = gql`
 `;
 
 export const GET_TAGS_LIST = gql`
-  query getTagsList($page: Int) {
-    tags(pagination: { pageSize: 12, page: $page }) {
+  query getTagsList($page: Int, $pageSize: Int) {
+    tags(pagination: { pageSize: $pageSize, page: $page }, sort: ["createdAt:DESC"]) {
       __typename
       data {
         id
         attributes {
+          createdAt
           title
+        }
+      }
+      meta {
+        __typename
+        pagination {
+          page
+          total
+          pageSize
+          pageCount
         }
       }
     }

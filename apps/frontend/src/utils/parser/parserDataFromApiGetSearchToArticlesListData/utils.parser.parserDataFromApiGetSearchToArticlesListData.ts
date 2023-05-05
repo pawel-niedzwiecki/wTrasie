@@ -22,7 +22,7 @@ export class ParserDataFromApiGetSearchToArticlesListData {
       content: {
         id: art.id,
         title: art.attributes.title,
-        slug: `${createSlugForType(art.attributes.type)}/${createSlug(art.attributes.title)}-${art.id}`,
+        slug: `${createSlugForType(art.attributes.type)}/${art.id}/${createSlug(art.attributes.title)}`,
         createdAt: art.attributes.createdAt,
         author: {
           name: art.attributes?.author.data.attributes.username || 'autor',
