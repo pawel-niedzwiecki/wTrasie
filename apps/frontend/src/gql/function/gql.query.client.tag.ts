@@ -7,7 +7,7 @@ export async function clientGetTagQuery(baseVariables: { idTag: number }) {
   return client.query<GetTagQuery>(options);
 }
 
-export async function clientGetTagListQuery(baseVariables: { page: number }) {
-  const options = { query: GET_TAGS_LIST, variables: baseVariables };
+export async function clientGetTagListQuery({ page = 1, pageSize = 12 }: { page?: number; pageSize?: number }) {
+  const options = { query: GET_TAGS_LIST, variables: { page, pageSize } };
   return client.query<GetTagsListQuery>(options);
 }
