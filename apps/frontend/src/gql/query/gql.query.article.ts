@@ -82,7 +82,7 @@ export const GET_ARICLE = gql`
 export const GET_ARICLES_LIST = gql`
   ${FRAGMENT_DATA_VIEWS}
   query GetArticlesList($pageSize: Int!, $page: Int!, $type: [String]) {
-    articles(pagination: { pageSize: $pageSize, page: $page }, filters: { type: { in: $type } }) {
+    articles(pagination: { pageSize: $pageSize, page: $page }, filters: { type: { in: $type } }, sort: ["createdAt:DESC"]) {
       data {
         __typename
         id
@@ -149,7 +149,7 @@ export const GET_ARICLES_LIST = gql`
 export const GET_ARICLES_LIST_WITH_TAG = gql`
   ${FRAGMENT_DATA_VIEWS}
   query GetArticlesListWithTag($page: Int!, $idTag: ID) {
-    articles(pagination: { pageSize: 12, page: $page }, filters: { tags: { id: { eq: $idTag } } }) {
+    articles(pagination: { pageSize: 12, page: $page }, filters: { tags: { id: { eq: $idTag } } }, sort: ["createdAt:DESC"]) {
       data {
         __typename
         id

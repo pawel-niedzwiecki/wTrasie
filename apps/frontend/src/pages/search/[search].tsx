@@ -26,13 +26,13 @@ export async function getServerSideProps(context) {
 
   // set data for LayoutDefault
   const querySettings = await clientGetSettingPageQuery({ page: 'home' });
-  const dataForLayoutDefault: DataForLayout = new ParserDataFromGetSettingApiToLayoutData({
+  const dataForLayout: DataForLayout = new ParserDataFromGetSettingApiToLayoutData({
     data: querySettings.data,
-    slug: '/',
+    slug: `/search/${search}`,
     seo: { title: `Wyniki wyszukiwania dla ${search} - wTrasie.pl` },
   }).getData();
 
   return {
-    props: { dataForLayoutDefault, dataForSectionListingArticles },
+    props: { dataForLayout, dataForSectionListingArticles },
   };
 }

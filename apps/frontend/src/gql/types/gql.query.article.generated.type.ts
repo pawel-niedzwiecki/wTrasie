@@ -139,6 +139,7 @@ export const GetArticlesListDocument = gql`
   articles(
     pagination: {pageSize: $pageSize, page: $page}
     filters: {type: {in: $type}}
+    sort: ["createdAt:DESC"]
   ) {
     data {
       __typename
@@ -237,6 +238,7 @@ export const GetArticlesListWithTagDocument = gql`
   articles(
     pagination: {pageSize: 12, page: $page}
     filters: {tags: {id: {eq: $idTag}}}
+    sort: ["createdAt:DESC"]
   ) {
     data {
       __typename

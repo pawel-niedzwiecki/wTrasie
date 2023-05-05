@@ -13,10 +13,11 @@ export type GetTagQuery = { __typename?: 'Query', tag?: { __typename: 'TagEntity
 
 export type GetTagsListQueryVariables = Types.Exact<{
   page?: Types.InputMaybe<Types.Scalars['Int']>;
+  pageSize?: Types.InputMaybe<Types.Scalars['Int']>;
 }>;
 
 
-export type GetTagsListQuery = { __typename?: 'Query', tags?: { __typename: 'TagEntityResponseCollection', data: Array<{ __typename?: 'TagEntity', id?: string | null, attributes?: { __typename?: 'Tag', title: string } | null }> } | null };
+export type GetTagsListQuery = { __typename?: 'Query', tags?: { __typename: 'TagEntityResponseCollection', data: Array<{ __typename?: 'TagEntity', id?: string | null, attributes?: { __typename?: 'Tag', createdAt?: any | null, title: string } | null }>, meta: { __typename: 'ResponseCollectionMeta', pagination: { __typename?: 'Pagination', page: number, total: number, pageSize: number, pageCount: number } } } | null };
 
 
 export const GetTagDocument = gql`
@@ -81,13 +82,23 @@ export type GetTagQueryHookResult = ReturnType<typeof useGetTagQuery>;
 export type GetTagLazyQueryHookResult = ReturnType<typeof useGetTagLazyQuery>;
 export type GetTagQueryResult = Apollo.QueryResult<GetTagQuery, GetTagQueryVariables>;
 export const GetTagsListDocument = gql`
-    query getTagsList($page: Int) {
-  tags(pagination: {pageSize: 12, page: $page}) {
+    query getTagsList($page: Int, $pageSize: Int) {
+  tags(pagination: {pageSize: $pageSize, page: $page}, sort: ["createdAt:DESC"]) {
     __typename
     data {
       id
       attributes {
+        createdAt
         title
+      }
+    }
+    meta {
+      __typename
+      pagination {
+        page
+        total
+        pageSize
+        pageCount
       }
     }
   }
@@ -107,6 +118,7 @@ export const GetTagsListDocument = gql`
  * const { data, loading, error } = useGetTagsListQuery({
  *   variables: {
  *      page: // value for 'page'
+ *      pageSize: // value for 'pageSize'
  *   },
  * });
  */
