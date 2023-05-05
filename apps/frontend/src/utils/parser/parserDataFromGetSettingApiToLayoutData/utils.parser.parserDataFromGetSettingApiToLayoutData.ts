@@ -3,24 +3,46 @@ import type { SpecialProps as SiteBarSecondaryType } from 'uxu-utils/libs/design
 import type { FooterDataType } from 'uxu-utils/libs/design-system/src/lib/components/templates/footer/component.footer.types';
 import { FragmentDataFooterFragment, GetSettingPageQuery } from 'gql';
 import { createSlugForType } from '../../function';
-import { GetDataTypes, ParserDataForFilterTypes, ParserDataForFooterTypes, ParserDataForSeoTypes, ParserDataForSocialMediaTypes } from './utils.parser.parserDataFromGetSettingApiToLayoutDefaultData.types';
+import { GetDataTypes, ParserDataForFilterTypes, ParserDataForFooterTypes, ParserDataForSeoTypes, ParserDataForSocialMediaTypes } from './utils.parser.parserDataFromGetSettingApiToLayoutData.types';
 
-export class ParserDataFromGetSettingApiToLayoutDefaultData {
+export class ParserDataFromGetSettingApiToLayoutData {
   isLoading: boolean;
   slug: string;
   ads: boolean;
   data: GetSettingPageQuery;
+  alert?: {
+    tel?: string;
+    title?: string;
+  };
   seo: { title?: string; description?: string };
   dataFooter: FooterDataType;
   siteBarPrimary: SiteBarPrimaryType;
   siteBarSecondary: SiteBarSecondaryType;
 
-  constructor({ data, slug, ads = true, isLoading = false, seo = {} }: { data: GetSettingPageQuery; slug: string; ads?: boolean; isLoading?: boolean; seo?: { title?: string; description?: string } }) {
+  constructor({
+    data,
+    slug,
+    ads = true,
+    isLoading = false,
+    seo = {},
+    alert = {},
+  }: {
+    data: GetSettingPageQuery;
+    slug: string;
+    ads?: boolean;
+    isLoading?: boolean;
+    alert?: {
+      tel?: string;
+      title?: string;
+    };
+    seo?: { title?: string; description?: string };
+  }) {
     this.isLoading = isLoading;
     this.ads = ads;
     this.slug = slug;
     this.data = data;
     this.seo = seo;
+    this.alert = alert;
     this.siteBarPrimary = { socialMedia: { isLoading, list: [] }, filter: { isLoading, links: [] } };
     this.siteBarSecondary = { ads };
     this.dataFooter = { columns: [] };
@@ -70,11 +92,15 @@ export class ParserDataFromGetSettingApiToLayoutDefaultData {
     }
     this.parserDataForAds();
 
-    return {
+    const data = {
       seo: this.seo,
       dataFooter: this.dataFooter,
       siteBarPrimary: this.siteBarPrimary,
       siteBarSecondary: this.siteBarSecondary,
     };
+
+    Object.keys(this.alert).length > 1 && (data['alert'] = this.alert);
+
+    return data;
   }
 }

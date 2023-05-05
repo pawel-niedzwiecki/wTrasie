@@ -81,8 +81,8 @@ export const GET_ARICLE = gql`
 
 export const GET_ARICLES_LIST = gql`
   ${FRAGMENT_DATA_VIEWS}
-  query GetArticlesList($page: Int!) {
-    articles(pagination: { pageSize: 12, page: $page }) {
+  query GetArticlesList($pageSize: Int!, $page: Int!, $type: [String]) {
+    articles(pagination: { pageSize: $pageSize, page: $page }, filters: { type: { in: $type } }) {
       data {
         __typename
         id

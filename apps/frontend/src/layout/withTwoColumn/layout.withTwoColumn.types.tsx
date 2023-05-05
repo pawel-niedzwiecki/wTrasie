@@ -12,7 +12,7 @@ export type SpecialProps = {
   dataFooter: FooterDataType;
   alert?: {
     tel?: string;
-    title: string;
+    title?: string;
   };
 };
 

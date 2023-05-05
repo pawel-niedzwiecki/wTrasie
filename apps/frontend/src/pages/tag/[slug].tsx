@@ -1,32 +1,16 @@
 import { LayoutDefault } from 'layout';
-import { NextSeoProps } from 'next-seo';
-import { ParserDataFromApiGetArticleListToArticlesListData, ParserDataFromGetSettingApiToLayoutDefaultData } from '../../utils';
+import { DataForLayout, DataForSectionListingArticles, ParserDataFromApiGetArticleListToArticlesListData, ParserDataFromGetSettingApiToLayoutData } from '../../utils';
 import { clientGetArticlesListWithTagQuery, clientGetSettingPageQuery, clientGetTagListQuery, clientGetTagQuery } from 'gql';
-import { ArticleShortDataType, createSlug, SectionListingArticles } from 'uxu-utils';
-import type { SpecialProps as SiteBarPrimaryType } from 'uxu-utils/libs/design-system/src/lib/components/templates/siteBar/primary/component.siteBar.primary.types';
-import type { SpecialProps as SiteBarSecondaryType } from 'uxu-utils/libs/design-system/src/lib/components/templates/siteBar/secondary/component.siteBar.types';
-import type { FooterDataType } from 'uxu-utils/libs/design-system/src/lib/components/templates/footer/component.footer.types';
-
-type DataForLayoutDefaultTypes = {
-  seo: NextSeoProps;
-  dataFooter: FooterDataType;
-  siteBarPrimary: SiteBarPrimaryType;
-  siteBarSecondary: SiteBarSecondaryType;
-};
-
-type DataForSectionListingArticlesTypes = {
-  isLoading: boolean;
-  data: ArticleShortDataType[];
-};
+import { createSlug, SectionListingArticles } from 'uxu-utils';
 
 type Props = {
-  dataForLayoutDefault: DataForLayoutDefaultTypes;
-  dataForSectionListingArticles: DataForSectionListingArticlesTypes;
+  dataForLayout: DataForLayout;
+  dataForSectionListingArticles: DataForSectionListingArticles;
 };
 
-export default function Tag({ dataForLayoutDefault, dataForSectionListingArticles }: Props) {
+export default function Tag({ dataForLayout, dataForSectionListingArticles }: Props) {
   return (
-    <LayoutDefault {...dataForLayoutDefault}>
+    <LayoutDefault {...dataForLayout}>
       <SectionListingArticles {...dataForSectionListingArticles} />
     </LayoutDefault>
   );
@@ -49,12 +33,12 @@ export async function getStaticProps(context) {
 
   // set data for SectionListingArticles
   const articlesList = await clientGetArticlesListWithTagQuery({ page: 1, idTag: getId });
-  const dataForSectionListingArticles: DataForSectionListingArticlesTypes = new ParserDataFromApiGetArticleListToArticlesListData({ getArticlesList: articlesList.data }).getData();
+  const dataForSectionListingArticles: DataForSectionListingArticles = new ParserDataFromApiGetArticleListToArticlesListData({ getArticlesList: articlesList.data }).getData();
 
   // set data for LayoutDefault
   const getDataTag = await clientGetTagQuery({ idTag: getId });
   const querySettings = await clientGetSettingPageQuery({ page: 'home' });
-  const dataForLayoutDefault: DataForLayoutDefaultTypes = new ParserDataFromGetSettingApiToLayoutDefaultData({
+  const dataForLayout: DataForLayout = new ParserDataFromGetSettingApiToLayoutData({
     data: querySettings.data,
     slug: '/',
     seo: {
@@ -65,6 +49,6 @@ export async function getStaticProps(context) {
 
   return {
     // Passed to the page component as props
-    props: { dataForLayoutDefault, dataForSectionListingArticles },
+    props: { dataForLayout, dataForSectionListingArticles },
   };
 }

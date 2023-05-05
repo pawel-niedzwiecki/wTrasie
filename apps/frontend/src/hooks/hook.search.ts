@@ -35,7 +35,7 @@ export const useHookSearch = () => {
           cover: url,
           title: title,
           excerpt: lead,
-          slug: `/${createSlugForType(type)}/${createSlug(title)}-${art.id}`,
+          slug: `${createSlugForType(type)}/${art.id}/${createSlug(title)}`,
         };
       });
       setRes({ data: resData, query });
