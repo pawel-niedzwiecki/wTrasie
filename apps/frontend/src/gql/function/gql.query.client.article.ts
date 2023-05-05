@@ -2,8 +2,8 @@ import { client } from 'config';
 import { GET_ARICLE, GET_ARICLES_LIST, GET_ARICLES_LIST_WITH_TAG } from './../query';
 import { GetArticleQuery, GetArticlesListQuery, GetArticlesListWithTagQuery } from './../types';
 
-export async function clientGetArticlesListQuery(baseVariables: { page: number }) {
-  const options = { query: GET_ARICLES_LIST, variables: baseVariables };
+export async function clientGetArticlesListQuery({ page, pageSize = 12, type = ['service', 'article'] }: { page: number; pageSize?: number; type?: Array<string> }) {
+  const options = { query: GET_ARICLES_LIST, variables: { page, pageSize, type } };
   return client.query<GetArticlesListQuery>(options);
 }
 
