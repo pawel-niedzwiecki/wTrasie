@@ -280,7 +280,6 @@ export type ComponentOthersAdress = {
   postCode: Scalars['String'];
   street: Scalars['String'];
   typ?: Maybe<Enum_Componentothersadress_Typ>;
-  voivodeship?: Maybe<TagEntityResponse>;
 };
 
 
@@ -310,7 +309,6 @@ export type ComponentOthersAdressFiltersInput = {
   postCode?: InputMaybe<StringFilterInput>;
   street?: InputMaybe<StringFilterInput>;
   typ?: InputMaybe<StringFilterInput>;
-  voivodeship?: InputMaybe<TagFiltersInput>;
 };
 
 export type ComponentOthersAdressInput = {
@@ -324,7 +322,6 @@ export type ComponentOthersAdressInput = {
   postCode?: InputMaybe<Scalars['String']>;
   street?: InputMaybe<Scalars['String']>;
   typ?: InputMaybe<Enum_Componentothersadress_Typ>;
-  voivodeship?: InputMaybe<Scalars['ID']>;
 };
 
 export type ComponentOthersCompanyData = {
