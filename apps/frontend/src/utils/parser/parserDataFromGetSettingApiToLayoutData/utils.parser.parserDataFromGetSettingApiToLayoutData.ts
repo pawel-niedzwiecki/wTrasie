@@ -58,7 +58,7 @@ export class ParserDataFromGetSettingApiToLayoutData {
     this.siteBarPrimary.filter.links = links?.map(item => ({
       title: item.title,
       active: item.slug === this.slug,
-      slug: item.slug === this.slug ? item.slug : `${createSlugForType('tag')}/${item.slug}${item.key ? `-${item.key}` : ''}`,
+      slug: item.slug === this.slug ? item.slug : `${createSlugForType('tag')}/${item?.key ? `/${item?.key}` : ``}${item.slug}`,
     }));
   }
 
