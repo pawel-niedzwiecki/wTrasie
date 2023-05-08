@@ -16,7 +16,7 @@ function Index({ dataForLayout, dataForSectionListingArticles }: Props) {
   );
 }
 
-export async function getStaticProps() {
+export async function getServerSideProps() {
   // set data for LayoutDefault
   const querySettings = await clientGetSettingPageQuery({ page: 'home' });
   const dataForLayout: DataForLayout = new ParserDataFromGetSettingApiToLayoutData({

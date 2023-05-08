@@ -16,7 +16,7 @@ export default function Slug({ dataForLayout, dataForSectionArticleFull }: Props
   );
 }
 
-export async function getStaticPaths() {
+export async function getServerSideProps() {
   const queryListArticles = await clientGetArticlesListQuery({ pageSize: 50, page: 1, type: ['article'] });
 
   const list = await new ParserDataFromApiGetArticleListToListTitleWithId({
