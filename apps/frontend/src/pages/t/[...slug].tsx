@@ -29,10 +29,19 @@ export async function getServerSideProps(context) {
   const querySettings = await clientGetSettingPageQuery({ page: 'home' });
   const dataForLayout: DataForLayout = new ParserDataFromGetSettingApiToLayoutData({
     data: querySettings.data,
-    slug: '/',
+    slug: `${slug[0]}/${slug[1]}`,
     seo: {
       title: getDataTag?.data?.tag?.data?.attributes?.seo?.title,
       description: getDataTag?.data?.tag?.data?.attributes?.seo?.description,
+
+      openGraph: {
+        url: `https://wtrasie.pl/${slug[0]}/${slug[1]}`,
+        title: getDataTag?.data?.tag?.data?.attributes?.seo?.title,
+        description: getDataTag?.data?.tag?.data?.attributes?.seo?.description,
+        type: 'website',
+        locale: 'pl',
+        images: [{ url: getDataTag?.data?.tag?.data?.attributes?.cover?.data?.attributes?.url }],
+      },
     },
   }).getData();
 
