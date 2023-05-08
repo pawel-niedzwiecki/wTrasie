@@ -18,18 +18,18 @@ export class ParserDataFromApiGetSearchToArticlesListData {
   parserDataForListArticles(listArticles?: ParserDataForArticlesTypes) {
     if (!listArticles?.length) return null;
 
-    this.data = listArticles.map(art => ({
+    this.data = listArticles?.map(art => ({
       content: {
-        id: art.id,
-        title: art.attributes.title,
-        slug: `${createSlugForType(art.attributes.type)}/${art.id}/${createSlug(art.attributes.title)}`,
-        createdAt: art.attributes.createdAt,
+        id: art?.id,
+        title: art?.attributes?.title,
+        slug: `${createSlugForType(art?.attributes?.type)}/${art.id}/${createSlug(art?.attributes?.title)}`,
+        createdAt: art?.attributes?.createdAt,
         author: {
-          name: art.attributes?.author.data.attributes.username || 'autor',
+          name: art?.attributes?.author?.data?.attributes?.username,
           avatar: {
-            src: art.attributes?.author.data.attributes.avatar.data.attributes.url,
-            caption: art.attributes?.author.data.attributes.avatar.data.attributes.caption,
-            alt: art.attributes?.author.data.attributes.avatar.data.attributes.alternativeText,
+            src: art?.attributes?.author?.data?.attributes?.avatar?.data?.attributes?.url,
+            caption: art?.attributes?.author?.data?.attributes?.avatar?.data?.attributes?.caption,
+            alt: art?.attributes?.author?.data?.attributes?.avatar?.data?.attributes?.alternativeText,
           },
         },
         cover: {
@@ -39,8 +39,8 @@ export class ParserDataFromApiGetSearchToArticlesListData {
         },
         tags:
           art?.attributes?.tags?.data?.map(tag => ({
-            title: tag.attributes.title,
-            slug: `${createSlugForType(`tag`)}/${createSlug(tag.attributes.title)}-${tag.id}`,
+            title: tag?.attributes?.title,
+            slug: `${createSlugForType(`tag`)}/${tag.id}/${createSlug(tag?.attributes?.title)}`,
           })) || [],
         stats: { ratings: 0, comments: 0, views: 0 },
       },
@@ -48,7 +48,7 @@ export class ParserDataFromApiGetSearchToArticlesListData {
   }
 
   getData(): GetDataTypes {
-    const listArticles = this.getSearchQuery.search.articles.data;
+    const listArticles = this?.getSearchQuery?.search?.articles?.data;
     this.parserDataForListArticles(listArticles);
 
     return {
