@@ -26,7 +26,7 @@ export default function Service({ dataForLayout, dataForSectionArticleFull }: Pr
   );
 }
 
-export async function getStaticPaths() {
+export async function getServerSideProps() {
   const queryListArticles = await clientGetArticlesListQuery({ pageSize: 50, page: 1, type: ['service'] });
 
   const list = await new ParserDataFromApiGetArticleListToListTitleWithId({
