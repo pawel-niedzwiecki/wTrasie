@@ -21,8 +21,8 @@ export const GET_TAG = gql`
             data {
               id
               attributes {
+                url
                 caption
-                formats
                 alternativeText
               }
             }

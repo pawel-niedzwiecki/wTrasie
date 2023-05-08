@@ -31,10 +31,18 @@ export async function getServerSideProps(context) {
   const querySettings = await clientGetSettingPageQuery({ page: 'home' });
   const dataForLayout: DataForLayout = new ParserDataFromGetSettingApiToLayoutData({
     data: querySettings.data,
-    slug: '/',
+    slug: `${slug[0]}/${slug[1]}`,
     seo: {
-      title: getArticleData.data.article.data.attributes.seo.title,
-      description: getArticleData.data.article.data.attributes.seo.description,
+      title: getArticleData?.data?.article?.data?.attributes?.seo?.title,
+      description: getArticleData?.data?.article?.data?.attributes?.seo?.description,
+      openGraph: {
+        url: `https://wtrasie.pl/${slug[0]}/${slug[1]}`,
+        title: getArticleData?.data?.article?.data?.attributes?.seo?.title,
+        description: getArticleData?.data?.article?.data?.attributes?.seo?.description,
+        type: 'website',
+        locale: 'pl',
+        images: [{ url: articleData?.data?.cover?.src }],
+      },
     },
   }).getData();
 
