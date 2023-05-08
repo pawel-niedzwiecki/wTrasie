@@ -20,15 +20,15 @@ export class ParserDataFromApiGetArticleListToArticlesListData {
 
     this.data = listArticles.map(art => ({
       content: {
-        id: art.id,
-        title: art.attributes.title,
-        slug: `${createSlugForType(art.attributes.type)}/${art.id}/${createSlug(art.attributes.title)}`,
-        createdAt: art.attributes.createdAt,
+        id: art?.id,
+        title: art?.attributes?.title,
+        slug: `${createSlugForType(art?.attributes?.type)}/${art?.id}/${createSlug(art?.attributes?.title)}`,
+        createdAt: art?.attributes?.createdAt,
         author: {
-          name: art.attributes?.author.data.attributes.username || 'autor',
+          name: art?.attributes?.author?.data?.attributes?.username,
           avatar: {
-            src: art.attributes?.author.data.attributes.avatar.data.attributes.url,
-            alt: art.attributes?.author.data.attributes.avatar.data.attributes.alternativeText,
+            src: art?.attributes?.author?.data?.attributes?.avatar?.data?.attributes?.url,
+            alt: art?.attributes?.author?.data?.attributes?.avatar?.data?.attributes?.alternativeText,
           },
         },
         cover: {
@@ -37,8 +37,8 @@ export class ParserDataFromApiGetArticleListToArticlesListData {
         },
         tags:
           art?.attributes?.tags?.data?.map(tag => ({
-            title: tag.attributes.title,
-            slug: `${createSlugForType(`tag`)}/${tag.id}/${createSlug(tag.attributes.title)}`,
+            title: tag?.attributes?.title,
+            slug: `${createSlugForType(`tag`)}/${tag?.id}/${createSlug(tag?.attributes?.title)}`,
           })) || [],
         stats: { ratings: 0, comments: 0, views: 0 },
       },
@@ -46,7 +46,7 @@ export class ParserDataFromApiGetArticleListToArticlesListData {
   }
 
   getData(): GetDataTypes {
-    const listArticles = this.getArticlesList.articles.data;
+    const listArticles = this?.getArticlesList?.articles?.data;
     this.parserDataForListArticles(listArticles);
 
     return {
