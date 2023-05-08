@@ -27,15 +27,26 @@ export class ParserDataFromGetSettingApiToLayoutData {
     seo = {},
     alert = {},
   }: {
-    data: GetSettingPageQuery;
-    slug: string;
+    data?: GetSettingPageQuery;
+    slug?: string;
     ads?: boolean;
     isLoading?: boolean;
     alert?: {
       tel?: string;
       title?: string;
     };
-    seo?: { title?: string; description?: string };
+    seo?: {
+      title?: string;
+      description?: string;
+      openGraph?: {
+        url?: string;
+        title?: string;
+        description?: string;
+        type?: string;
+        locale?: string;
+        images?: Array<{ url: string }>;
+      };
+    };
   }) {
     this.isLoading = isLoading;
     this.ads = ads;
