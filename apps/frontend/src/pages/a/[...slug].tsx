@@ -1,7 +1,7 @@
 import { LayoutWithTwoColumn } from 'layout';
-import { createSlug, SectionArticleFull } from 'uxu-utils';
-import { DataForLayout, DataForSectionArticleFull, ParserDataFromApiGetArticleListToListTitleWithId, ParserDataFromApiGetArticleToArticleData, ParserDataFromGetSettingApiToLayoutData } from 'utils';
-import { clientGetArticleQuery, clientGetArticlesListQuery, clientGetSettingPageQuery } from 'gql';
+import { SectionArticleFull } from 'uxu-utils';
+import { DataForLayout, DataForSectionArticleFull, ParserDataFromApiGetArticleToArticleData, ParserDataFromGetSettingApiToLayoutData } from 'utils';
+import { clientGetArticleQuery, clientGetSettingPageQuery } from 'gql';
 
 type Props = {
   dataForLayout: DataForLayout;
@@ -16,22 +16,7 @@ export default function Slug({ dataForLayout, dataForSectionArticleFull }: Props
   );
 }
 
-export async function getStaticPaths() {
-  const queryListArticles = await clientGetArticlesListQuery({ pageSize: 50, page: 1, type: ['article'] });
-
-  const list = await new ParserDataFromApiGetArticleListToListTitleWithId({
-    pageSize: 50,
-    getArticlesList: queryListArticles.data,
-    types: ['article'],
-  }).getData();
-
-  return {
-    paths: list.map(item => ({ params: { slug: [item.id, createSlug(item.title)] } })),
-    fallback: false,
-  };
-}
-
-export async function getStaticProps(context) {
+export async function getServerSideProps(context) {
   const { slug } = context.params;
   const getId = parseInt(slug[0]);
 

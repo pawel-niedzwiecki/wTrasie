@@ -1,7 +1,7 @@
 import { LayoutDefault } from 'layout';
-import { DataForLayout, DataForSectionListingArticles, ParserDataFromApiGetArticleListToArticlesListData, ParserDataFromApiGetTagListToListTitleWithId, ParserDataFromGetSettingApiToLayoutData } from '../../utils';
-import { clientGetArticlesListWithTagQuery, clientGetSettingPageQuery, clientGetTagListQuery, clientGetTagQuery } from 'gql';
-import { createSlug, SectionListingArticles } from 'uxu-utils';
+import { DataForLayout, DataForSectionListingArticles, ParserDataFromApiGetArticleListToArticlesListData, ParserDataFromGetSettingApiToLayoutData } from '../../utils';
+import { clientGetArticlesListWithTagQuery, clientGetSettingPageQuery, clientGetTagQuery } from 'gql';
+import { SectionListingArticles } from 'uxu-utils';
 
 type Props = {
   dataForLayout: DataForLayout;
@@ -16,21 +16,7 @@ export default function Tag({ dataForLayout, dataForSectionListingArticles }: Pr
   );
 }
 
-export async function getStaticPaths() {
-  const queryListTags = await clientGetTagListQuery({ page: 1, pageSize: 50 });
-
-  const list = await new ParserDataFromApiGetTagListToListTitleWithId({
-    pageSize: 50,
-    getTagList: queryListTags.data,
-  }).getData();
-
-  return {
-    paths: list?.map(item => ({ params: { slug: [item.id, createSlug(item.title)] } })),
-    fallback: false,
-  };
-}
-
-export async function getStaticProps(context) {
+export async function getServerSideProps(context) {
   const { slug } = context.params;
   const getId = parseInt(slug[0]);
 
