@@ -1,7 +1,7 @@
 import { Enum_Componentotherslink_Rel, Enum_Componentotherslink_Target, Enum_Componentotherspagessocialmedia_Typ, Enum_Componentotherssitebarfilters_Typ } from 'gql/types/api-gateway.service.generated';
 import { FooterDataType } from 'uxu-utils/libs/design-system/src/lib/components/templates/footer/component.footer.types';
-import { SpecialProps as SiteBarPrimaryType } from 'uxu-utils/libs/design-system/src/lib/components/templates/siteBar/primary/component.siteBar.primary.types';
-import { SpecialProps as SiteBarSecondaryType } from 'uxu-utils/libs/design-system/src/lib/components/templates/siteBar/secondary/component.siteBar.types';
+import { SiteBarPrimaryDataTypes } from 'uxu-utils/libs/design-system/src/lib/components/templates/siteBar/primary/component.siteBar.primary.types';
+import { SiteBarSecondaryDataTypes } from 'uxu-utils/libs/design-system/src/lib/components/templates/siteBar/secondary/component.siteBar.types';
 
 export type ParserDataForFilterTypes = Array<{
   __typename: string;
@@ -42,6 +42,6 @@ export type ParserDataForFooterTypes = Array<
 export type GetDataTypes = {
   seo: { title?: string; description?: string };
   dataFooter: FooterDataType;
-  siteBarPrimary: SiteBarPrimaryType;
-  siteBarSecondary: SiteBarSecondaryType;
+  siteBarPrimary: SiteBarPrimaryDataTypes;
+  siteBarSecondary: SiteBarSecondaryDataTypes;
 };
