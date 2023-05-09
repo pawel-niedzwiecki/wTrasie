@@ -1,5 +1,5 @@
-import type { SpecialProps as SiteBarPrimaryType } from 'uxu-utils/libs/design-system/src/lib/components/templates/siteBar/primary/component.siteBar.primary.types';
-import type { SpecialProps as SiteBarSecondaryType } from 'uxu-utils/libs/design-system/src/lib/components/templates/siteBar/secondary/component.siteBar.types';
+import type { SiteBarPrimaryDataTypes } from 'uxu-utils/libs/design-system/src/lib/components/templates/siteBar/primary/component.siteBar.primary.types';
+import type { SiteBarSecondaryDataTypes } from 'uxu-utils/libs/design-system/src/lib/components/templates/siteBar/secondary/component.siteBar.types';
 import type { FooterDataType } from 'uxu-utils/libs/design-system/src/lib/components/templates/footer/component.footer.types';
 import { FragmentDataFooterFragment, GetSettingPageQuery } from 'gql';
 import { createSlugForType } from '../../function';
@@ -16,8 +16,8 @@ export class ParserDataFromGetSettingApiToLayoutData {
   };
   seo: { title?: string; description?: string };
   dataFooter: FooterDataType;
-  siteBarPrimary: SiteBarPrimaryType;
-  siteBarSecondary: SiteBarSecondaryType;
+  siteBarPrimary: SiteBarPrimaryDataTypes;
+  siteBarSecondary: SiteBarSecondaryDataTypes;
 
   constructor({
     data,
