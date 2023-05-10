@@ -1,5 +1,10 @@
 import { LayoutDefault } from 'layout';
-import { DataForLayout, DataForSectionListingArticles, ParserDataFromApiGetArticleListToArticlesListData, ParserDataFromGetSettingApiToLayoutData } from 'utils';
+import {
+  DataForLayout,
+  DataForSectionListingArticles,
+  ParserDataFromApiGetArticleListToArticlesListData,
+  ParserDataFromGetSettingApiToLayoutData
+} from 'utils';
 import { SectionListingArticles } from 'uxu-utils';
 import { clientGetArticlesListQuery, clientGetSettingPageQuery } from 'gql';
 
@@ -8,7 +13,7 @@ type Props = {
   dataForSectionListingArticles: DataForSectionListingArticles;
 };
 
-function Index({ dataForLayout, dataForSectionListingArticles }: Props) {
+function Index ( {dataForLayout, dataForSectionListingArticles}: Props ) {
   return (
     <LayoutDefault {...dataForLayout}>
       <SectionListingArticles {...dataForSectionListingArticles} />
@@ -16,20 +21,20 @@ function Index({ dataForLayout, dataForSectionListingArticles }: Props) {
   );
 }
 
-export async function getServerSideProps() {
+export async function getServerSideProps () {
   // set data for LayoutDefault
-  const querySettings = await clientGetSettingPageQuery({ page: 'home' });
-  const dataForLayout: DataForLayout = new ParserDataFromGetSettingApiToLayoutData({
+  const querySettings = await clientGetSettingPageQuery ( {page: 'home'} );
+  const dataForLayout: DataForLayout = new ParserDataFromGetSettingApiToLayoutData ( {
     data: querySettings.data,
     slug: '/',
-  }).getData();
+  } ).getData ();
 
   // set data for SectionListingArticles
-  const articlesList = await clientGetArticlesListQuery({ page: 1 });
-  const dataForSectionListingArticles: DataForSectionListingArticles = new ParserDataFromApiGetArticleListToArticlesListData({ getArticlesList: articlesList.data }).getData();
+  const articlesList = await clientGetArticlesListQuery ( {page: 1, type: ['article']} );
+  const dataForSectionListingArticles: DataForSectionListingArticles = new ParserDataFromApiGetArticleListToArticlesListData ( {getArticlesList: articlesList.data} ).getData ();
 
   return {
-    props: { dataForSectionListingArticles, dataForLayout },
+    props: {dataForSectionListingArticles, dataForLayout},
   };
 }
 

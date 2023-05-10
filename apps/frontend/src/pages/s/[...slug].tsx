@@ -1,9 +1,9 @@
 import { LayoutWithTwoColumn } from 'layout';
 import { useRouter } from 'next/router';
-import { SectionArticleFull } from 'uxu-utils';
+import { createSlug, SectionArticleFull } from 'uxu-utils';
 import type { DataForLayout, DataForSectionArticleFull } from 'utils';
-import { ParserDataFromApiGetArticleToArticleData, ParserDataFromGetSettingApiToLayoutData } from 'utils';
-import { clientClientsListWithFiltresCityQuery, clientGetArticleQuery, clientGetSettingPageQuery } from 'gql';
+import { ParserDataFromApiGetArticleListToListTitleWithId, ParserDataFromApiGetArticleToArticleData, ParserDataFromGetSettingApiToLayoutData } from 'utils';
+import { clientClientsListWithFiltresCityQuery, clientGetArticleQuery, clientGetArticlesListQuery, clientGetSettingPageQuery } from 'gql';
 
 type Props = {
   dataForLayout: DataForLayout;
@@ -26,7 +26,22 @@ export default function Service({ dataForLayout, dataForSectionArticleFull }: Pr
   );
 }
 
-export async function getServerSideProps(context) {
+export async function getStaticPaths() {
+  const queryListArticles = await clientGetArticlesListQuery({ pageSize: 50, page: 1, type: ['service'] });
+
+  const list = await new ParserDataFromApiGetArticleListToListTitleWithId({
+    pageSize: 50,
+    getArticlesList: queryListArticles.data,
+    types: ['service'],
+  }).getData();
+
+  return {
+    paths: list.map(item => ({ params: { slug: [item.id, createSlug(item.title)] } })),
+    fallback: false,
+  };
+}
+
+export async function getStaticProps(context) {
   const { slug } = context.params;
   const getId = parseInt(slug[0]);
 
@@ -46,7 +61,7 @@ export async function getServerSideProps(context) {
   const querySettings = await clientGetSettingPageQuery({ page: 'home' });
   const dataForLayout: DataForLayout = new ParserDataFromGetSettingApiToLayoutData({
     data: querySettings.data,
-    slug: `${slug[0]}/${slug[1]}`,
+    slug: '/',
     seo: {
       title: getArticleData.data.article.data.attributes.seo.title,
       description: getArticleData.data.article.data.attributes.seo.description,
