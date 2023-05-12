@@ -6,7 +6,9 @@ import {
   ParserDataFromGetSettingApiToLayoutData
 } from 'utils';
 import { SectionListingArticles } from 'uxu-utils';
-import { clientGetArticlesListQuery, clientGetSettingPageQuery } from 'gql';
+
+import { clientGetArticlesListQuery, clientGetSettingPageQuery, useGetArticlesListQuery } from 'gql';
+import { useEffect, useState } from "react";
 
 type Props = {
   dataForLayout: DataForLayout;
@@ -14,9 +16,49 @@ type Props = {
 };
 
 function Index ( {dataForLayout, dataForSectionListingArticles}: Props ) {
+  const [nextPage, setNextPage] = useState ( {
+    page: 1,
+    pageSize: 12,
+    pageCount: 1,
+    loadingNextPage: false,
+    callBack: ( page ) => console.log ( page )
+  } )
+
+  const {loading, data, fetchMore} = useGetArticlesListQuery ( {
+    variables: {
+      page: 1,
+      pageSize: 12,
+      type: ['article']
+    }
+  } );
+
+  useEffect ( () => {
+    console.log(data)
+    const pagination = data?.articles?.meta?.pagination;
+    // console.log ( loading, 'loading' )
+    // console.log ( pagination , 'pagination')
+    pagination && setNextPage ( {
+      page: pagination?.page || 1,
+      pageSize: pagination?.pageSize || 12,
+      pageCount: pagination?.pageCount || 1,
+      loadingNextPage: loading,
+      callBack: ( page ) => {
+        fetchMore ( {variables: {page: page, pageSize: 12, type: ['article']}} ).then((data) => {
+          console.log(data, 'fetchMore ( {variables: {page: page, pageSize: 12, type: [\'article\']}} )')
+        })
+      }
+    } )
+
+  }, [loading, data] )
+
+
+  // console.log(data, 'nextPage index data');
+  // console.log (nextPage, 'nextPage index page');
+
+
   return (
     <LayoutDefault {...dataForLayout}>
-      <SectionListingArticles {...dataForSectionListingArticles} />
+      <SectionListingArticles {...dataForSectionListingArticles} nextPage={nextPage}/>
     </LayoutDefault>
   );
 }
