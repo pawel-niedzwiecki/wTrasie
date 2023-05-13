@@ -7,14 +7,18 @@ export const GET_SEARCH = gql`
   query GetSearch($query: String!) {
     search(query: $query) {
       articles {
-        __typename
         data {
+          __typename
           id
           attributes {
-            createdAt
-            title
             type
+            title
+            createdAt
+            lead {
+              ...FragmentDataLead
+            }
             cover {
+              __typename
               data {
                 id
                 attributes {
@@ -23,9 +27,6 @@ export const GET_SEARCH = gql`
                   alternativeText
                 }
               }
-            }
-            lead {
-              ...FragmentDataLead
             }
             tags {
               __typename

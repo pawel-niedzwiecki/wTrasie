@@ -81,8 +81,8 @@ export const GET_ARICLE = gql`
 
 export const GET_ARICLES_LIST = gql`
   ${FRAGMENT_DATA_VIEWS}
-  query GetArticlesList($pageSize: Int!, $page: Int!, $type: [String]) {
-    articles(pagination: { pageSize: $pageSize, page: $page }, filters: { type: { in: $type } }, sort: ["createdAt:DESC"]) {
+  query GetArticlesList($pageSize: Int!, $page: Int!, $type: [String], $idTag: ID) {
+    articles(pagination: { pageSize: $pageSize, page: $page }, filters: { type: { in: $type }, tags: { id: { eq: $idTag } } }, sort: ["createdAt:DESC"]) {
       data {
         __typename
         id
@@ -146,69 +146,3 @@ export const GET_ARICLES_LIST = gql`
   }
 `;
 
-export const GET_ARICLES_LIST_WITH_TAG = gql`
-  ${FRAGMENT_DATA_VIEWS}
-  query GetArticlesListWithTag($page: Int!, $idTag: ID) {
-    articles(pagination: { pageSize: 12, page: $page }, filters: { tags: { id: { eq: $idTag } } }, sort: ["createdAt:DESC"]) {
-      data {
-        __typename
-        id
-        attributes {
-          type
-          title
-          createdAt
-          cover {
-            __typename
-            data {
-              id
-              attributes {
-                url
-                caption
-                alternativeText
-              }
-            }
-          }
-          tags {
-            __typename
-            data {
-              id
-              attributes {
-                title
-              }
-            }
-          }
-          author {
-            __typename
-            data {
-              id
-              attributes {
-                username
-                avatar {
-                  data {
-                    attributes {
-                      url
-                      caption
-                      alternativeText
-                    }
-                  }
-                }
-              }
-            }
-          }
-          views {
-            ...FragmentDataViews
-          }
-        }
-      }
-      meta {
-        __typename
-        pagination {
-          page
-          total
-          pageSize
-          pageCount
-        }
-      }
-    }
-  }
-`;

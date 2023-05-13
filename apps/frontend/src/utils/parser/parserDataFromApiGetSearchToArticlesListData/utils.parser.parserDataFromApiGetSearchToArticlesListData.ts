@@ -1,28 +1,52 @@
 import type { ArticleShortDataType } from 'uxu-utils';
-import { createSlug } from 'uxu-utils';
-import { GetArticlesListWithTagQuery, GetSearchQuery } from 'gql';
+import { createSlug, Pagination } from 'uxu-utils';
+import { GetSearchQuery } from 'gql';
 import { createSlugForType } from '../../function';
-import { GetDataTypes, ParserDataForArticlesTypes } from './utils.parser.parserDataFromApiGetSearchToArticlesListData.types';
+import {
+  GetDataTypes,
+  ParserDataForArticlesTypes
+} from './utils.parser.parserDataFromApiGetSearchToArticlesListData.types';
+import {
+  ParserDataForPaginationTypes
+} from "../parserDataFromApiGetArticleListToArticlesListData/utils.parser.parserDataFromApiGetArticleListToArticlesListData.types";
+
 
 export class ParserDataFromApiGetSearchToArticlesListData {
-  isLoading: boolean;
   getSearchQuery: GetSearchQuery;
   data: ArticleShortDataType[];
+  pagination: Pagination
 
-  constructor({ getSearchQuery, isLoading = false }: { getSearchQuery: GetSearchQuery | GetArticlesListWithTagQuery; isLoading?: boolean }) {
-    this.isLoading = isLoading;
-    this.getSearchQuery = getSearchQuery;
+  constructor ( {getSearchQuery, pagination}: {
+    getSearchQuery: GetSearchQuery;
+    pagination?: Pagination
+  } ) {
     this.data = [];
+    this.pagination = {
+      page: 1,
+      pageSize: 1,
+      pageCount: 1,
+      ...pagination
+    };
+    this.getSearchQuery = getSearchQuery;
   }
 
-  parserDataForListArticles(listArticles?: ParserDataForArticlesTypes) {
-    if (!listArticles?.length) return null;
+  parserDataForPagination ( pagination: ParserDataForPaginationTypes ) {
+    this.pagination = {
+      ...this.pagination,
+      page: pagination?.page || 1,
+      pageSize: pagination?.pageSize || 1,
+      pageCount: pagination?.pageCount || 1,
+    };
+  }
 
-    this.data = listArticles?.map(art => ({
+  parserDataForListArticles ( listArticles?: ParserDataForArticlesTypes ) {
+    if ( !listArticles?.length ) return null;
+
+    this.data = listArticles?.map ( art => ({
       content: {
         id: art?.id,
         title: art?.attributes?.title,
-        slug: `${createSlugForType(art?.attributes?.type)}/${art.id}/${createSlug(art?.attributes?.title)}`,
+        slug: `${createSlugForType ( art?.attributes?.type )}/${art.id}/${createSlug ( art?.attributes?.title )}`,
         createdAt: art?.attributes?.createdAt,
         author: {
           name: art?.attributes?.author?.data?.attributes?.username,
@@ -38,22 +62,23 @@ export class ParserDataFromApiGetSearchToArticlesListData {
           alt: art?.attributes?.cover?.data?.attributes?.alternativeText,
         },
         tags:
-          art?.attributes?.tags?.data?.map(tag => ({
+          art?.attributes?.tags?.data?.map ( tag => ({
             title: tag?.attributes?.title,
-            slug: `${createSlugForType(`tag`)}/${tag.id}/${createSlug(tag?.attributes?.title)}`,
-          })) || [],
-        stats: { ratings: 0, comments: 0, views: 0 },
+            slug: `${createSlugForType ( `tag` )}/${tag.id}/${createSlug ( tag?.attributes?.title )}`,
+          }) ) || [],
+        stats: {ratings: 0, comments: 0, views: 0},
       },
-    }));
+    }) );
   }
 
-  getData(): GetDataTypes {
-    const listArticles = this?.getSearchQuery?.search?.articles?.data;
-    this.parserDataForListArticles(listArticles);
+  getData (): GetDataTypes {
+    const getSearchQuery = this?.getSearchQuery?.search.articles.data;
+    this.parserDataForListArticles ( getSearchQuery );
+    this.parserDataForPagination ( {__typename: "Pagination", page: 1, pageCount: 1, pageSize: 12, total: 12} )
 
     return {
       data: this.data,
-      isLoading: this.isLoading,
+      pagination: this.pagination
     };
   }
 }

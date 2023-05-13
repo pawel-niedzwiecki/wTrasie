@@ -6,9 +6,8 @@ import {
   ParserDataFromGetSettingApiToLayoutData
 } from 'utils';
 import { SectionListingArticles } from 'uxu-utils';
-import { useHookListingArticles } from 'hooks'
 import { clientGetArticlesListQuery, clientGetSettingPageQuery } from 'gql';
-
+import { useHookListingArticles } from "../../hooks";
 
 type Props = {
   dataForLayout: DataForLayout;
@@ -19,12 +18,12 @@ function Index ( {dataForLayout, dataForSectionListingArticlesSSR}: Props ) {
 
   const {dataClient} = useHookListingArticles ( {
     dataSSR: dataForSectionListingArticlesSSR,
-    queryVariables: {pageSize: 12, page: 1, type: ['article']}
+    queryVariables: {pageSize: 12, page: 1, type: ['service']}
   } )
 
   return (
     <LayoutDefault {...dataForLayout}>
-      <SectionListingArticles dataSSR={dataForSectionListingArticlesSSR} dataClient={dataClient}/>
+      <SectionListingArticles dataSSR={dataForSectionListingArticlesSSR} dataClient={dataClient} />
     </LayoutDefault>
   );
 }
@@ -38,7 +37,7 @@ export async function getServerSideProps () {
   } ).getData ();
 
   // set data for SectionListingArticles
-  const articlesList = await clientGetArticlesListQuery ( {page: 1, type: ['article']} );
+  const articlesList = await clientGetArticlesListQuery ( {page: 1, type: ['service']} );
   const dataForSectionListingArticlesSSR: DataForSectionListingArticles = new ParserDataFromApiGetArticleListToArticlesListData ( {getArticlesList: articlesList.data} ).getData ();
 
   return {
