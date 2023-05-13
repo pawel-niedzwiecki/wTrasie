@@ -6,59 +6,25 @@ import {
   ParserDataFromGetSettingApiToLayoutData
 } from 'utils';
 import { SectionListingArticles } from 'uxu-utils';
+import { useHookListingArticles } from 'hooks'
+import { clientGetArticlesListQuery, clientGetSettingPageQuery } from 'gql';
 
-import { clientGetArticlesListQuery, clientGetSettingPageQuery, useGetArticlesListQuery } from 'gql';
-import { useEffect, useState } from "react";
 
 type Props = {
   dataForLayout: DataForLayout;
-  dataForSectionListingArticles: DataForSectionListingArticles;
+  dataForSectionListingArticlesSSR: DataForSectionListingArticles;
 };
 
-function Index ( {dataForLayout, dataForSectionListingArticles}: Props ) {
-  const [nextPage, setNextPage] = useState ( {
-    page: 1,
-    pageSize: 12,
-    pageCount: 1,
-    loadingNextPage: false,
-    callBack: ( page ) => console.log ( page )
+function Index ( {dataForLayout, dataForSectionListingArticlesSSR}: Props ) {
+
+  const {dataClient} = useHookListingArticles ( {
+    dataSSR: dataForSectionListingArticlesSSR,
+    queryVariables: {pageSize: 12, page: 1, type: ['article']}
   } )
-
-  const {loading, data, fetchMore} = useGetArticlesListQuery ( {
-    variables: {
-      page: 1,
-      pageSize: 12,
-      type: ['article']
-    }
-  } );
-
-  useEffect ( () => {
-    console.log(data)
-    const pagination = data?.articles?.meta?.pagination;
-    // console.log ( loading, 'loading' )
-    // console.log ( pagination , 'pagination')
-    pagination && setNextPage ( {
-      page: pagination?.page || 1,
-      pageSize: pagination?.pageSize || 12,
-      pageCount: pagination?.pageCount || 1,
-      loadingNextPage: loading,
-      callBack: ( page ) => {
-        fetchMore ( {variables: {page: page, pageSize: 12, type: ['article']}} ).then((data) => {
-          console.log(data, 'fetchMore ( {variables: {page: page, pageSize: 12, type: [\'article\']}} )')
-        })
-      }
-    } )
-
-  }, [loading, data] )
-
-
-  // console.log(data, 'nextPage index data');
-  // console.log (nextPage, 'nextPage index page');
-
 
   return (
     <LayoutDefault {...dataForLayout}>
-      <SectionListingArticles {...dataForSectionListingArticles} nextPage={nextPage}/>
+      <SectionListingArticles dataSSR={dataForSectionListingArticlesSSR} dataClient={dataClient}/>
     </LayoutDefault>
   );
 }
@@ -73,10 +39,10 @@ export async function getServerSideProps () {
 
   // set data for SectionListingArticles
   const articlesList = await clientGetArticlesListQuery ( {page: 1, type: ['article']} );
-  const dataForSectionListingArticles: DataForSectionListingArticles = new ParserDataFromApiGetArticleListToArticlesListData ( {getArticlesList: articlesList.data} ).getData ();
+  const dataForSectionListingArticlesSSR: DataForSectionListingArticles = new ParserDataFromApiGetArticleListToArticlesListData ( {getArticlesList: articlesList.data} ).getData ();
 
   return {
-    props: {dataForSectionListingArticles, dataForLayout},
+    props: {dataForSectionListingArticlesSSR, dataForLayout},
   };
 }
 

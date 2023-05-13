@@ -5,7 +5,7 @@ export const cache: InMemoryCache = new InMemoryCache({
     Query: {
       fields: {
         articles: {
-          keyArgs: ["pagination", "filters", "sort"],
+          keyArgs: ["filters", "sort"],
           merge(existing, incoming, { args }) {
             let data = [];
             let meta = {};
