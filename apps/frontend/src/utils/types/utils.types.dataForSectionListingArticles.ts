@@ -1,6 +1,6 @@
-import { ArticleShortDataType } from '../../uxu-utils';
+import { ArticleShortDataType, Pagination } from 'uxu-utils';
 
 export type DataForSectionListingArticles = {
-  isLoading: boolean;
+  pagination: Pagination;
   data: ArticleShortDataType[];
 };
