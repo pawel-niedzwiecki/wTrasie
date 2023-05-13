@@ -1,3 +1,5 @@
+import {createSlugForType} from "utils";
+import {createSlug} from "uxu-utils";
 import { clientGetArticlesListQuery, GetArticlesListQuery } from 'gql';
 import { GetDataTypes, List, Types } from './utils.parser.parserDataFromApiGetArticleListToListTitleWithId.types';
 
@@ -15,7 +17,7 @@ export class ParserDataFromApiGetArticleListToListTitleWithId {
   }
 
   addToList(query: GetArticlesListQuery) {
-    this.list = [...this.list, ...query.articles.data.map(item => ({ id: item.id, title: item.attributes.title }))];
+    this.list = [...this.list, ...query.articles.data.map(item => ({ id: item.id, title: item.attributes.title , slug: `${createSlugForType(item.attributes.type)}/${item.id}/${createSlug(item.attributes.title)}`}))];
   }
 
   async fetchAndAddItemsToList(getArticlesList: GetArticlesListQuery) {

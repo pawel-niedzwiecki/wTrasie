@@ -1,5 +1,7 @@
 import { clientGetTagListQuery, GetTagsListQuery } from 'gql';
 import { GetDataTypes, List } from './utils.parser.parserDataFromApiGetTagListToListTitleWithId.types';
+import { createSlugForType } from "../../function";
+import { createSlug } from "../../../uxu-utils";
 
 export class ParserDataFromApiGetTagListToListTitleWithId {
   list: List;
@@ -13,7 +15,7 @@ export class ParserDataFromApiGetTagListToListTitleWithId {
   }
 
   addToList(query: GetTagsListQuery) {
-    this.list = [...this.list, ...query.tags.data.map(item => ({ id: item.id, title: item.attributes.title }))];
+    this.list = [...this.list, ...query.tags.data.map(item => ({ id: item.id, title: item.attributes.title, slug: `${createSlugForType('tag')}/${item.id}/${createSlug(item.attributes.title)}` }))];
   }
 
   async fetchAndAddItemsToList(getArticlesList: GetTagsListQuery) {
