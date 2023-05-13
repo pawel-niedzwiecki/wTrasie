@@ -6,17 +6,25 @@ import {
   ParserDataFromGetSettingApiToLayoutData
 } from 'utils';
 import { SectionListingArticles } from 'uxu-utils';
+import { useHookListingArticles } from 'hooks'
 import { clientGetArticlesListQuery, clientGetSettingPageQuery } from 'gql';
+
 
 type Props = {
   dataForLayout: DataForLayout;
-  dataForSectionListingArticles: DataForSectionListingArticles;
+  dataForSectionListingArticlesSSR: DataForSectionListingArticles;
 };
 
-function Index ( {dataForLayout, dataForSectionListingArticles}: Props ) {
+function Index ( {dataForLayout, dataForSectionListingArticlesSSR}: Props ) {
+
+  const {dataClient} = useHookListingArticles ( {
+    dataSSR: dataForSectionListingArticlesSSR,
+    queryVariables: {pageSize: 12, page: 1, type: ['article']}
+  } )
+
   return (
     <LayoutDefault {...dataForLayout}>
-      <SectionListingArticles {...dataForSectionListingArticles} />
+      <SectionListingArticles dataSSR={dataForSectionListingArticlesSSR} dataClient={dataClient}/>
     </LayoutDefault>
   );
 }
@@ -31,10 +39,10 @@ export async function getServerSideProps () {
 
   // set data for SectionListingArticles
   const articlesList = await clientGetArticlesListQuery ( {page: 1, type: ['article']} );
-  const dataForSectionListingArticles: DataForSectionListingArticles = new ParserDataFromApiGetArticleListToArticlesListData ( {getArticlesList: articlesList.data} ).getData ();
+  const dataForSectionListingArticlesSSR: DataForSectionListingArticles = new ParserDataFromApiGetArticleListToArticlesListData ( {getArticlesList: articlesList.data} ).getData ();
 
   return {
-    props: {dataForSectionListingArticles, dataForLayout},
+    props: {dataForSectionListingArticlesSSR, dataForLayout},
   };
 }
 

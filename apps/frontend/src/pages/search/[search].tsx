@@ -6,13 +6,13 @@ import { SectionListingArticles } from 'uxu-utils';
 
 type Props = {
   dataForLayout: DataForLayout;
-  dataForSectionListingArticles: DataForSectionListingArticles;
+  dataForSectionListingArticlesSSR: DataForSectionListingArticles;
 };
 
-export default function Search({ dataForLayout, dataForSectionListingArticles }: Props) {
+export default function Search({ dataForLayout, dataForSectionListingArticlesSSR }: Props) {
   return (
     <LayoutDefault {...dataForLayout}>
-      <SectionListingArticles {...dataForSectionListingArticles} />
+      <SectionListingArticles dataSSR={dataForSectionListingArticlesSSR} dataClient={dataForSectionListingArticlesSSR} />
     </LayoutDefault>
   );
 }
@@ -22,7 +22,7 @@ export async function getServerSideProps(context) {
 
   // set data for SectionListingArticles
   const getSearchQueryData = await clientGetSearchQuery({ query: search });
-  const dataForSectionListingArticles: DataForSectionListingArticles = new ParserDataFromApiGetSearchToArticlesListData({ getSearchQuery: getSearchQueryData.data }).getData();
+  const dataForSectionListingArticlesSSR: DataForSectionListingArticles = new ParserDataFromApiGetSearchToArticlesListData({ getSearchQuery: getSearchQueryData.data }).getData();
 
   // set data for LayoutDefault
   const querySettings = await clientGetSettingPageQuery({ page: 'home' });
@@ -33,6 +33,6 @@ export async function getServerSideProps(context) {
   }).getData();
 
   return {
-    props: { dataForLayout, dataForSectionListingArticles },
+    props: { dataForLayout, dataForSectionListingArticlesSSR },
   };
 }
