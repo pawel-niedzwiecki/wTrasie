@@ -27,10 +27,10 @@ export default function Service({ dataForLayout, dataForSectionArticleFull }: Pr
 }
 
 export async function getStaticPaths() {
-  const queryListArticles = await clientGetArticlesListQuery({ pageSize: 50, page: 1, type: ['service'] });
+  const queryListArticles = await clientGetArticlesListQuery({ pageSize: 100, page: 1, type: ['service'] });
 
   const list = await new ParserDataFromApiGetArticleListToListTitleWithId({
-    pageSize: 50,
+    pageSize: 100,
     getArticlesList: queryListArticles.data,
     types: ['service'],
   }).getData();
