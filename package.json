@@ -14,6 +14,7 @@
     "@nrwl/next": "15.7.2",
     "@nrwl/nx-cloud": "latest",
     "core-js": "^3.6.5",
+    "disqus-react": "^1.1.5",
     "graphql": "^16.6.0",
     "gsap": "^3.11.5",
     "i": "^0.3.7",
