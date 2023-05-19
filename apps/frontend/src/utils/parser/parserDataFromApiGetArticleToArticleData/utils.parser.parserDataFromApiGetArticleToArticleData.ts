@@ -6,22 +6,29 @@ import { GetDataTypes, ParserDataForArticleTypes } from './utils.parser.parserDa
 
 export class ParserDataFromApiGetArticleToArticleData {
   isLoading: boolean;
+  canonicalURL: string;
   getArticleData: GetArticleQuery;
   data: ArticleDataType;
 
-  constructor({ getArticleData, isLoading = false }: { getArticleData: GetArticleQuery; isLoading?: boolean }) {
+  constructor ( {getArticleData, isLoading = false, canonicalURL}: {
+    getArticleData: GetArticleQuery;
+    canonicalURL: string;
+    isLoading?: boolean
+  } ) {
     this.isLoading = isLoading;
+    this.canonicalURL = canonicalURL;
     this.getArticleData = getArticleData;
     this.data = {};
   }
 
-  parserDataForArticle(content?: ParserDataForArticleTypes) {
-    if (!content) return null;
+  parserDataForArticle ( content?: ParserDataForArticleTypes ) {
+    if ( !content ) return null;
     this.data = {
       type: content?.type,
       title: content?.title,
       lead: content?.lead?.lead,
       createdAt: content?.createdAt,
+      canonicalURL: this.canonicalURL,
       cover: {
         src: content?.cover?.data?.attributes?.url,
         caption: content?.cover?.data?.attributes?.caption,
@@ -36,51 +43,51 @@ export class ParserDataFromApiGetArticleToArticleData {
         },
       },
       tags:
-        content.tags?.data?.map(tag => ({
+        content.tags?.data?.map ( tag => ({
           title: tag?.attributes?.title,
-          slug: `${createSlugForType('tag')}/${tag.id}/${createSlug(tag.attributes.title)}`,
-        })) || [],
-      stats: { ratings: 0, comments: 0, views: 0 },
+          slug: `${createSlugForType ( 'tag' )}/${tag.id}/${createSlug ( tag.attributes.title )}`,
+        }) ) || [],
+      stats: {ratings: 0, comments: 0, views: 0},
 
-      contentparts: content?.contentparts?.map((content, i) => {
+      contentparts: content?.contentparts?.map ( ( content, i ) => {
         const data = {
           id: `${i}`,
         };
 
         switch (content?.__typename) {
           case 'ComponentContentPartsTxt':
-            data['id'] = content?.id || `${i}`;
-            data['value'] = content?.txt;
-            data['type'] = ContentPartTypeEnum.PARAGRAPH;
+            data[ 'id' ] = content?.id || `${i}`;
+            data[ 'value' ] = content?.txt;
+            data[ 'type' ] = ContentPartTypeEnum.PARAGRAPH;
             break;
           case 'ComponentContentPartsYoutube':
-            data['id'] = content?.id || `${i}`;
-            data['url'] = content?.url;
-            data['type'] = ContentPartTypeEnum.EMBEDYOUTUBE;
+            data[ 'id' ] = content?.id || `${i}`;
+            data[ 'url' ] = content?.url;
+            data[ 'type' ] = ContentPartTypeEnum.EMBEDYOUTUBE;
             break;
           case 'ComponentContentPartsQuote':
-            data['id'] = content?.id || `${i}`;
-            data['value'] = content?.quote;
-            data['type'] = ContentPartTypeEnum?.QUOTE;
+            data[ 'id' ] = content?.id || `${i}`;
+            data[ 'value' ] = content?.quote;
+            data[ 'type' ] = ContentPartTypeEnum?.QUOTE;
             break;
           case 'ComponentContentPartsMedia':
-            data['id'] = content?.id || `${i}`;
-            data['type'] = ContentPartTypeEnum.IMG;
+            data[ 'id' ] = content?.id || `${i}`;
+            data[ 'type' ] = ContentPartTypeEnum.IMG;
 
-            content?.media?.data?.attributes?.url && (data['src'] = content?.media?.data?.attributes?.url);
-            content?.media?.data?.attributes?.caption && (data['caption'] = content.media.data.attributes.caption);
-            content?.media?.data?.attributes?.alternativeText && (data['alt'] = content.media.data.attributes.alternativeText);
+            content?.media?.data?.attributes?.url && (data[ 'src' ] = content?.media?.data?.attributes?.url);
+            content?.media?.data?.attributes?.caption && (data[ 'caption' ] = content.media.data.attributes.caption);
+            content?.media?.data?.attributes?.alternativeText && (data[ 'alt' ] = content.media.data.attributes.alternativeText);
             break;
         }
 
         return data;
-      }),
+      } ),
     };
   }
 
-  getData(): GetDataTypes {
+  getData (): GetDataTypes {
     const content = this?.getArticleData?.article?.data?.attributes;
-    this.parserDataForArticle(content);
+    this.parserDataForArticle ( content );
 
     return {
       data: this?.data,
