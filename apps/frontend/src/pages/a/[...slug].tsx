@@ -23,6 +23,7 @@ export async function getServerSideProps(context) {
   // set data for Article
   const getArticleData = await clientGetArticleQuery({ id: getId });
   const articleData = new ParserDataFromApiGetArticleToArticleData({
+    canonicalURL: `https://wtrasie.pl/a/${slug[ 0 ]}/${slug[ 1 ]}`,
     getArticleData: getArticleData.data,
     isLoading: false,
   }).getData();
@@ -36,7 +37,7 @@ export async function getServerSideProps(context) {
       title: getArticleData?.data?.article?.data?.attributes?.seo?.title,
       description: getArticleData?.data?.article?.data?.attributes?.seo?.description,
       openGraph: {
-        url: `https://wtrasie.pl/${slug[0]}/${slug[1]}`,
+        url: `https://wtrasie.pl/a/${slug[0]}/${slug[1]}`,
         title: getArticleData?.data?.article?.data?.attributes?.seo?.title,
         description: getArticleData?.data?.article?.data?.attributes?.seo?.description,
         type: 'website',
