@@ -3,6 +3,7 @@ import type { ArticleDataType } from 'uxu-utils';
 import { ContentPartTypeEnum, createSlug } from 'uxu-utils';
 import { createSlugForType } from '../../function';
 import { GetDataTypes, ParserDataForArticleTypes } from './utils.parser.parserDataFromApiGetArticleToArticleData.types';
+import { Enum_Article_Type } from "../../../gql/types/api-gateway.service.generated";
 
 export class ParserDataFromApiGetArticleToArticleData {
   isLoading: boolean;
@@ -21,35 +22,37 @@ export class ParserDataFromApiGetArticleToArticleData {
     this.data = {};
   }
 
-  parserDataForArticle ( content?: ParserDataForArticleTypes ) {
+  parserDataForArticle ( content?: GetArticleQuery ) {
     if ( !content ) return null;
     this.data = {
-      type: content?.type,
-      title: content?.title,
-      lead: content?.lead?.lead,
-      createdAt: content?.createdAt,
+      pageID: 'wtrasie',
+      id: content?.article?.data.id,
+      type: content?.article?.data.attributes.type,
+      title: content?.article?.data?.attributes?.title,
+      lead: content?.article?.data?.attributes?.lead?.lead,
+      createdAt: content?.article?.data?.attributes?.createdAt,
       canonicalURL: this.canonicalURL,
       cover: {
-        src: content?.cover?.data?.attributes?.url,
-        caption: content?.cover?.data?.attributes?.caption,
-        alt: content?.cover?.data?.attributes?.alternativeText,
+        src: content?.article?.data?.attributes?.cover?.data?.attributes?.url,
+        caption: content?.article?.data?.attributes?.cover?.data?.attributes?.caption,
+        alt: content?.article?.data?.attributes?.cover?.data?.attributes?.alternativeText,
       },
       author: {
-        name: content?.author?.data?.attributes?.username,
+        name: content?.article?.data?.attributes?.author?.data?.attributes?.username,
         avatar: {
-          src: content?.author?.data?.attributes?.avatar?.data?.attributes?.url,
-          caption: content?.author?.data?.attributes?.avatar?.data?.attributes?.caption,
-          alt: content?.author?.data?.attributes?.avatar?.data?.attributes?.alternativeText,
+          src: content?.article?.data?.attributes?.author?.data?.attributes?.avatar?.data?.attributes?.url,
+          caption: content?.article?.data?.attributes?.author?.data?.attributes?.avatar?.data?.attributes?.caption,
+          alt: content?.article?.data?.attributes?.author?.data?.attributes?.avatar?.data?.attributes?.alternativeText,
         },
       },
       tags:
-        content.tags?.data?.map ( tag => ({
+        content?.article?.data?.attributes.tags?.data?.map ( tag => ({
           title: tag?.attributes?.title,
           slug: `${createSlugForType ( 'tag' )}/${tag.id}/${createSlug ( tag.attributes.title )}`,
         }) ) || [],
       stats: {ratings: 0, comments: 0, views: 0},
 
-      contentparts: content?.contentparts?.map ( ( content, i ) => {
+      contentparts: content?.article?.data?.attributes?.contentparts?.map ( ( content, i ) => {
         const data = {
           id: `${i}`,
         };
@@ -86,8 +89,7 @@ export class ParserDataFromApiGetArticleToArticleData {
   }
 
   getData (): GetDataTypes {
-    const content = this?.getArticleData?.article?.data?.attributes;
-    this.parserDataForArticle ( content );
+    this.parserDataForArticle ( this?.getArticleData );
 
     return {
       data: this?.data,
