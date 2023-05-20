@@ -1,14 +1,16 @@
 import { LayoutWithTwoColumn } from 'layout';
 import { useRouter } from 'next/router';
-import { createSlug, SectionArticleFull } from 'uxu-utils';
+import { SectionArticleFull, createSlug } from 'uxu-utils';
 import type { DataForLayout, DataForSectionArticleFull } from 'utils';
 import {
+  ParserDataFromApiGetArticleListToListTitleWithId,
   ParserDataFromApiGetArticleToArticleData,
   ParserDataFromGetSettingApiToLayoutData
 } from 'utils';
 import {
   clientClientsListWithFiltresCityQuery,
   clientGetArticleQuery,
+  clientGetArticlesListQuery,
   clientGetSettingPageQuery
 } from 'gql';
 
@@ -33,9 +35,35 @@ export default function Service ( {dataForLayout, dataForSectionArticleFull}: Pr
   );
 }
 
+export async function getStaticPaths () {
+  const query = await clientGetArticlesListQuery ( {pageSize: 50, page: 1, type: ['service']} );
 
+  const listArticles = await Promise.all ( new Array ( query.data.articles.meta.pagination.pageCount ).fill ( undefined ).map ( async ( _, i ) => {
+  if(i === 0) return query
+    return await clientGetArticlesListQuery ( {pageSize: 50, page: i + 1, type: ['service']} );
+  }))
 
-export async function getServerSideProps( context ) {
+  const listArticlesParserData : Array<{ title: string; id: string; slug: string }>[] = listArticles.map(( articles) => {
+   return new ParserDataFromApiGetArticleListToListTitleWithId({
+      pageSize: 50,
+      getArticlesList: articles.data,
+      types: ['service'],
+    }).getData();
+  });
+
+  let listPathsData: Array<{ title: string; id: string; slug: string }> = [];
+
+  listArticlesParserData.forEach(arts => {
+    listPathsData = listPathsData.concat(arts);
+  });
+
+  return {
+    paths: listPathsData.map ( item => ({params: {slug: [item.id, createSlug( item.title )]}}) ),
+    fallback: false,
+  };
+}
+
+export async function getStaticProps ( context ) {
   const {slug} = context.params;
   const getId = parseInt ( slug[ 0 ] );
 
