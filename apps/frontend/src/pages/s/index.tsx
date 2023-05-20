@@ -15,6 +15,12 @@ type Props = {
 };
 
 function Index ( {dataForLayout, dataForSectionListingArticlesSSR}: Props ) {
+  const seo = {
+    title: 'Usługi - wTrasie',
+    description:
+      'Wszystko to co potrzebujesz w trasie, aby bezpiecznie dotrzeć do celu.',
+
+  }
 
   const {dataClient} = useHookListingArticles ( {
     dataSSR: dataForSectionListingArticlesSSR,
@@ -22,8 +28,8 @@ function Index ( {dataForLayout, dataForSectionListingArticlesSSR}: Props ) {
   } )
 
   return (
-    <LayoutDefault {...dataForLayout}>
-      <SectionListingArticles dataSSR={dataForSectionListingArticlesSSR} dataClient={dataClient} />
+    <LayoutDefault {...dataForLayout} seo={seo}>
+      <SectionListingArticles dataSSR={dataForSectionListingArticlesSSR} dataClient={dataClient}/>
     </LayoutDefault>
   );
 }
