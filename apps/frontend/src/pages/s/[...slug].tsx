@@ -1,14 +1,16 @@
 import { LayoutWithTwoColumn } from 'layout';
 import { useRouter } from 'next/router';
-import { createSlug, SectionArticleFull } from 'uxu-utils';
+import { SectionArticleFull, createSlug } from 'uxu-utils';
 import type { DataForLayout, DataForSectionArticleFull } from 'utils';
 import {
+  ParserDataFromApiGetArticleListToListTitleWithId,
   ParserDataFromApiGetArticleToArticleData,
   ParserDataFromGetSettingApiToLayoutData
 } from 'utils';
 import {
   clientClientsListWithFiltresCityQuery,
   clientGetArticleQuery,
+  clientGetArticlesListQuery,
   clientGetSettingPageQuery
 } from 'gql';
 
@@ -33,9 +35,23 @@ export default function Service ( {dataForLayout, dataForSectionArticleFull}: Pr
   );
 }
 
+export async function getStaticPaths () {
+  const query = await clientGetArticlesListQuery ( {pageSize: 1000, page: 1, type: ['service']} );
+  const listArticlesParserData = new ParserDataFromApiGetArticleListToListTitleWithId().getData(query.data);
 
+  let listPathsData: Array<{ title: string; id: string; slug: string }> = [];
 
-export async function getServerSideProps( context ) {
+  listArticlesParserData.forEach(arts => {
+    listPathsData = listPathsData.concat(arts);
+  });
+
+  return {
+    paths: listPathsData.map ( item => ({params: {slug: [item.id, createSlug( item.title )]}}) ),
+    fallback: false,
+  };
+}
+
+export async function getStaticProps ( context ) {
   const {slug} = context.params;
   const getId = parseInt ( slug[ 0 ] );
 
