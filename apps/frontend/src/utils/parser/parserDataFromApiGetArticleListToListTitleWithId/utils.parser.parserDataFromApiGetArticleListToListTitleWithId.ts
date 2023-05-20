@@ -1,23 +1,13 @@
 import { createSlugForType } from "utils";
 import { createSlug } from "uxu-utils";
 import { GetArticlesListQuery } from 'gql';
-import { GetDataTypes, List, Types } from './utils.parser.parserDataFromApiGetArticleListToListTitleWithId.types';
+import { GetDataTypes, List } from './utils.parser.parserDataFromApiGetArticleListToListTitleWithId.types';
 
 export class ParserDataFromApiGetArticleListToListTitleWithId {
   list: List;
-  types: Types;
-  pageSize: number;
-  getArticlesList: GetArticlesListQuery;
 
-  constructor ( {getArticlesList, types, pageSize}: {
-    getArticlesList: GetArticlesListQuery;
-    types: Types;
-    pageSize: number
-  } ) {
+  constructor () {
     this.list = [];
-    this.types = types;
-    this.pageSize = pageSize;
-    this.getArticlesList = getArticlesList;
   }
 
   async parseToList ( getArticlesList: GetArticlesListQuery ) {
@@ -28,8 +18,8 @@ export class ParserDataFromApiGetArticleListToListTitleWithId {
     }) )];
   }
 
-  getData (): GetDataTypes {
-    this.parseToList ( this.getArticlesList );
+  getData (getArticlesList: GetArticlesListQuery): GetDataTypes {
+    this.parseToList ( getArticlesList );
     return this.list;
   }
 }
