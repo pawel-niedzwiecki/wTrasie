@@ -37,11 +37,7 @@ export async function getServerSideProps ( {res} ) {
 
   // articles query && list
   const queryListArticles = await clientGetArticlesListQuery ( {pageSize: 50, page: 1, type: ['article', 'service']} );
-  const listArticles = await new ParserDataFromApiGetArticleListToListTitleWithId ( {
-    pageSize: 50,
-    getArticlesList: queryListArticles.data,
-    types: ['article', 'service'],
-  } ).getData ();
+  const listArticles = new ParserDataFromApiGetArticleListToListTitleWithId ().getData(queryListArticles.data);
 
 
   // tags query && list
