@@ -16,7 +16,7 @@ export type GetArticleQuery = { __typename?: 'Query', article?: { __typename?: '
 export type GetArticlesListQueryVariables = Types.Exact<{
   pageSize: Types.Scalars['Int'];
   page: Types.Scalars['Int'];
-  type?: Types.InputMaybe<Array<Types.InputMaybe<Types.Scalars['String']>> | Types.InputMaybe<Types.Scalars['String']>>;
+  type: Array<Types.InputMaybe<Types.Scalars['String']>> | Types.InputMaybe<Types.Scalars['String']>;
   idTag?: Types.InputMaybe<Types.Scalars['ID']>;
 }>;
 
@@ -128,7 +128,7 @@ export type GetArticleQueryHookResult = ReturnType<typeof useGetArticleQuery>;
 export type GetArticleLazyQueryHookResult = ReturnType<typeof useGetArticleLazyQuery>;
 export type GetArticleQueryResult = Apollo.QueryResult<GetArticleQuery, GetArticleQueryVariables>;
 export const GetArticlesListDocument = gql`
-    query GetArticlesList($pageSize: Int!, $page: Int!, $type: [String], $idTag: ID) {
+    query GetArticlesList($pageSize: Int!, $page: Int!, $type: [String]!, $idTag: ID) {
   articles(
     pagination: {pageSize: $pageSize, page: $page}
     filters: {type: {in: $type}, tags: {id: {eq: $idTag}}}

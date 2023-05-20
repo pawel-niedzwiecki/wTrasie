@@ -45,10 +45,6 @@ export async function getStaticPaths () {
     listPathsData = listPathsData.concat(arts);
   });
 
-
-  console.log(listPathsData, 'listPathsData')
-
-
   return {
     paths: listPathsData.map ( item => ({params: {slug: [item.id, createSlug( item.title )]}}) ),
     fallback: false,
