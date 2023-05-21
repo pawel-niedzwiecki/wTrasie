@@ -82,7 +82,7 @@ export async function getStaticProps ( context ) {
         description: getArticleData?.data?.article?.data?.attributes?.seo?.description,
         type: 'website',
         locale: 'pl',
-        images: [{url: articleData?.data?.cover?.src}],
+        images: [{url: (articleData?.data?.cover?.src || null)}],
       },
     },
     alert,

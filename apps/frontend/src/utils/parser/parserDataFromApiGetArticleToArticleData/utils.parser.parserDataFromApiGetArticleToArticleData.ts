@@ -33,16 +33,16 @@ export class ParserDataFromApiGetArticleToArticleData {
       createdAt: content?.article?.data?.attributes?.createdAt,
       canonicalURL: this.canonicalURL,
       cover: {
-        src: content?.article?.data?.attributes?.cover?.data?.attributes?.url,
-        caption: content?.article?.data?.attributes?.cover?.data?.attributes?.caption,
-        alt: content?.article?.data?.attributes?.cover?.data?.attributes?.alternativeText,
+        src: content?.article?.data?.attributes?.cover?.data?.attributes?.url || null,
+        caption: content?.article?.data?.attributes?.cover?.data?.attributes?.caption || null,
+        alt: content?.article?.data?.attributes?.cover?.data?.attributes?.alternativeText || null,
       },
       author: {
-        name: content?.article?.data?.attributes?.author?.data?.attributes?.username,
+        name: content?.article?.data?.attributes?.author?.data?.attributes?.username ,
         avatar: {
-          src: content?.article?.data?.attributes?.author?.data?.attributes?.avatar?.data?.attributes?.url,
-          caption: content?.article?.data?.attributes?.author?.data?.attributes?.avatar?.data?.attributes?.caption,
-          alt: content?.article?.data?.attributes?.author?.data?.attributes?.avatar?.data?.attributes?.alternativeText,
+          src: content?.article?.data?.attributes?.author?.data?.attributes?.avatar?.data?.attributes?.url || null,
+          caption: content?.article?.data?.attributes?.author?.data?.attributes?.avatar?.data?.attributes?.caption || null,
+          alt: content?.article?.data?.attributes?.author?.data?.attributes?.avatar?.data?.attributes?.alternativeText || null,
         },
       },
       tags:
@@ -77,7 +77,7 @@ export class ParserDataFromApiGetArticleToArticleData {
             data[ 'id' ] = content?.id || `${i}`;
             data[ 'type' ] = ContentPartTypeEnum.IMG;
 
-            content?.media?.data?.attributes?.url && (data[ 'src' ] = content?.media?.data?.attributes?.url);
+            content?.media?.data?.attributes?.url && (data[ 'src' ] = content?.media?.data?.attributes?.url || null) ;
             content?.media?.data?.attributes?.caption && (data[ 'caption' ] = content.media.data.attributes.caption);
             content?.media?.data?.attributes?.alternativeText && (data[ 'alt' ] = content.media.data.attributes.alternativeText);
             break;
