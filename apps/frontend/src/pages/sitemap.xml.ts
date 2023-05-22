@@ -36,14 +36,14 @@ function SiteMap () {
 export async function getServerSideProps ( {res} ) {
 
   // articles query && list
-  const queryListArticles = await clientGetArticlesListQuery ( {pageSize: 50, page: 1, type: ['article', 'service']} );
+  const queryListArticles = await clientGetArticlesListQuery ( {pageSize: 200, page: 1, type: ['article', 'service']} );
   const listArticles = new ParserDataFromApiGetArticleListToListTitleWithId ().getData(queryListArticles.data);
 
 
   // tags query && list
-  const queryListTags = await clientGetTagListQuery ( {page: 1, pageSize: 50} );
+  const queryListTags = await clientGetTagListQuery ( {page: 1, pageSize: 200} );
   const listTags = await new ParserDataFromApiGetTagListToListTitleWithId ( {
-    pageSize: 50,
+    pageSize: 200,
     getTagList: queryListTags.data,
   } ).getData ();
 
