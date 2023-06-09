@@ -1,8 +1,10 @@
 import {
+  connectQuerys,
   ParserDataFromApiGetArticleListToListTitleWithId,
   ParserDataFromApiGetTagListToListTitleWithId,
 } from 'utils';
 import { clientGetTagListQuery, clientGetArticlesListQuery } from 'gql';
+
 
 const EXTERNAL_DATA_URL = 'https://wtrasie.pl';
 
@@ -29,28 +31,45 @@ function generateSiteMap ( listSlugs: Array<string> ): string {
  `;
 }
 
-function SiteMap () {
+export default function SiteMap() {
   // getServerSideProps will do the heavy lifting
 }
 
-export async function getServerSideProps ( {res} ) {
 
-  // articles query && list
-  const queryListArticles = await clientGetArticlesListQuery ( {pageSize: 200, page: 1, type: ['article', 'service']} );
-  const listArticles = new ParserDataFromApiGetArticleListToListTitleWithId ().getData(queryListArticles.data);
+export async function getServerSideProps ({res}) {
+
+  const queryListArticles = await clientGetArticlesListQuery ( { pageSize: 25, page: 1, type: ['article', 'service'] } );
+  const dataListArticles = await connectQuerys ( {
+    functionQuery: clientGetArticlesListQuery,
+    variablesQuery: { pageSize: 25, type: ['article', 'service'] },
+    pageCount: queryListArticles?.data?.articles?.meta?.pagination?.pageCount || 1
+  } )
+
+
+  // eslint-disable-next-line prefer-spread
+  const listArticles = [].concat.apply ( [], dataListArticles.map ( pageWithArts => {
+    return new ParserDataFromApiGetArticleListToListTitleWithId ().getData ( pageWithArts )
+  }))
 
 
   // tags query && list
-  const queryListTags = await clientGetTagListQuery ( {page: 1, pageSize: 200} );
-  const listTags = await new ParserDataFromApiGetTagListToListTitleWithId ( {
-    pageSize: 200,
-    getTagList: queryListTags.data,
-  } ).getData ();
+  const queryListTags = await clientGetTagListQuery ( { pageSize: 25, page: 1 } );
+  const dataListTags = await connectQuerys( {
+    functionQuery: clientGetTagListQuery,
+    variablesQuery: { pageSize: 25 },
+    pageCount: queryListTags?.data?.tags?.meta?.pagination?.pageCount || 1
+  })
+
+  // eslint-disable-next-line prefer-spread
+  const listTags = [].concat.apply ( [], dataListTags.map ( pageWithTags => {
+    return new ParserDataFromApiGetTagListToListTitleWithId ().getData(pageWithTags)
+  }));
 
 
+  const articleSlugs = listArticles.map((art) => art.slug).filter(Boolean);
+  const tagSlugs = listTags.map((tag) => tag.slug).filter(Boolean);
+  const listSlugs = [...articleSlugs, ...tagSlugs];
 
-  let listSlugs = []
-  listSlugs = [...listArticles.map((art) => art.slug), ...listTags.map((tag) => tag.slug)]
 
   // We generate the XML sitemap with the posts data
   const sitemap = generateSiteMap ( listSlugs );
@@ -64,5 +83,3 @@ export async function getServerSideProps ( {res} ) {
     props: {},
   };
 }
-
-export default SiteMap;
