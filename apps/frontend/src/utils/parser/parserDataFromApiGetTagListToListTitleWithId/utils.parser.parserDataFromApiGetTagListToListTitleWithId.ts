@@ -11,11 +11,19 @@ export class ParserDataFromApiGetTagListToListTitleWithId {
   }
 
   parseToList ( getTagsList: GetTagsListQuery ) {
-    this.list = [...this.list, ...getTagsList.tags.data.map ( item => ({
-      id: item.id,
-      title: item.attributes.title,
-      slug: `${createSlugForType ( 'tag' )}/${item.id}/${createSlug ( item.attributes.title )}`
-    }) )];
+    const parseData = getTagsList?.tags?.data.map ( item =>  {
+      const id = item?.id;
+      const title = item?.attributes?.title;
+      const type = 'tag';
+
+      if(id && title && type) return {
+        id, title, slug: `${createSlugForType ( type )}/${id}/${createSlug ( title )}`
+      }
+
+      return {id: "", title: "", slug: ""}
+    })
+
+    this.list = [...this.list, ...parseData];
   }
 
   getData ( getTagsList: GetTagsListQuery ): List {
