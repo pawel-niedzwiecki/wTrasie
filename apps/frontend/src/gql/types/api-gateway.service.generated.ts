@@ -271,13 +271,13 @@ export type ComponentFooterColumnLinkArgs = {
 export type ComponentOthersAdress = {
   __typename?: 'ComponentOthersAdress';
   apartmentNumber?: Maybe<Scalars['String']>;
-  city?: Maybe<TagEntityResponse>;
   emails?: Maybe<Array<Maybe<ComponentOthersEmail>>>;
   googleMaps?: Maybe<ComponentContentPartsMaps>;
   id: Scalars['ID'];
   numberStreet: Scalars['String'];
   phones?: Maybe<Array<Maybe<ComponentOthersPhone>>>;
   postCode: Scalars['String'];
+  shortname?: Maybe<TagEntityResponse>;
   street: Scalars['String'];
   typ?: Maybe<Enum_Componentothersadress_Typ>;
 };
@@ -299,7 +299,6 @@ export type ComponentOthersAdressPhonesArgs = {
 export type ComponentOthersAdressFiltersInput = {
   and?: InputMaybe<Array<InputMaybe<ComponentOthersAdressFiltersInput>>>;
   apartmentNumber?: InputMaybe<StringFilterInput>;
-  city?: InputMaybe<TagFiltersInput>;
   emails?: InputMaybe<ComponentOthersEmailFiltersInput>;
   googleMaps?: InputMaybe<ComponentContentPartsMapsFiltersInput>;
   not?: InputMaybe<ComponentOthersAdressFiltersInput>;
@@ -307,19 +306,20 @@ export type ComponentOthersAdressFiltersInput = {
   or?: InputMaybe<Array<InputMaybe<ComponentOthersAdressFiltersInput>>>;
   phones?: InputMaybe<ComponentOthersPhoneFiltersInput>;
   postCode?: InputMaybe<StringFilterInput>;
+  shortname?: InputMaybe<TagFiltersInput>;
   street?: InputMaybe<StringFilterInput>;
   typ?: InputMaybe<StringFilterInput>;
 };
 
 export type ComponentOthersAdressInput = {
   apartmentNumber?: InputMaybe<Scalars['String']>;
-  city?: InputMaybe<Scalars['ID']>;
   emails?: InputMaybe<Array<InputMaybe<ComponentOthersEmailInput>>>;
   googleMaps?: InputMaybe<ComponentContentPartsMapsInput>;
   id?: InputMaybe<Scalars['ID']>;
   numberStreet?: InputMaybe<Scalars['String']>;
   phones?: InputMaybe<Array<InputMaybe<ComponentOthersPhoneInput>>>;
   postCode?: InputMaybe<Scalars['String']>;
+  shortname?: InputMaybe<Scalars['ID']>;
   street?: InputMaybe<Scalars['String']>;
   typ?: InputMaybe<Enum_Componentothersadress_Typ>;
 };
