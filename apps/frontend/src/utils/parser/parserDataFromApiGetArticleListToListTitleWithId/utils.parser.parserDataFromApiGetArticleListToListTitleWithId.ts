@@ -10,12 +10,20 @@ export class ParserDataFromApiGetArticleListToListTitleWithId {
     this.list = [];
   }
 
-  async parseToList ( getArticlesList: GetArticlesListQuery ) {
-    this.list = [...this.list, ...getArticlesList.articles.data.map ( item => ({
-      id: item.id,
-      title: item.attributes.title,
-      slug: `${createSlugForType ( item.attributes.type )}/${item.id}/${createSlug ( item.attributes.title )}`
-    }) )];
+   parseToList ( getArticlesList: GetArticlesListQuery ) {
+    const parseData = getArticlesList?.articles?.data.map ( item =>  {
+      const id = item?.id;
+      const title = item?.attributes?.title;
+      const type = item?.attributes?.type;
+
+      if(id && title && type) return {
+        id, title, slug: `${createSlugForType ( type )}/${id}/${createSlug ( title )}`
+      }
+
+      return {id: "", title: "", slug: ""}
+    })
+
+    this.list = [...this.list, ...parseData];
   }
 
   getData (getArticlesList: GetArticlesListQuery): GetDataTypes {
