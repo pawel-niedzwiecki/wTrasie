@@ -48,12 +48,12 @@ export class ParserDataFromApiGetArticleListToArticlesListData {
         author: {
           name: art?.attributes?.author?.data?.attributes?.username,
           avatar: {
-            src: art?.attributes?.author?.data?.attributes?.avatar?.data?.attributes?.url,
-            alt: art?.attributes?.author?.data?.attributes?.avatar?.data?.attributes?.alternativeText,
+            src: art?.attributes?.author?.data?.attributes?.avatar?.data?.attributes?.url || null,
+            alt: art?.attributes?.author?.data?.attributes?.avatar?.data?.attributes?.alternativeText || null,
           },
         },
         cover: {
-          src: art?.attributes?.cover?.data?.attributes?.url,
+          src: art?.attributes?.cover?.data?.attributes?.url || null,
           alt: art?.attributes?.cover?.data?.attributes?.alternativeText,
         },
         tags:

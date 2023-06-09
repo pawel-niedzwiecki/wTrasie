@@ -8,7 +8,7 @@ import {
   ParserDataFromGetSettingApiToLayoutData
 } from 'utils';
 import {
-  clientClientsListWithFiltresCityQuery,
+  clientClientsListWithFiltresShortNameQuery,
   clientGetArticleQuery,
   clientGetArticlesListQuery,
   clientGetSettingPageQuery
@@ -57,7 +57,7 @@ export async function getStaticProps ( context ) {
 
   // set data for Article
   const getArticleData = await clientGetArticleQuery ( {id: getId} );
-  const getClientsListData = getArticleData?.data?.article?.data?.attributes?.tags?.data?.length && (await clientClientsListWithFiltresCityQuery ( {citys: getArticleData?.data?.article?.data?.attributes?.tags?.data.map ( tag => tag.id )} ));
+  const getClientsListData = getArticleData?.data?.article?.data?.attributes?.tags?.data?.length && (await clientClientsListWithFiltresShortNameQuery ( {shortname: getArticleData?.data?.article?.data?.attributes?.tags?.data?.map ( tag => tag.id )} ));
   const alert = {};
   alert[ 'title' ] = getArticleData.data.article.data.attributes.title;
   getClientsListData?.data?.clients?.data[ 0 ]?.attributes?.branches[ 0 ]?.phones[ 0 ]?.phone && (alert[ 'tel' ] = getClientsListData?.data?.clients?.data[ 0 ]?.attributes?.branches[ 0 ]?.phones[ 0 ]?.phone);
@@ -82,7 +82,7 @@ export async function getStaticProps ( context ) {
         description: getArticleData?.data?.article?.data?.attributes?.seo?.description,
         type: 'website',
         locale: 'pl',
-        images: [{url: articleData?.data?.cover?.src}],
+        images: [{url: (articleData?.data?.cover?.src || null)}],
       },
     },
     alert,
