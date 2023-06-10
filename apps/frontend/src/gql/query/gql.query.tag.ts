@@ -24,6 +24,7 @@ export const GET_TAG = gql`
                 url
                 caption
                 alternativeText
+                formats
               }
             }
           }

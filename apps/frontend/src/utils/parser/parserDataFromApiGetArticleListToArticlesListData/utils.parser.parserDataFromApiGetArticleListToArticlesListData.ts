@@ -2,11 +2,11 @@ import type { ArticleShortDataType } from 'uxu-utils';
 import { createSlug, Pagination } from 'uxu-utils';
 import { GetArticlesListQuery } from 'gql';
 import { createSlugForType } from '../../function';
+import { parserDataImg } from '../parserDataImg';
 import {
   GetDataTypes,
-  ParserDataForArticlesTypes,
-  ParserDataForPaginationTypes
 } from './utils.parser.parserDataFromApiGetArticleListToArticlesListData.types';
+
 
 export class ParserDataFromApiGetArticleListToArticlesListData {
   getArticlesList: GetArticlesListQuery;
@@ -27,19 +27,19 @@ export class ParserDataFromApiGetArticleListToArticlesListData {
     this.getArticlesList = getArticlesList;
   }
 
-  parserDataForPagination (pagination: ParserDataForPaginationTypes) {
+  parserDataForPagination (pagination: GetArticlesListQuery) {
     this.pagination = {
       ...this.pagination,
-      page: pagination?.page || 1,
-      pageSize: pagination?.pageSize || 1,
-      pageCount: pagination?.pageCount || 1,
+      page: pagination?.articles?.meta?.pagination?.page || 1,
+      pageSize: pagination?.articles?.meta?.pagination?.pageSize || 1,
+      pageCount: pagination?.articles?.meta?.pagination?.pageCount || 1,
     };
   }
 
-  parserDataForListArticles ( listArticles?: ParserDataForArticlesTypes ) {
-    if ( !listArticles?.length ) return null;
+  parserDataForListArticles ( listArticles?: GetArticlesListQuery ) {
+    if ( !listArticles?.articles.data.length ) return null;
 
-    this.data = listArticles.map ( art => ({
+    this.data = listArticles.articles.data.map ( art => ({
       content: {
         id: art?.id,
         title: art?.attributes?.title,
@@ -48,12 +48,12 @@ export class ParserDataFromApiGetArticleListToArticlesListData {
         author: {
           name: art?.attributes?.author?.data?.attributes?.username,
           avatar: {
-            src: art?.attributes?.author?.data?.attributes?.avatar?.data?.attributes?.url || null,
+            src: parserDataImg({attributes: art?.attributes?.author?.data?.attributes?.avatar?.data?.attributes , typeImg: 'thumbnail' }),
             alt: art?.attributes?.author?.data?.attributes?.avatar?.data?.attributes?.alternativeText || null,
           },
         },
         cover: {
-          src: art?.attributes?.cover?.data?.attributes?.url || null,
+          src: parserDataImg({attributes: art?.attributes?.cover?.data?.attributes , typeImg: 'small' }),
           alt: art?.attributes?.cover?.data?.attributes?.alternativeText,
         },
         tags:
@@ -67,10 +67,8 @@ export class ParserDataFromApiGetArticleListToArticlesListData {
   }
 
   getData (): GetDataTypes {
-    const pagination = this?.getArticlesList?.articles.meta.pagination;
-    const listArticles = this?.getArticlesList?.articles?.data;
-    this.parserDataForListArticles ( listArticles );
-    this.parserDataForPagination( pagination )
+    this.parserDataForListArticles ( this?.getArticlesList );
+    this.parserDataForPagination( this?.getArticlesList )
 
     return {
       data: this.data,

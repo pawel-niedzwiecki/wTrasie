@@ -25,6 +25,7 @@ export const GET_SEARCH = gql`
                   url
                   caption
                   alternativeText
+                  formats
                 }
               }
             }
@@ -49,6 +50,7 @@ export const GET_SEARCH = gql`
                         url
                         caption
                         alternativeText
+                        formats
                       }
                     }
                   }

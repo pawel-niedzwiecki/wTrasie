@@ -2,8 +2,8 @@ import { GetArticleQuery } from 'gql';
 import type { ArticleDataType } from 'uxu-utils';
 import { ContentPartTypeEnum, createSlug } from 'uxu-utils';
 import { createSlugForType } from '../../function';
-import { GetDataTypes, ParserDataForArticleTypes } from './utils.parser.parserDataFromApiGetArticleToArticleData.types';
-import { Enum_Article_Type } from "../../../gql/types/api-gateway.service.generated";
+import { parserDataImg } from '../parserDataImg';
+import { GetDataTypes } from './utils.parser.parserDataFromApiGetArticleToArticleData.types';
 
 export class ParserDataFromApiGetArticleToArticleData {
   isLoading: boolean;
@@ -33,14 +33,14 @@ export class ParserDataFromApiGetArticleToArticleData {
       createdAt: content?.article?.data?.attributes?.createdAt,
       canonicalURL: this.canonicalURL,
       cover: {
-        src: content?.article?.data?.attributes?.cover?.data?.attributes?.url || null,
+        src: parserDataImg({attributes: content?.article?.data?.attributes?.cover?.data?.attributes , typeImg: 'medium' }),
         caption: content?.article?.data?.attributes?.cover?.data?.attributes?.caption || null,
         alt: content?.article?.data?.attributes?.cover?.data?.attributes?.alternativeText || null,
       },
       author: {
         name: content?.article?.data?.attributes?.author?.data?.attributes?.username ,
         avatar: {
-          src: content?.article?.data?.attributes?.author?.data?.attributes?.avatar?.data?.attributes?.url || null,
+          src: parserDataImg({attributes: content?.article?.data?.attributes?.author?.data?.attributes?.avatar?.data?.attributes , typeImg: 'thumbnail' }),
           caption: content?.article?.data?.attributes?.author?.data?.attributes?.avatar?.data?.attributes?.caption || null,
           alt: content?.article?.data?.attributes?.author?.data?.attributes?.avatar?.data?.attributes?.alternativeText || null,
         },
@@ -77,7 +77,7 @@ export class ParserDataFromApiGetArticleToArticleData {
             data[ 'id' ] = content?.id || `${i}`;
             data[ 'type' ] = ContentPartTypeEnum.IMG;
 
-            content?.media?.data?.attributes?.url && (data[ 'src' ] = content?.media?.data?.attributes?.url || null) ;
+            content?.media?.data?.attributes?.url && (data[ 'src' ] = parserDataImg({attributes: content.media.data.attributes , typeImg: 'thumbnail' }));
             content?.media?.data?.attributes?.caption && (data[ 'caption' ] = content.media.data.attributes.caption);
             content?.media?.data?.attributes?.alternativeText && (data[ 'alt' ] = content.media.data.attributes.alternativeText);
             break;
