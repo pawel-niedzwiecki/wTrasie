@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import { SectionArticleFull, createSlug } from 'uxu-utils';
 import type { DataForLayout, DataForSectionArticleFull } from 'utils';
 import {
+  connectQuerys,
   ParserDataFromApiGetArticleListToListTitleWithId,
   ParserDataFromApiGetArticleToArticleData,
   ParserDataFromGetSettingApiToLayoutData
@@ -36,17 +37,18 @@ export default function Service ( {dataForLayout, dataForSectionArticleFull}: Pr
 }
 
 export async function getStaticPaths () {
-  const query = await clientGetArticlesListQuery ( {pageSize: 1000, page: 1, type: ['service']} );
-  const listArticlesParserData = new ParserDataFromApiGetArticleListToListTitleWithId().getData(query.data);
 
-  let listPathsData: Array<{ title: string; id: string; slug: string }> = [];
+  const query = await clientGetArticlesListQuery ( {pageSize: 25, page: 1, type: ['service']} );
+  const data = await connectQuerys({functionQuery: clientGetArticlesListQuery, variablesQuery: {pageSize: query?.data?.articles?.meta?.pagination?.pageCount || 1, type: ['service']}, pageCount: 25 })
 
-  listArticlesParserData.forEach(arts => {
-    listPathsData = listPathsData.concat(arts);
-  });
+
+  // eslint-disable-next-line prefer-spread
+  const listArticles = [].concat.apply ( [], data.map ( pageWithArts => {
+    return new ParserDataFromApiGetArticleListToListTitleWithId ().getData ( pageWithArts )
+  }))
 
   return {
-    paths: listPathsData.map ( item => ({params: {slug: [item.id, createSlug( item.title )]}}) ),
+    paths: listArticles.map ( item => ({params: {slug: [item.id, createSlug( item.title )]}}) ),
     fallback: false,
   };
 }
