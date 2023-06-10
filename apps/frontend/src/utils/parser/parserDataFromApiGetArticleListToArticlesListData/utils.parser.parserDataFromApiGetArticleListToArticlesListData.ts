@@ -4,8 +4,6 @@ import { GetArticlesListQuery } from 'gql';
 import { createSlugForType } from '../../function';
 import {
   GetDataTypes,
-  ParserDataForArticlesTypes,
-  ParserDataForPaginationTypes
 } from './utils.parser.parserDataFromApiGetArticleListToArticlesListData.types';
 
 export class ParserDataFromApiGetArticleListToArticlesListData {
@@ -27,19 +25,19 @@ export class ParserDataFromApiGetArticleListToArticlesListData {
     this.getArticlesList = getArticlesList;
   }
 
-  parserDataForPagination (pagination: ParserDataForPaginationTypes) {
+  parserDataForPagination (pagination: GetArticlesListQuery) {
     this.pagination = {
       ...this.pagination,
-      page: pagination?.page || 1,
-      pageSize: pagination?.pageSize || 1,
-      pageCount: pagination?.pageCount || 1,
+      page: pagination?.articles.meta.pagination.page || 1,
+      pageSize: pagination?.articles.meta.pagination.pageSize || 1,
+      pageCount: pagination?.articles.meta.pagination.pageCount || 1,
     };
   }
 
-  parserDataForListArticles ( listArticles?: ParserDataForArticlesTypes ) {
-    if ( !listArticles?.length ) return null;
+  parserDataForListArticles ( listArticles?: GetArticlesListQuery ) {
+    if ( !listArticles?.articles?.data?.length ) return null;
 
-    this.data = listArticles.map ( art => ({
+    this.data = listArticles?.articles?.data?.map ( art => ({
       content: {
         id: art?.id,
         title: art?.attributes?.title,
@@ -67,10 +65,8 @@ export class ParserDataFromApiGetArticleListToArticlesListData {
   }
 
   getData (): GetDataTypes {
-    const pagination = this?.getArticlesList?.articles.meta.pagination;
-    const listArticles = this?.getArticlesList?.articles?.data;
-    this.parserDataForListArticles ( listArticles );
-    this.parserDataForPagination( pagination )
+    this.parserDataForListArticles ( this?.getArticlesList );
+    this.parserDataForPagination( this?.getArticlesList )
 
     return {
       data: this.data,
