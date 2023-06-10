@@ -3,7 +3,7 @@ import * as Types from './api-gateway.service.generated';
 import { gql } from '@apollo/client';
 export type FragmentDataContentPartTxtFragment = { __typename: 'ComponentContentPartsTxt', id: string, txt: string };
 
-export type FragmentDataContentPartMediaFragment = { __typename?: 'ComponentContentPartsMedia', id: string, media: { __typename: 'UploadFileEntityResponse', data?: { __typename?: 'UploadFileEntity', id?: string | null, attributes?: { __typename?: 'UploadFile', url: string, caption?: string | null, alternativeText?: string | null } | null } | null } };
+export type FragmentDataContentPartMediaFragment = { __typename?: 'ComponentContentPartsMedia', id: string, media: { __typename: 'UploadFileEntityResponse', data?: { __typename?: 'UploadFileEntity', id?: string | null, attributes?: { __typename?: 'UploadFile', url: string, caption?: string | null, alternativeText?: string | null, formats?: any | null } | null } | null } };
 
 export type FragmentDataContentPartQuoteFragment = { __typename: 'ComponentContentPartsQuote', id: string, quote: string };
 
@@ -27,6 +27,7 @@ export const FragmentDataContentPartMediaFragmentDoc = gql`
         url
         caption
         alternativeText
+        formats
       }
     }
   }
