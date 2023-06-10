@@ -31,6 +31,7 @@ export const GET_ARICLE = gql`
                 url
                 caption
                 alternativeText
+                formats
               }
             }
           }
@@ -58,6 +59,7 @@ export const GET_ARICLE = gql`
                       url
                       caption
                       alternativeText
+                      formats
                     }
                   }
                 }
@@ -98,6 +100,7 @@ export const GET_ARICLES_LIST = gql`
                 url
                 caption
                 alternativeText
+                formats
               }
             }
           }
@@ -122,6 +125,7 @@ export const GET_ARICLES_LIST = gql`
                       url
                       caption
                       alternativeText
+                      formats
                     }
                   }
                 }

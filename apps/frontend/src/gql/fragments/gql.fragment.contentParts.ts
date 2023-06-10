@@ -19,6 +19,7 @@ export const FRAGMENT_DATA_CONTENT_PART_MEDIA = gql`
           url
           caption
           alternativeText
+          formats
         }
       }
     }

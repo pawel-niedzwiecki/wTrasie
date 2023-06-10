@@ -2,13 +2,11 @@ import type { ArticleShortDataType } from 'uxu-utils';
 import { createSlug, Pagination } from 'uxu-utils';
 import { GetSearchQuery } from 'gql';
 import { createSlugForType } from '../../function';
+import { parserDataImg } from '../parserDataImg';
 import {
   GetDataTypes,
-  ParserDataForArticlesTypes
-} from './utils.parser.parserDataFromApiGetSearchToArticlesListData.types';
-import {
   ParserDataForPaginationTypes
-} from "../parserDataFromApiGetArticleListToArticlesListData/utils.parser.parserDataFromApiGetArticleListToArticlesListData.types";
+} from "./utils.parser.parserDataFromApiGetSearchToArticlesListData.types";
 
 
 export class ParserDataFromApiGetSearchToArticlesListData {
@@ -39,10 +37,10 @@ export class ParserDataFromApiGetSearchToArticlesListData {
     };
   }
 
-  parserDataForListArticles ( listArticles?: ParserDataForArticlesTypes ) {
-    if ( !listArticles?.length ) return null;
+  parserDataForListArticles ( listArticles?: GetSearchQuery ) {
+    if ( !listArticles?.search?.articles?.data?.length ) return null;
 
-    this.data = listArticles?.map ( art => ({
+    this.data = listArticles?.search?.articles?.data?.map ( art => ({
       content: {
         id: art?.id,
         title: art?.attributes?.title,
@@ -51,13 +49,13 @@ export class ParserDataFromApiGetSearchToArticlesListData {
         author: {
           name: art?.attributes?.author?.data?.attributes?.username,
           avatar: {
-            src: art?.attributes?.author?.data?.attributes?.avatar?.data?.attributes?.url,
+            src: parserDataImg({attributes: art?.attributes?.author?.data?.attributes?.avatar?.data?.attributes , typeImg: "thumbnail"}),
             caption: art?.attributes?.author?.data?.attributes?.avatar?.data?.attributes?.caption,
             alt: art?.attributes?.author?.data?.attributes?.avatar?.data?.attributes?.alternativeText,
           },
         },
         cover: {
-          src: art?.attributes?.cover?.data?.attributes?.url,
+          src: parserDataImg({attributes: art?.attributes?.cover?.data?.attributes , typeImg: "medium"}),
           caption: art?.attributes?.cover?.data?.attributes?.caption,
           alt: art?.attributes?.cover?.data?.attributes?.alternativeText,
         },
@@ -72,8 +70,7 @@ export class ParserDataFromApiGetSearchToArticlesListData {
   }
 
   getData (): GetDataTypes {
-    const getSearchQuery = this?.getSearchQuery?.search.articles.data;
-    this.parserDataForListArticles ( getSearchQuery );
+    this.parserDataForListArticles ( this?.getSearchQuery );
     this.parserDataForPagination ( {__typename: "Pagination", page: 1, pageCount: 1, pageSize: 12, total: 12} )
 
     return {
