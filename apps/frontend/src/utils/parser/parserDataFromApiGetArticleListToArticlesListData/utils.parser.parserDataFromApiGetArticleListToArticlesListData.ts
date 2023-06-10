@@ -2,9 +2,11 @@ import type { ArticleShortDataType } from 'uxu-utils';
 import { createSlug, Pagination } from 'uxu-utils';
 import { GetArticlesListQuery } from 'gql';
 import { createSlugForType } from '../../function';
+import { parserDataImg } from '../parserDataImg';
 import {
   GetDataTypes,
 } from './utils.parser.parserDataFromApiGetArticleListToArticlesListData.types';
+
 
 export class ParserDataFromApiGetArticleListToArticlesListData {
   getArticlesList: GetArticlesListQuery;
@@ -46,12 +48,12 @@ export class ParserDataFromApiGetArticleListToArticlesListData {
         author: {
           name: art?.attributes?.author?.data?.attributes?.username,
           avatar: {
-            src: art?.attributes?.author?.data?.attributes?.avatar?.data?.attributes?.url || null,
+            src: parserDataImg({attributes: art?.attributes?.author?.data?.attributes?.avatar?.data?.attributes , typeImg: 'thumbnail' }),
             alt: art?.attributes?.author?.data?.attributes?.avatar?.data?.attributes?.alternativeText || null,
           },
         },
         cover: {
-          src: art?.attributes?.cover?.data?.attributes?.url || null,
+          src: parserDataImg({attributes: art?.attributes?.cover?.data?.attributes , typeImg: 'small' }),
           alt: art?.attributes?.cover?.data?.attributes?.alternativeText,
         },
         tags:

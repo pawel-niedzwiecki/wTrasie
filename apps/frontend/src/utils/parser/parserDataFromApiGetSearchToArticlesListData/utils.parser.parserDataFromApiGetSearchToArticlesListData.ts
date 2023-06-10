@@ -2,6 +2,7 @@ import type { ArticleShortDataType } from 'uxu-utils';
 import { createSlug, Pagination } from 'uxu-utils';
 import { GetSearchQuery } from 'gql';
 import { createSlugForType } from '../../function';
+import { parserDataImg } from '../parserDataImg';
 import {
   GetDataTypes,
   ParserDataForPaginationTypes
@@ -48,13 +49,13 @@ export class ParserDataFromApiGetSearchToArticlesListData {
         author: {
           name: art?.attributes?.author?.data?.attributes?.username,
           avatar: {
-            src: art?.attributes?.author?.data?.attributes?.avatar?.data?.attributes?.url,
+            src: parserDataImg({attributes: art?.attributes?.author?.data?.attributes?.avatar?.data?.attributes , typeImg: "thumbnail"}),
             caption: art?.attributes?.author?.data?.attributes?.avatar?.data?.attributes?.caption,
             alt: art?.attributes?.author?.data?.attributes?.avatar?.data?.attributes?.alternativeText,
           },
         },
         cover: {
-          src: art?.attributes?.cover?.data?.attributes?.url,
+          src: parserDataImg({attributes: art?.attributes?.cover?.data?.attributes , typeImg: "medium"}),
           caption: art?.attributes?.cover?.data?.attributes?.caption,
           alt: art?.attributes?.cover?.data?.attributes?.alternativeText,
         },
