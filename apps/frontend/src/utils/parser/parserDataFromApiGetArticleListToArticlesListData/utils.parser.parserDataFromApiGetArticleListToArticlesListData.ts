@@ -30,16 +30,16 @@ export class ParserDataFromApiGetArticleListToArticlesListData {
   parserDataForPagination (pagination: GetArticlesListQuery) {
     this.pagination = {
       ...this.pagination,
-      page: pagination?.articles?.meta?.pagination?.page || 1,
-      pageSize: pagination?.articles?.meta?.pagination?.pageSize || 1,
-      pageCount: pagination?.articles?.meta?.pagination?.pageCount || 1,
+      page: pagination?.articles.meta.pagination.page || 1,
+      pageSize: pagination?.articles.meta.pagination.pageSize || 1,
+      pageCount: pagination?.articles.meta.pagination.pageCount || 1,
     };
   }
 
   parserDataForListArticles ( listArticles?: GetArticlesListQuery ) {
-    if ( !listArticles?.articles.data.length ) return null;
+    if ( !listArticles?.articles?.data?.length ) return null;
 
-    this.data = listArticles.articles.data.map ( art => ({
+    this.data = listArticles?.articles?.data?.map ( art => ({
       content: {
         id: art?.id,
         title: art?.attributes?.title,

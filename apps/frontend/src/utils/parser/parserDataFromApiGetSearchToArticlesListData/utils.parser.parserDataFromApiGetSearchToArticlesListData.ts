@@ -5,11 +5,8 @@ import { createSlugForType } from '../../function';
 import { parserDataImg } from '../parserDataImg';
 import {
   GetDataTypes,
-  ParserDataForArticlesTypes
-} from './utils.parser.parserDataFromApiGetSearchToArticlesListData.types';
-import {
   ParserDataForPaginationTypes
-} from "../parserDataFromApiGetArticleListToArticlesListData/utils.parser.parserDataFromApiGetArticleListToArticlesListData.types";
+} from "./utils.parser.parserDataFromApiGetSearchToArticlesListData.types";
 
 
 export class ParserDataFromApiGetSearchToArticlesListData {
@@ -40,10 +37,10 @@ export class ParserDataFromApiGetSearchToArticlesListData {
     };
   }
 
-  parserDataForListArticles ( listArticles?: ParserDataForArticlesTypes ) {
-    if ( !listArticles?.length ) return null;
+  parserDataForListArticles ( listArticles?: GetSearchQuery ) {
+    if ( !listArticles?.search?.articles?.data?.length ) return null;
 
-    this.data = listArticles?.map ( art => ({
+    this.data = listArticles?.search?.articles?.data?.map ( art => ({
       content: {
         id: art?.id,
         title: art?.attributes?.title,
@@ -73,8 +70,7 @@ export class ParserDataFromApiGetSearchToArticlesListData {
   }
 
   getData (): GetDataTypes {
-    const getSearchQuery = this?.getSearchQuery?.search.articles.data;
-    this.parserDataForListArticles ( getSearchQuery );
+    this.parserDataForListArticles ( this?.getSearchQuery );
     this.parserDataForPagination ( {__typename: "Pagination", page: 1, pageCount: 1, pageSize: 12, total: 12} )
 
     return {
