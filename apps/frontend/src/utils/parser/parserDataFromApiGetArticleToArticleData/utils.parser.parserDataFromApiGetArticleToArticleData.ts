@@ -77,7 +77,7 @@ export class ParserDataFromApiGetArticleToArticleData {
             data[ 'id' ] = content?.id || `${i}`;
             data[ 'type' ] = ContentPartTypeEnum.IMG;
 
-            content?.media?.data?.attributes?.url && (data[ 'src' ] = parserDataImg({attributes: content.media.data.attributes , typeImg: 'thumbnail' }));
+            content?.media?.data?.attributes?.url && (data[ 'src' ] = parserDataImg({attributes: content.media.data.attributes , typeImg: 'medium' }));
             content?.media?.data?.attributes?.caption && (data[ 'caption' ] = content.media.data.attributes.caption);
             content?.media?.data?.attributes?.alternativeText && (data[ 'alt' ] = content.media.data.attributes.alternativeText);
             break;
