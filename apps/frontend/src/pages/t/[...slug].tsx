@@ -1,21 +1,25 @@
 import { LayoutDefault } from 'layout';
 import {
   DataForLayout,
+  separateArrayAt,
   DataForSectionListingArticles,
   ParserDataFromApiGetArticleListToArticlesListData,
-  ParserDataFromGetSettingApiToLayoutData
-} from '../../utils';
+  ParserDataFromGetSettingApiToLayoutData,
+  parserDataFromApiGetTagToTagData
+} from 'utils';
 import { clientGetArticlesListQuery, clientGetSettingPageQuery, clientGetTagQuery } from 'gql';
-import { SectionListingArticles } from 'uxu-utils';
+import { SectionListingArticles, SectionLeadPostWithList } from 'uxu-utils';
+import type { SectionLeadPostWithListProps } from 'uxu-utils';
 import { useHookListingArticles } from "../../hooks";
 
 type Props = {
   idTag: number;
   dataForLayout: DataForLayout;
   dataForSectionListingArticlesSSR: DataForSectionListingArticles;
+  dataForSectionLeadPostWithList: SectionLeadPostWithListProps;
 };
 
-export default function Tag ( {idTag, dataForLayout, dataForSectionListingArticlesSSR}: Props ) {
+export default function Tag ( {idTag, dataForLayout, dataForSectionListingArticlesSSR, dataForSectionLeadPostWithList}: Props ) {
 
   const {dataClient} = useHookListingArticles ( {
     dataSSR: dataForSectionListingArticlesSSR,
@@ -24,7 +28,7 @@ export default function Tag ( {idTag, dataForLayout, dataForSectionListingArticl
 
 
   return (
-    <LayoutDefault {...dataForLayout}>
+    <LayoutDefault {...dataForLayout} topElement={<SectionLeadPostWithList {...dataForSectionLeadPostWithList}/>}>
       <SectionListingArticles dataSSR={dataForSectionListingArticlesSSR} dataClient={dataClient}/>
     </LayoutDefault>
   );
@@ -35,11 +39,13 @@ export async function getServerSideProps ( context ) {
   const idTag = parseInt ( slug[ 0 ] );
 
   // set data for SectionListingArticles
+  const getDataTag = await clientGetTagQuery ( {idTag} );
   const articlesList = await clientGetArticlesListQuery ( {page: 1, idTag} );
-  const dataForSectionListingArticlesSSR: DataForSectionListingArticles = new ParserDataFromApiGetArticleListToArticlesListData ( {getArticlesList: articlesList.data} ).getData ();
+  const {dataForSectionListingArticlesSSR, dataForSectionLeadPostWithList} = new parserDataFromApiGetTagToTagData ( {getArticlesList: articlesList.data, getTagData: getDataTag.data } ).getData ();
+
+
 
   // set data for LayoutDefault
-  const getDataTag = await clientGetTagQuery ( {idTag} );
   const querySettings = await clientGetSettingPageQuery ( {page: 'home'} );
   const dataForLayout: DataForLayout = new ParserDataFromGetSettingApiToLayoutData ( {
     data: querySettings.data,
@@ -60,6 +66,6 @@ export async function getServerSideProps ( context ) {
 
   return {
     // Passed to the page component as props
-    props: {dataForLayout, dataForSectionListingArticlesSSR, idTag},
+    props: {dataForLayout, dataForSectionListingArticlesSSR, idTag, dataForSectionLeadPostWithList},
   };
 }

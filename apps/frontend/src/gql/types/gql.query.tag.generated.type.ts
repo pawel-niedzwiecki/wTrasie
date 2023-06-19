@@ -2,6 +2,7 @@ import * as Types from './api-gateway.service.generated';
 
 import { gql } from '@apollo/client';
 import { FragmentDataLeadFragmentDoc } from './gql.fragment.lead.generated.type';
+import { FragmentDataContentPartTxtFragmentDoc, FragmentDataContentPartMediaFragmentDoc, FragmentDataContentPartQuoteFragmentDoc, FragmentDataContentPartYouTubeFragmentDoc } from './gql.fragment.contentParts.generated.type';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
 export type GetTagQueryVariables = Types.Exact<{
@@ -9,7 +10,7 @@ export type GetTagQueryVariables = Types.Exact<{
 }>;
 
 
-export type GetTagQuery = { __typename?: 'Query', tag?: { __typename: 'TagEntityResponse', data?: { __typename?: 'TagEntity', id?: string | null, attributes?: { __typename?: 'Tag', title: string, seo: { __typename: 'ComponentOthersSeo', id: string, title?: string | null, description?: string | null }, cover: { __typename: 'UploadFileEntityResponse', data?: { __typename?: 'UploadFileEntity', id?: string | null, attributes?: { __typename?: 'UploadFile', url: string, caption?: string | null, alternativeText?: string | null, formats?: any | null } | null } | null }, lead: { __typename: 'ComponentContentPartsLead', id: string, lead: string } } | null } | null } | null };
+export type GetTagQuery = { __typename?: 'Query', tag?: { __typename: 'TagEntityResponse', data?: { __typename?: 'TagEntity', id?: string | null, attributes?: { __typename?: 'Tag', title: string, seo: { __typename: 'ComponentOthersSeo', id: string, title?: string | null, description?: string | null }, cover: { __typename: 'UploadFileEntityResponse', data?: { __typename?: 'UploadFileEntity', id?: string | null, attributes?: { __typename?: 'UploadFile', url: string, caption?: string | null, alternativeText?: string | null, formats?: any | null } | null } | null }, lead: { __typename: 'ComponentContentPartsLead', id: string, lead: string }, contentparts: Array<{ __typename: 'ComponentContentPartsTxt', id: string, txt: string } | { __typename?: 'Error' } | null> } | null } | null } | null };
 
 export type GetTagsListQueryVariables = Types.Exact<{
   page?: Types.InputMaybe<Types.Scalars['Int']>;
@@ -49,11 +50,15 @@ export const GetTagDocument = gql`
         lead {
           ...FragmentDataLead
         }
+        contentparts {
+          ...FragmentDataContentPartTxt
+        }
       }
     }
   }
 }
-    ${FragmentDataLeadFragmentDoc}`;
+    ${FragmentDataLeadFragmentDoc}
+${FragmentDataContentPartTxtFragmentDoc}`;
 
 /**
  * __useGetTagQuery__

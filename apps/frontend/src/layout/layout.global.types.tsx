@@ -6,6 +6,7 @@ import type { SiteBarSecondaryDataTypes } from 'uxu-utils/libs/design-system/src
 import type { FooterDataType } from 'uxu-utils/libs/design-system/src/lib/components/templates/footer/component.footer.types';
 
 export type SpecialProps = {
+  topElement?: JSX.Element | JSX.Element[];
   siteBarSecondary?: SiteBarSecondaryDataTypes;
   siteBarPrimary?: SiteBarPrimaryDataTypes;
   seo?: NextSeoProps;
