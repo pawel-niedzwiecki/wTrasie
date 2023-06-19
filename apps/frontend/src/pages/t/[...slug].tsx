@@ -1,11 +1,9 @@
 import { LayoutDefault } from 'layout';
 import {
   DataForLayout,
-  separateArrayAt,
   DataForSectionListingArticles,
-  ParserDataFromApiGetArticleListToArticlesListData,
   ParserDataFromGetSettingApiToLayoutData,
-  parserDataFromApiGetTagToTagData
+  TagDataParser
 } from 'utils';
 import { clientGetArticlesListQuery, clientGetSettingPageQuery, clientGetTagQuery } from 'gql';
 import { SectionListingArticles, SectionLeadPostWithList } from 'uxu-utils';
@@ -19,13 +17,11 @@ type Props = {
   dataForSectionLeadPostWithList: SectionLeadPostWithListProps;
 };
 
-export default function Tag ( {idTag, dataForLayout, dataForSectionListingArticlesSSR, dataForSectionLeadPostWithList}: Props ) {
-
-  const {dataClient} = useHookListingArticles ( {
+export default function Tag ({idTag, dataForLayout, dataForSectionListingArticlesSSR, dataForSectionLeadPostWithList}: Props) {
+  const {dataClient} = useHookListingArticles({
     dataSSR: dataForSectionListingArticlesSSR,
     queryVariables: {pageSize: 12, page: 1, type: ['article', 'service'], idTag: `${idTag}`}
-  } )
-
+  })
 
   return (
     <LayoutDefault {...dataForLayout} topElement={<SectionLeadPostWithList {...dataForSectionLeadPostWithList}/>}>
@@ -34,38 +30,41 @@ export default function Tag ( {idTag, dataForLayout, dataForSectionListingArticl
   );
 }
 
-export async function getServerSideProps ( context ) {
-  const {slug} = context.params;
-  const idTag = parseInt ( slug[ 0 ] );
+export async function getServerSideProps({params: {slug}}) {
+  const idTag = parseInt(slug[0]);
 
-  // set data for SectionListingArticles
-  const getDataTag = await clientGetTagQuery ( {idTag} );
-  const articlesList = await clientGetArticlesListQuery ( {page: 1, idTag} );
-  const {dataForSectionListingArticlesSSR, dataForSectionLeadPostWithList} = new parserDataFromApiGetTagToTagData ( {getArticlesList: articlesList.data, getTagData: getDataTag.data } ).getData ();
+  const getDataTag = await clientGetTagQuery({idTag});
+  const articlesList = await clientGetArticlesListQuery({page: 1, idTag});
 
+  const {dataForSectionListingArticlesSSR, dataForSectionLeadPostWithList} =
+    new TagDataParser({ articlesListQuery: articlesList.data, tagQuery: getDataTag.data }).getData();
 
-
-  // set data for LayoutDefault
-  const querySettings = await clientGetSettingPageQuery ( {page: 'home'} );
-  const dataForLayout: DataForLayout = new ParserDataFromGetSettingApiToLayoutData ( {
-    data: querySettings.data,
-    slug: `${slug[ 0 ]}/${slug[ 1 ]}`,
-    seo: {
-      title: getDataTag?.data?.tag?.data?.attributes?.seo?.title,
-      description: getDataTag?.data?.tag?.data?.attributes?.seo?.description,
-      openGraph: {
-        url: `https://wtrasie.pl/${slug[ 0 ]}/${slug[ 1 ]}`,
-        title: getDataTag?.data?.tag?.data?.attributes?.seo?.title,
-        description: getDataTag?.data?.tag?.data?.attributes?.seo?.description,
-        type: 'website',
-        locale: 'pl',
-        images: [{url: getDataTag?.data?.tag?.data?.attributes?.cover?.data?.attributes?.url}],
-      },
-    },
-  } ).getData ();
+  const querySettings = await clientGetSettingPageQuery({page: 'home'});
+  const dataForLayout = getDataForLayout(querySettings.data, slug, getDataTag);
 
   return {
-    // Passed to the page component as props
     props: {dataForLayout, dataForSectionListingArticlesSSR, idTag, dataForSectionLeadPostWithList},
   };
+}
+
+function getDataForLayout(data, slug, getDataTag) {
+  const { title, description, cover } = getDataTag?.data?.tag?.data?.attributes?.seo || {};
+  const url = cover?.data?.attributes?.url || null;
+
+  return new ParserDataFromGetSettingApiToLayoutData({
+    data,
+    slug: `${slug[0]}/${slug[1]}`,
+    seo: {
+      title,
+      description,
+      openGraph: {
+        url: `https://wtrasie.pl/${slug[0]}/${slug[1]}`,
+        title,
+        description,
+        type: 'website',
+        locale: 'pl',
+        images: [{url}],
+      },
+    },
+  }).getData();
 }

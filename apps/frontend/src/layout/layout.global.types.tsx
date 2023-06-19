@@ -12,8 +12,8 @@ export type SpecialProps = {
   seo?: NextSeoProps;
   dataFooter: FooterDataType;
   alert?: {
-    tel?: string;
-    title: string;
+    tel?: string | null;
+    title: string | null;
   };
 };
 

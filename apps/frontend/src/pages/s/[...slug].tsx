@@ -53,45 +53,47 @@ export async function getStaticPaths () {
   };
 }
 
-export async function getStaticProps ( context ) {
-  const {slug} = context.params;
-  const getId = parseInt ( slug[ 0 ] );
+export async function getStaticProps(context) {
+  const { slug } = context.params;
+  const getId = parseInt(slug[0]);
 
-  // set data for Article
-  const getArticleData = await clientGetArticleQuery ( {id: getId} );
-  const getClientsListData = getArticleData?.data?.article?.data?.attributes?.tags?.data?.length && (await clientClientsListWithFiltresShortNameQuery ( {shortname: getArticleData?.data?.article?.data?.attributes?.tags?.data?.map ( tag => tag.id )} ));
-  const alert = {};
-  alert[ 'title' ] = getArticleData.data.article.data.attributes.title;
-  getClientsListData?.data?.clients?.data[ 0 ]?.attributes?.branches[ 0 ]?.phones[ 0 ]?.phone && (alert[ 'tel' ] = getClientsListData?.data?.clients?.data[ 0 ]?.attributes?.branches[ 0 ]?.phones[ 0 ]?.phone);
+  const getArticleData = await clientGetArticleQuery({ id: getId });
+  const { title, seo, tags } = getArticleData?.data?.article?.data?.attributes || {};
+  const tagIds = tags?.data?.map(tag => tag.id);
+  const getClientsListData = tagIds?.length ? await clientClientsListWithFiltresShortNameQuery({ shortname: tagIds }) : null;
 
-  const articleData = new ParserDataFromApiGetArticleToArticleData ( {
-    canonicalURL: `https://wtrasie.pl/s/${slug[ 0 ]}/${slug[ 1 ]}`,
+  const alert = {
+    title,
+    tel: getClientsListData?.data?.clients?.data[0]?.attributes?.branches[0]?.phones[0]?.phone || null
+  };
+
+  const canonicalURL = `https://wtrasie.pl/s/${slug[0]}/${slug[1]}`;
+  const articleData = new ParserDataFromApiGetArticleToArticleData({
+    canonicalURL,
     getArticleData: getArticleData.data,
     isLoading: false,
-  } ).getData ();
+  }).getData();
 
-  // set data for LayoutDefault
-  const querySettings = await clientGetSettingPageQuery ( {page: 'home'} );
-  const dataForLayout: DataForLayout = new ParserDataFromGetSettingApiToLayoutData ( {
+  const querySettings = await clientGetSettingPageQuery({ page: 'home' });
+  const dataForLayout: DataForLayout = new ParserDataFromGetSettingApiToLayoutData({
     data: querySettings.data,
     slug: '/',
     seo: {
-      title: getArticleData.data.article.data.attributes.seo.title,
-      description: getArticleData.data.article.data.attributes.seo.description,
+      title: seo?.title || null,
+      description: seo?.description || null,
       openGraph: {
-        url: `https://wtrasie.pl/s/${slug[ 0 ]}/${slug[ 1 ]}`,
-        title: getArticleData?.data?.article?.data?.attributes?.seo?.title,
-        description: getArticleData?.data?.article?.data?.attributes?.seo?.description,
+        url: canonicalURL,
+        title: seo?.title || null,
+        description: seo?.description || null,
         type: 'website',
         locale: 'pl',
-        images: [{url: (articleData?.data?.cover?.src || null)}],
+        images: [{ url: articleData?.data?.cover?.src || null }],
       },
     },
     alert,
-  } ).getData ();
+  }).getData();
 
   return {
-    // Passed to the page component as props
-    props: {dataForLayout, dataForSectionArticleFull: {...articleData}},
+    props: { dataForLayout, dataForSectionArticleFull: { ...articleData } },
   };
 }

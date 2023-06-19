@@ -67,9 +67,9 @@ export class ParserDataFromGetSettingApiToLayoutData {
     if (!links) return null;
     this.siteBarPrimary.filter.isLoading = this.isLoading;
     this.siteBarPrimary.filter.links = links?.map(item => ({
-      title: item.title,
-      active: item.slug === this.slug,
-      slug: item.slug === this.slug ? item.slug : `${createSlugForType('tag')}/${item?.key ? `${item?.key}/` : ``}${item.slug}`,
+      title: item?.title || null,
+      active: item?.slug === this.slug,
+      slug: item?.slug === this?.slug ? item.slug : `${createSlugForType('tag')}/${item?.key ? `${item?.key}/` : ``}${item.slug}`,
     }));
   }
 
@@ -95,11 +95,11 @@ export class ParserDataFromGetSettingApiToLayoutData {
 
   getData(): GetDataTypes {
     if (this.data?.setting?.data?.attributes) {
-      const attributes = this.data?.setting?.data.attributes;
-      !Object.keys(this.seo).length && this.parserDataForSeo(attributes?.settingsPages[0]?.seo);
-      this.parserDataForSocialMedia(attributes?.socialMedia);
-      this.parserDataForFooter(attributes.footer);
-      this.parserDataForFilter(attributes.settingsPages[0]?.filter);
+      const attributes = this.data?.setting?.data?.attributes || null;
+      !Object.keys(this.seo).length && this.parserDataForSeo(attributes?.settingsPages[0]?.seo || null);
+      this.parserDataForSocialMedia(attributes?.socialMedia || null);
+      this.parserDataForFooter(attributes?.footer || null);
+      this.parserDataForFilter(attributes.settingsPages[0]?.filter || null);
     }
     this.parserDataForAds();
 

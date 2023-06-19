@@ -13,8 +13,8 @@ export class ParserDataFromApiGetArticleListToListTitleWithId {
    parseToList ( getArticlesList: GetArticlesListQuery ) {
     const parseData = getArticlesList?.articles?.data.map ( item =>  {
       const id = item?.id;
-      const title = item?.attributes?.title;
-      const type = item?.attributes?.type;
+      const title = item?.attributes?.title || null;
+      const type = item?.attributes?.type || null;
 
       if(id && title && type) return {
         id, title, slug: `${createSlugForType ( type )}/${id}/${createSlug ( title )}`
