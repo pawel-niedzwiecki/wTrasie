@@ -55,6 +55,8 @@ export class ParserDataFromApiGetArticleToArticleData {
       contentparts: content?.article?.data?.attributes?.contentparts?.map ( ( content, i ) => {
         const data = {
           id: `${i}`,
+          value: null,
+          type: null,
         };
 
         switch (content?.__typename) {
