@@ -8,6 +8,7 @@ import { ComponentLayoutDataType } from './../layout.global.types';
 
 export const LayoutDefault: ComponentLayoutDataType = (
   {
+    topElement,
     siteBarPrimary,
     siteBarSecondary,
     dataFooter,
@@ -39,6 +40,7 @@ export const LayoutDefault: ComponentLayoutDataType = (
       <NextSeo {...seo} />
       <Header ComponentAaboveHeader={alert && <WrapperAlert {...alert} />} res={res}
               tabs={tabs} callBack={( search: string ) => setQuery ( search )}/>
+      {topElement}
       <Grid gridTemplateColumns={{xs: '1fr', m: '250px 1fr', l: '250px 1fr 250px'}}
             style={{maxWidth: contents.maxWidth, margin: '0 auto'}} container>
         <SiteBarPrimary {...siteBarPrimary} />

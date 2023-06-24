@@ -1,8 +1,9 @@
 import { gql } from '@apollo/client';
-import { FRAGMENT_DATA_LEAD } from './../fragments';
+import { FRAGMENT_DATA_LEAD, FRAGMENT_DATA_CONTENT_PART_TXT } from './../fragments';
 
 export const GET_TAG = gql`
   ${FRAGMENT_DATA_LEAD}
+  ${FRAGMENT_DATA_CONTENT_PART_TXT}
   query GetTag($idTag: ID) {
     tag(id: $idTag) {
       __typename
@@ -30,6 +31,9 @@ export const GET_TAG = gql`
           }
           lead {
             ...FragmentDataLead
+          }
+          contentparts {
+            ...FragmentDataContentPartTxt
           }
         }
       }

@@ -81,6 +81,7 @@
     "prettier": "^2.6.2",
     "react-select": "^5.7.0",
     "react-test-renderer": "18.2.0",
+    "sass": "^1.63.4",
     "schema-dts": "^1.1.2",
     "ts-jest": "28.0.5",
     "ts-node": "10.9.1",
