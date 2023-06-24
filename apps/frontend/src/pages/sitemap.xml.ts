@@ -1,6 +1,6 @@
 import {
   connectQuerys,
-  ParserDataFromApiGetArticleListToListTitleWithId,
+  ParseArticlesToTitleIdSlug,
   ParserDataFromApiGetTagListToListTitleWithId,
 } from 'utils';
 import { clientGetTagListQuery, clientGetArticlesListQuery } from 'gql';
@@ -48,7 +48,7 @@ export async function getServerSideProps ({res}) {
 
   // eslint-disable-next-line prefer-spread
   const listArticles = [].concat.apply ( [], dataListArticles.map ( pageWithArts => {
-    return new ParserDataFromApiGetArticleListToListTitleWithId ().getData ( pageWithArts )
+    return new ParseArticlesToTitleIdSlug ().getData ( pageWithArts )
   }))
 
 

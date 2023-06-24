@@ -4,9 +4,9 @@ import { SectionArticleFull, createSlug } from 'uxu-utils';
 import type { DataForLayout, DataForSectionArticleFull } from 'utils';
 import {
   connectQuerys,
-  ParserDataFromApiGetArticleListToListTitleWithId,
-  ParserDataFromApiGetArticleToArticleData,
-  ParserDataFromGetSettingApiToLayoutData
+  ParseArticlesToTitleIdSlug,
+  ParserApiDataToArticle,
+  ParserApiDataToLayoutData
 } from 'utils';
 import {
   clientClientsListWithFiltresShortNameQuery,
@@ -39,61 +39,57 @@ export default function Service ( {dataForLayout, dataForSectionArticleFull}: Pr
 export async function getStaticPaths () {
 
   const query = await clientGetArticlesListQuery ( {pageSize: 25, page: 1, type: ['service']} );
-  const data = await connectQuerys({functionQuery: clientGetArticlesListQuery, variablesQuery: {pageSize: query?.data?.articles?.meta?.pagination?.pageCount || 1, type: ['service']}, pageCount: 25 })
+  const data = await connectQuerys ( {
+    functionQuery: clientGetArticlesListQuery,
+    variablesQuery: {pageSize: query?.data?.articles?.meta?.pagination?.pageCount || 1, type: ['service']},
+    pageCount: 25
+  } )
 
 
   // eslint-disable-next-line prefer-spread
   const listArticles = [].concat.apply ( [], data.map ( pageWithArts => {
-    return new ParserDataFromApiGetArticleListToListTitleWithId ().getData ( pageWithArts )
-  }))
+    return new ParseArticlesToTitleIdSlug ().getData ( pageWithArts )
+  } ) )
 
   return {
-    paths: listArticles.map ( item => ({params: {slug: [item.id, createSlug( item.title )]}}) ),
+    paths: listArticles.map ( item => ({params: {slug: [item.id, createSlug ( item.title )]}}) ),
     fallback: false,
   };
 }
 
-export async function getStaticProps(context) {
-  const { slug } = context.params;
-  const getId = parseInt(slug[0]);
+export async function getStaticProps ( context ) {
+  const {slug} = context.params;
+  const getId = parseInt ( slug[ 0 ] );
 
-  const getArticleData = await clientGetArticleQuery({ id: getId });
-  const { title, seo, tags } = getArticleData?.data?.article?.data?.attributes || {};
-  const tagIds = tags?.data?.map(tag => tag.id);
-  const getClientsListData = tagIds?.length ? await clientClientsListWithFiltresShortNameQuery({ shortname: tagIds }) : null;
+  const getArticleData = await clientGetArticleQuery ( {id: getId} );
+  const {title, seo, tags} = getArticleData?.data?.article?.data?.attributes || {};
+  const tagIds = tags?.data?.map ( tag => tag.id );
+  const getClientsListData = tagIds?.length ? await clientClientsListWithFiltresShortNameQuery ( {shortname: tagIds} ) : null;
+  const alertPhone = getClientsListData?.data?.clients?.data[ 0 ]?.attributes?.branches[ 0 ]?.phones[ 0 ]?.phone || null;
 
-  const alert = {
-    title,
-    tel: getClientsListData?.data?.clients?.data[0]?.attributes?.branches[0]?.phones[0]?.phone || null
-  };
-
-  const canonicalURL = `https://wtrasie.pl/s/${slug[0]}/${slug[1]}`;
-  const articleData = new ParserDataFromApiGetArticleToArticleData({
+  const canonicalURL = `https://wtrasie.pl/s/${slug[ 0 ]}/${slug[ 1 ]}`;
+  const articleData = new ParserApiDataToArticle ( {
     canonicalURL,
     getArticleData: getArticleData.data,
     isLoading: false,
-  }).getData();
+  } ).getData ();
 
-  const querySettings = await clientGetSettingPageQuery({ page: 'home' });
-  const dataForLayout: DataForLayout = new ParserDataFromGetSettingApiToLayoutData({
-    data: querySettings.data,
-    slug: '/',
-    seo: {
+  const querySettings = await clientGetSettingPageQuery ( {page: 'home'} );
+  const seoData = {
+    title: seo?.title || null,
+    description: seo?.description || null,
+    openGraph: {
+      url: canonicalURL || null,
       title: seo?.title || null,
       description: seo?.description || null,
-      openGraph: {
-        url: canonicalURL,
-        title: seo?.title || null,
-        description: seo?.description || null,
-        type: 'website',
-        locale: 'pl',
-        images: [{ url: articleData?.data?.cover?.src || null }],
-      },
+      type: 'website',
+      locale: 'pl',
+      images: [{url: articleData?.data?.cover?.src || null}],
     },
-    alert,
-  }).getData();
+  };
+  const dataForLayout: DataForLayout = new ParserApiDataToLayoutData (querySettings?.data, '/', true, true, seoData).getData ();
 
   return {
-    props: { dataForLayout, dataForSectionArticleFull: { ...articleData } },
+    props: {dataForLayout, dataForSectionArticleFull: {...articleData}},
   };
 }

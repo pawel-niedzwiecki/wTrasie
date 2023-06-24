@@ -1,6 +1,6 @@
 import { LayoutWithTwoColumn } from 'layout';
 import { SectionArticleFull } from 'uxu-utils';
-import { DataForLayout, DataForSectionArticleFull, ParserDataFromApiGetArticleToArticleData, ParserDataFromGetSettingApiToLayoutData } from 'utils';
+import { DataForLayout, DataForSectionArticleFull, ParserApiDataToArticle, ParserApiDataToLayoutData } from 'utils';
 import { clientGetArticleQuery, clientGetSettingPageQuery } from 'gql';
 
 type Props = {
@@ -22,7 +22,7 @@ export async function getServerSideProps(context) {
 
   // set data for Article
   const getArticleData = await clientGetArticleQuery({ id: getId });
-  const articleData = new ParserDataFromApiGetArticleToArticleData({
+  const articleData = new ParserApiDataToArticle({
     canonicalURL: `https://wtrasie.pl/a/${slug[ 0 ]}/${slug[ 1 ]}`,
     getArticleData: getArticleData.data,
     isLoading: false,
@@ -30,20 +30,21 @@ export async function getServerSideProps(context) {
 
   // set data for LayoutDefault
   const querySettings = await clientGetSettingPageQuery({ page: 'home' });
-  const dataForLayout: DataForLayout = new ParserDataFromGetSettingApiToLayoutData({
-    data: querySettings.data,
-    slug: `${slug[0]}/${slug[1]}`,
-    seo: {
+  const dataForLayout: DataForLayout = new ParserApiDataToLayoutData(
+    querySettings.data,
+    `${slug[0]}/${slug[1]}`,
+    true,
+    false,
+    {
+    title: getArticleData?.data?.article?.data?.attributes?.seo?.title,
+    description: getArticleData?.data?.article?.data?.attributes?.seo?.description,
+    openGraph: {
+      url: `https://wtrasie.pl/a/${slug[0]}/${slug[1]}`,
       title: getArticleData?.data?.article?.data?.attributes?.seo?.title,
       description: getArticleData?.data?.article?.data?.attributes?.seo?.description,
-      openGraph: {
-        url: `https://wtrasie.pl/a/${slug[0]}/${slug[1]}`,
-        title: getArticleData?.data?.article?.data?.attributes?.seo?.title,
-        description: getArticleData?.data?.article?.data?.attributes?.seo?.description,
-        type: 'website',
-        locale: 'pl',
-        images: [{ url: articleData?.data?.cover?.src }],
-      },
+      type: 'website',
+      locale: 'pl',
+      images: [{ url: articleData?.data?.cover?.src }],
     },
   }).getData();
 
