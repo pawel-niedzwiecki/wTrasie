@@ -1,65 +1,68 @@
 import { LayoutDefault } from 'layout';
-import {
-  DataForLayout,
-  DataForSectionListingArticles,
-  ParserDataFromApiGetArticleListToArticlesListData,
-  ParserDataFromGetSettingApiToLayoutData
-} from '../../utils';
-import { clientGetArticlesListQuery, clientGetSettingPageQuery, clientGetTagQuery } from 'gql';
-import { SectionListingArticles } from 'uxu-utils';
+import { SectionListingArticles, SectionLeadPostWithList } from 'uxu-utils';
+import type { SectionLeadPostWithListProps } from 'uxu-utils';
 import { useHookListingArticles } from "../../hooks";
+import { clientGetArticlesListQuery, clientGetSettingPageQuery, clientGetTagQuery } from 'gql';
+import { DataForLayout, DataForSectionListingArticles, ParserApiDataToLayoutData, TagDataParser } from 'utils';
 
 type Props = {
   idTag: number;
   dataForLayout: DataForLayout;
   dataForSectionListingArticlesSSR: DataForSectionListingArticles;
+  dataForSectionLeadPostWithList: SectionLeadPostWithListProps;
 };
 
-export default function Tag ( {idTag, dataForLayout, dataForSectionListingArticlesSSR}: Props ) {
-
+export default function Tag ({ idTag, dataForLayout, dataForSectionListingArticlesSSR, dataForSectionLeadPostWithList }: Props ) {
   const {dataClient} = useHookListingArticles ( {
     dataSSR: dataForSectionListingArticlesSSR,
     queryVariables: {pageSize: 12, page: 1, type: ['article', 'service'], idTag: `${idTag}`}
-  } )
-
+  } );
 
   return (
-    <LayoutDefault {...dataForLayout}>
+    <LayoutDefault {...dataForLayout} topElement={<SectionLeadPostWithList {...dataForSectionLeadPostWithList} />}>
       <SectionListingArticles dataSSR={dataForSectionListingArticlesSSR} dataClient={dataClient}/>
     </LayoutDefault>
   );
 }
 
-export async function getServerSideProps ( context ) {
-  const {slug} = context.params;
+export async function getServerSideProps ( {params: {slug}} ) {
   const idTag = parseInt ( slug[ 0 ] );
 
-  // set data for SectionListingArticles
-  const articlesList = await clientGetArticlesListQuery ( {page: 1, idTag} );
-  const dataForSectionListingArticlesSSR: DataForSectionListingArticles = new ParserDataFromApiGetArticleListToArticlesListData ( {getArticlesList: articlesList.data} ).getData ();
+  const [getDataTag, articlesList, querySettings] = await Promise.all ( [
+    clientGetTagQuery ( {idTag} ),
+    clientGetArticlesListQuery ( {page: 1, idTag} ),
+    clientGetSettingPageQuery ( {page: 'home'} )
+  ] );
 
-  // set data for LayoutDefault
-  const getDataTag = await clientGetTagQuery ( {idTag} );
-  const querySettings = await clientGetSettingPageQuery ( {page: 'home'} );
-  const dataForLayout: DataForLayout = new ParserDataFromGetSettingApiToLayoutData ( {
-    data: querySettings.data,
-    slug: `${slug[ 0 ]}/${slug[ 1 ]}`,
-    seo: {
-      title: getDataTag?.data?.tag?.data?.attributes?.seo?.title,
-      description: getDataTag?.data?.tag?.data?.attributes?.seo?.description,
-      openGraph: {
-        url: `https://wtrasie.pl/${slug[ 0 ]}/${slug[ 1 ]}`,
-        title: getDataTag?.data?.tag?.data?.attributes?.seo?.title,
-        description: getDataTag?.data?.tag?.data?.attributes?.seo?.description,
-        type: 'website',
-        locale: 'pl',
-        images: [{url: getDataTag?.data?.tag?.data?.attributes?.cover?.data?.attributes?.url}],
-      },
-    },
-  } ).getData ();
+  const {dataForSectionListingArticlesSSR, dataForSectionLeadPostWithList} =
+    new TagDataParser ( {articlesListQuery: articlesList.data, tagQuery: getDataTag.data} ).getData ();
+
+  const dataForLayout = getDataForLayout ( querySettings.data, slug, getDataTag );
 
   return {
-    // Passed to the page component as props
-    props: {dataForLayout, dataForSectionListingArticlesSSR, idTag},
+    props: {dataForLayout, dataForSectionListingArticlesSSR, idTag, dataForSectionLeadPostWithList},
   };
+}
+
+function getDataForLayout ( data, slug, getDataTag ) {
+  const {title, description, cover} = getDataTag?.data?.tag?.data?.attributes?.seo || {};
+  const url = cover?.data?.attributes?.url || null;
+
+  return new ParserApiDataToLayoutData(
+    data,
+    `${slug[ 0 ]}/${slug[ 1 ]}`,
+    true,
+    false,
+    {
+    title,
+    description,
+    openGraph: {
+      url: `https://wtrasie.pl/${slug[ 0 ]}/${slug[ 1 ]}`,
+      title,
+      description,
+      type: 'website',
+      locale: 'pl',
+      images: [{url}],
+    }
+  } ).getData();
 }

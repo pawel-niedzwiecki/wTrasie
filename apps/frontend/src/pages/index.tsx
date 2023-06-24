@@ -3,7 +3,7 @@ import {
   DataForLayout,
   DataForSectionListingArticles,
   ParserDataFromApiGetArticleListToArticlesListData,
-  ParserDataFromGetSettingApiToLayoutData
+  ParserApiDataToLayoutData
 } from 'utils';
 import { SectionListingArticles } from 'uxu-utils';
 import { useHookListingArticles } from 'hooks'
@@ -32,10 +32,7 @@ function Index ( {dataForLayout, dataForSectionListingArticlesSSR}: Props ) {
 export async function getServerSideProps () {
   // set data for LayoutDefault
   const querySettings = await clientGetSettingPageQuery ( {page: 'home'} );
-  const dataForLayout: DataForLayout = new ParserDataFromGetSettingApiToLayoutData ( {
-    data: querySettings.data,
-    slug: '/',
-  } ).getData ();
+  const dataForLayout: DataForLayout = new ParserApiDataToLayoutData (querySettings.data, '/').getData ();
 
   // set data for SectionListingArticles
   const articlesList = await clientGetArticlesListQuery ( {page: 1, type: ['article']} );

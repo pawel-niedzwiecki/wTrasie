@@ -1,7 +1,7 @@
 import { LayoutDefault } from 'layout';
 import { clientGetSearchQuery, clientGetSettingPageQuery } from 'gql';
 import type { DataForLayout, DataForSectionListingArticles } from 'utils';
-import { ParserDataFromApiGetSearchToArticlesListData, ParserDataFromGetSettingApiToLayoutData } from 'utils';
+import { ParserDataFromApiGetSearchToArticlesListData, ParserApiDataToLayoutData } from 'utils';
 import { SectionListingArticles } from 'uxu-utils';
 
 type Props = {
@@ -26,11 +26,13 @@ export async function getServerSideProps(context) {
 
   // set data for LayoutDefault
   const querySettings = await clientGetSettingPageQuery({ page: 'home' });
-  const dataForLayout: DataForLayout = new ParserDataFromGetSettingApiToLayoutData({
-    data: querySettings.data,
-    slug: `/search/${search}`,
-    seo: { title: `Wyniki wyszukiwania dla ${search} - wTrasie.pl` },
-  }).getData();
+  const dataForLayout: DataForLayout = new ParserApiDataToLayoutData(
+    querySettings.data,
+    `/search/${search}`,
+    true,
+    false,
+    { title: `Wyniki wyszukiwania dla ${search} - wTrasie.pl` }
+  ).getData();
 
   return {
     props: { dataForLayout, dataForSectionListingArticlesSSR },

@@ -13,7 +13,7 @@ export class ParserDataFromApiGetTagListToListTitleWithId {
   parseToList ( getTagsList: GetTagsListQuery ) {
     const parseData = getTagsList?.tags?.data.map ( item =>  {
       const id = item?.id;
-      const title = item?.attributes?.title;
+      const title = item?.attributes?.title || null;
       const type = 'tag';
 
       if(id && title && type) return {

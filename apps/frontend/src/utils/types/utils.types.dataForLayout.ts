@@ -4,8 +4,8 @@ import { SiteBarPrimaryDataTypes } from 'uxu-utils/libs/design-system/src/lib/co
 import { SiteBarSecondaryDataTypes } from 'uxu-utils/libs/design-system/src/lib/components/templates/siteBar/secondary/component.siteBar.types';
 
 export type DataForLayout = {
-  seo: NextSeoProps;
-  dataFooter: FooterDataType;
-  siteBarPrimary: SiteBarPrimaryDataTypes;
-  siteBarSecondary: SiteBarSecondaryDataTypes;
+  seo: NextSeoProps | null;
+  dataFooter: FooterDataType | null;
+  siteBarPrimary: SiteBarPrimaryDataTypes | null;
+  siteBarSecondary: SiteBarSecondaryDataTypes | null;
 };
