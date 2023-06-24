@@ -87,7 +87,7 @@ export async function getStaticProps ( context ) {
       images: [{url: articleData?.data?.cover?.src || null}],
     },
   };
-  const dataForLayout: DataForLayout = new ParserApiDataToLayoutData (querySettings?.data, '/', true, true, seoData).getData ();
+  const dataForLayout: DataForLayout = new ParserApiDataToLayoutData (querySettings?.data, '/', true, false, seoData).getData ();
 
   return {
     props: {dataForLayout, dataForSectionArticleFull: {...articleData}},
