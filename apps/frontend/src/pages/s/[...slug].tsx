@@ -90,6 +90,6 @@ export async function getStaticProps ( context ) {
   const dataForLayout: DataForLayout = new ParserApiDataToLayoutData (querySettings?.data, '/', true, false, seoData).getData ();
 
   return {
-    props: {dataForLayout: {...dataForLayout, alert: { title: title, tel: alertPhone }}, dataForSectionArticleFull: {...articleData}},
+    props: {dataForLayout: {...dataForLayout, alert: { title: alertPhone ? title : null, tel: alertPhone }}, dataForSectionArticleFull: {...articleData}},
   };
 }
