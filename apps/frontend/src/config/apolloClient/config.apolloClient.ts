@@ -1,11 +1,10 @@
 import { ApolloClient } from '@apollo/client';
-import { api_url } from 'constants/url';
-import { cache } from './config.cache';
+import { CASCHE } from './config.cache';
 
-export const client = new ApolloClient({
+export const APOLLO_CLIENT = new ApolloClient({
   ssrMode: true,
-  uri: `${api_url}/graphql`,
-  cache,
+  uri: 'https://wtrasie.herokuapp.com/graphql',
+  cache: CASCHE,
   defaultOptions: {
     query: {
       fetchPolicy: 'no-cache',

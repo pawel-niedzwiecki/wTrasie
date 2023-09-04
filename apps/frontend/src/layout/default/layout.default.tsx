@@ -1,53 +1,69 @@
-import { Box, contents, Footer, Grid, Header, SiteBarPrimary, SiteBarSecondary, useBreakpoints } from 'uxu-utils';
-import { Home, Tool } from 'react-feather';
-import { useHookSearch } from 'hooks';
+import React from 'react';
 import { useRouter } from 'next/router';
 import { NextSeo } from 'next-seo';
-import { WrapperAlert } from './../layout.global.styles';
-import { ComponentLayoutDataType } from './../layout.global.types';
+import styles from './layout.default.module.scss';
+import { Footer, Header, SiteBarPrimary, SiteBarSecondary, Logo, useSiteConfig, Tree, Branch, Link, Container, Feedback } from 'uxu-utils';
+import { menuItems } from "./consts";
 
-export const LayoutDefault: ComponentLayoutDataType = (
-  {
-    topElement,
-    siteBarPrimary,
-    siteBarSecondary,
-    dataFooter,
-    seo,
-    alert,
-    children
-  } ) => {
-  const {asPath} = useRouter ();
-  const {setQuery, res} = useHookSearch ();
-  const {isDesktopOrLaptop} = useBreakpoints ();
-
-  const tabs = [
-    {
-      title: 'Home',
-      value: '/',
-      icon: <Home/>,
-      active: asPath === '/'
+export const LayoutDefault = ({ topElement, siteBarPrimary, siteBarSecondary, dataFooter, seo, children }) => {
+  const {
+    client: {
+      platform: { isDesktop },
     },
-    {
-      title: 'Usługi',
-      value: '/s',
-      icon: <Tool/>,
-      active: asPath === '/s'
-    }
-  ];
+  } = useSiteConfig();
+
+  const router = useRouter();
+  const currentSlug = router?.pathname || '/';
+
+  const isLinkActive = (slug) => currentSlug === slug;
+
+  const createNavLink = (slug, title) => (
+    <li key={slug}>
+      <Link href={slug} title={title} className={isLinkActive(slug) ? styles.active : ''}>
+        {title}
+      </Link>
+    </li>
+  );
+
+  const leftAlignedComponents = (
+    <>
+      <Link href="/" title="wTrasie" className={styles.logo}>
+        <Logo brandName={isDesktop ? "wTrasie" : "wTrasieShort"} className={styles.logo} />
+      </Link>
+      {isDesktop && (
+        <nav className={styles.nav}>
+          {menuItems.map(({ slug, title }) => createNavLink(slug, title))}
+        </nav>
+      )}
+    </>
+  );
+
+  const mobileVerticalModal = (
+    <Tree activeSlug={currentSlug} full>
+      {menuItems.map(({ slug, title }) => (
+        <Branch key={slug} title={title} url={slug} active={isLinkActive(slug)} />
+      ))}
+    </Tree>
+  );
 
   return (
     <>
       <NextSeo {...seo} />
-      <Header ComponentAaboveHeader={alert && <WrapperAlert {...alert} />} res={res}
-              tabs={tabs} callBack={( search: string ) => setQuery ( search )}/>
+      <Header
+        mobileVerticalModal={mobileVerticalModal}
+        leftAlignedComponents={leftAlignedComponents}
+        rightAlignedComponents={<Feedback/>}
+      />
+      <div className={styles.headerBox}></div>
       {topElement}
-      <Grid gridTemplateColumns={{xs: '1fr', m: '250px 1fr', l: '250px 1fr 250px'}}
-            style={{maxWidth: contents.maxWidth, margin: '0 auto'}} container>
-        <SiteBarPrimary {...siteBarPrimary} />
-        <Box position="relative">{children}</Box>
-        {isDesktopOrLaptop && <SiteBarSecondary {...siteBarSecondary} />}
-      </Grid>
-      <Footer columns={dataFooter?.columns}/>
+      <Container>
+        <div className={styles.container}>
+          <SiteBarPrimary {...siteBarPrimary} />
+          <div style={{ position: 'relative' }}>{children}</div>
+          {isDesktop && <SiteBarSecondary {...siteBarSecondary} />}
+        </div>
+      </Container>
+      <Footer footerColumnDataWithHeaderAndLinks={dataFooter?.columns} />
     </>
   );
 };

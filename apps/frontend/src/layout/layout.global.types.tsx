@@ -1,20 +1,17 @@
-import { FC } from 'react';
 import { NextSeoProps } from 'next-seo';
-import type { FunctionComponentDiv } from 'uxu-utils';
+import { PropsWithChildren } from "react";
 import type { SiteBarPrimaryDataTypes } from 'uxu-utils/libs/design-system/src/lib/components/templates/siteBar/primary/component.siteBar.primary.types';
 import type { SiteBarSecondaryDataTypes } from 'uxu-utils/libs/design-system/src/lib/components/templates/siteBar/secondary/component.siteBar.types';
-import type { FooterDataType } from 'uxu-utils/libs/design-system/src/lib/components/templates/footer/component.footer.types';
+import type { FooterProps } from 'uxu-utils/libs/design-system/src/lib/components/templates/footer/footer.types';
 
-export type SpecialProps = {
+export type LayoutProps = PropsWithChildren<{
   topElement?: JSX.Element | JSX.Element[] | null;
   siteBarSecondary?: SiteBarSecondaryDataTypes | null;
   siteBarPrimary?: SiteBarPrimaryDataTypes | null;
   seo?: NextSeoProps | null;
-  dataFooter?: FooterDataType | null;
+  dataFooter?: FooterProps | null;
   alert?: {
     tel: string | null;
     title: string | null;
   } | null
-};
-
-export type ComponentLayoutDataType = FC<FunctionComponentDiv & SpecialProps>;
+}>;

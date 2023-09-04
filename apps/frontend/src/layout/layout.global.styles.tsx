@@ -5,7 +5,7 @@ export const WrapperAlert = styled(Alert)`
   font-size: 3rem;
   padding: 6rem 1.5rem;
 
-  a{
+  a {
     font-size: 3rem;
   }
 `;

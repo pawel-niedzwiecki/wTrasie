@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { PropsWithChildren } from 'react';
 import { ApolloProvider } from '@apollo/client';
-import {client} from 'config'
+import { APOLLO_CLIENT } from 'config'
 
 
-export const ApolloCLientProvider = ({ children }) => (<ApolloProvider client={client}>{children}</ApolloProvider>);
+type ApolloCLientProviderProps = PropsWithChildren
+export const ApolloCLientProvider = ({ children }: ApolloCLientProviderProps) => (<ApolloProvider client={APOLLO_CLIENT}>{children}</ApolloProvider>);
