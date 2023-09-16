@@ -52,14 +52,14 @@ export const LayoutDefault = ({ topElement, siteBarPrimary, siteBarSecondary, da
       <Header
         mobileVerticalModal={mobileVerticalModal}
         leftAlignedComponents={leftAlignedComponents}
-        rightAlignedComponents={<Feedback switchModalButtonText="sugestia" onFeedbackSubmit={async (data: { email: string; message: string; feedbackRating: string;}) => {
+        rightAlignedComponents={isDesktop && (<Feedback modalAlignment="right" switchModalButtonText="sugestia" onFeedbackSubmit={async (data: { email: string; message: string; feedbackRating: string;}) => {
           console.log(data)
           return new Promise(resolve => {
             setTimeout(() => {
               resolve({ success: true });
             }, 5000);
           });
-        }}/>}
+        }}/>)}
       />
       <div className={styles.headerBox}></div>
       {topElement}
