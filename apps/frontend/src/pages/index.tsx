@@ -1,46 +1,51 @@
-import { LayoutDefault } from 'layout';
-import {
-  DataForLayout,
-  DataForSectionListingArticles,
-  ParserDataFromApiGetArticleListToArticlesListData,
-  ParserApiDataToLayoutData
-} from 'utils';
-import { SectionListingArticles } from 'uxu-utils';
-import { useHookListingArticles } from 'hooks'
-import { clientGetArticlesListQuery, clientGetSettingPageQuery } from 'gql';
+import { defaultSuggestions } from 'config';
+import { SectionInfiniteScroll, LayoutListingPost, useSEOConfig, PostList } from 'uxu-utils';
+import { useSearch } from 'hooks';
+import { useGetArticlesQuery } from 'gql';
+import { adapterArticlesData } from 'utils';
+
+function Index() {
+  const onSearchQuery = useSearch();
+  const seo = useSEOConfig({});
+
+  const { data, fetchMore } = useGetArticlesQuery({
+    variables: {
+      pageSize: 12,
+      page: 1,
+      type: ['article']
+    }
+  });
 
 
-type Props = {
-  dataForLayout: DataForLayout;
-  dataForSectionListingArticlesSSR: DataForSectionListingArticles;
-};
+  const test = adapterArticlesData(data)
 
-function Index ( {dataForLayout, dataForSectionListingArticlesSSR}: Props ) {
+  console.log(test, 'test')
 
-  const {dataClient} = useHookListingArticles ( {
-    dataSSR: dataForSectionListingArticlesSSR,
-    queryVariables: {pageSize: 12, page: 1, type: ['article']}
-  } )
+  const handleScrollEnd = async (page: number): Promise<{ page?: number }> => {
+    return new Promise(resolve => {
+      setTimeout(() => {
+        resolve({ page: 2 });
+      }, 10000); // 10 sekund
+    });
+  };
 
   return (
-    <LayoutDefault {...dataForLayout}>
-      <SectionListingArticles dataSSR={dataForSectionListingArticlesSSR} dataClient={dataClient}/>
-    </LayoutDefault>
+    <LayoutListingPost
+      seo={seo}
+      siteBarLeft={<p>left</p>}
+      siteBarRight={<p>right</p>}
+      searchEngine={{ defaultSuggestions, onSearchQuery }}
+      footer={{ brand: "wTrasie", footerColumns: [] }}
+    >
+      <SectionInfiniteScroll
+        onScrollEnd={handleScrollEnd}
+        page={1}
+        pageCount={2}
+      >
+        <PostList />
+      </SectionInfiniteScroll>
+    </LayoutListingPost>
   );
-}
-
-export async function getServerSideProps () {
-  // set data for LayoutDefault
-  const querySettings = await clientGetSettingPageQuery ( {page: 'home'} );
-  const dataForLayout: DataForLayout = new ParserApiDataToLayoutData (querySettings.data, '/').getData ();
-
-  // set data for SectionListingArticles
-  const articlesList = await clientGetArticlesListQuery ( {page: 1, type: ['article']} );
-  const dataForSectionListingArticlesSSR: DataForSectionListingArticles = new ParserDataFromApiGetArticleListToArticlesListData ( {getArticlesList: articlesList.data} ).getData ();
-
-  return {
-    props: {dataForSectionListingArticlesSSR, dataForLayout},
-  };
 }
 
 export default Index;

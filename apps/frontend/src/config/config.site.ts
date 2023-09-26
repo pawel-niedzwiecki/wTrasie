@@ -1,7 +1,7 @@
 import { SiteConfigTypes, SiteIdEnums } from "uxu-utils";
 import { NextRouter } from "next/router";
 
-export const SITE_CONFIG = ( clientLocale: string, isMobilePlatform: boolean, router: NextRouter ): SiteConfigTypes => ({
+export const SITE_CONFIG = ( clientLocale: string, isMobilePlatform: boolean, router: NextRouter, osInfo: { isWindows: false,  isLinux: false, isMacOS: false } ): SiteConfigTypes => ({
   ads: {
     enabled: true
   },
@@ -17,6 +17,7 @@ export const SITE_CONFIG = ( clientLocale: string, isMobilePlatform: boolean, ro
     slug:   router.asPath,
     defaultCover: 'https://wtrasie.pl/defaultCover.png',
     canonicalUrl: `https://wtrasie.pl${router.asPath}`,
+    images: [{ url: 'https://wtrasie.pl/ogWTrasie.png' }],
     title: 'wTrasie - Wszystko co ważne w trasie',
     shortname: 'wt',
     description: 'wTrasie.pl - W Trasie, informacje prosto z trasy i ulic Twojego miasta. informacje na temat wypadków, wydarzeń oraz firm przydatnych w trasie',
@@ -34,6 +35,7 @@ export const SITE_CONFIG = ( clientLocale: string, isMobilePlatform: boolean, ro
     platform: {
       isDesktop: !isMobilePlatform,
       isMobile: isMobilePlatform,
-    }
+    },
+    osInfo: osInfo
   }
 });

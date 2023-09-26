@@ -1,7 +1,6 @@
 export * from './gql.query.article.generated.type';
 export * from './gql.query.count.generated.type';
 export * from './gql.query.setting.generated.type';
-export * from './gql.query.search.generated.type';
 export * from './gql.query.client.generated.type';
 export * from './gql.query.tag.generated.type';
 export * from './gql.fragment.contentParts.generated.type';
@@ -10,3 +9,4 @@ export * from './gql.fragment.lead.generated.type';
 export * from './gql.fragment.views.generated.type';
 export * from './gql.fragment.adress.generated.type';
 export * from './gql.fragment.phone.generated.type';
+export * from './querySearch.generated.type';

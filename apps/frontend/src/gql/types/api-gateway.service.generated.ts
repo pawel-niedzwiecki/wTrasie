@@ -24,6 +24,7 @@ export type Article = {
   contentparts: Array<Maybe<ArticleContentpartsDynamicZone>>;
   cover: UploadFileEntityResponse;
   createdAt?: Maybe<Scalars['DateTime']>;
+  id?: Maybe<Scalars['String']>;
   lead: ComponentContentPartsLead;
   publishedAt?: Maybe<Scalars['DateTime']>;
   seo: ComponentOthersSeo;
@@ -110,6 +111,7 @@ export type BooleanFilterInput = {
   lt?: InputMaybe<Scalars['Boolean']>;
   lte?: InputMaybe<Scalars['Boolean']>;
   ne?: InputMaybe<Scalars['Boolean']>;
+  nei?: InputMaybe<Scalars['Boolean']>;
   not?: InputMaybe<BooleanFilterInput>;
   notContains?: InputMaybe<Scalars['Boolean']>;
   notContainsi?: InputMaybe<Scalars['Boolean']>;
@@ -558,6 +560,7 @@ export type DateTimeFilterInput = {
   lt?: InputMaybe<Scalars['DateTime']>;
   lte?: InputMaybe<Scalars['DateTime']>;
   ne?: InputMaybe<Scalars['DateTime']>;
+  nei?: InputMaybe<Scalars['DateTime']>;
   not?: InputMaybe<DateTimeFilterInput>;
   notContains?: InputMaybe<Scalars['DateTime']>;
   notContainsi?: InputMaybe<Scalars['DateTime']>;
@@ -676,6 +679,7 @@ export type FloatFilterInput = {
   lt?: InputMaybe<Scalars['Float']>;
   lte?: InputMaybe<Scalars['Float']>;
   ne?: InputMaybe<Scalars['Float']>;
+  nei?: InputMaybe<Scalars['Float']>;
   not?: InputMaybe<FloatFilterInput>;
   notContains?: InputMaybe<Scalars['Float']>;
   notContainsi?: InputMaybe<Scalars['Float']>;
@@ -738,6 +742,7 @@ export type IdFilterInput = {
   lt?: InputMaybe<Scalars['ID']>;
   lte?: InputMaybe<Scalars['ID']>;
   ne?: InputMaybe<Scalars['ID']>;
+  nei?: InputMaybe<Scalars['ID']>;
   not?: InputMaybe<IdFilterInput>;
   notContains?: InputMaybe<Scalars['ID']>;
   notContainsi?: InputMaybe<Scalars['ID']>;
@@ -762,6 +767,7 @@ export type IntFilterInput = {
   lt?: InputMaybe<Scalars['Int']>;
   lte?: InputMaybe<Scalars['Int']>;
   ne?: InputMaybe<Scalars['Int']>;
+  nei?: InputMaybe<Scalars['Int']>;
   not?: InputMaybe<IntFilterInput>;
   notContains?: InputMaybe<Scalars['Int']>;
   notContainsi?: InputMaybe<Scalars['Int']>;
@@ -786,6 +792,7 @@ export type JsonFilterInput = {
   lt?: InputMaybe<Scalars['JSON']>;
   lte?: InputMaybe<Scalars['JSON']>;
   ne?: InputMaybe<Scalars['JSON']>;
+  nei?: InputMaybe<Scalars['JSON']>;
   not?: InputMaybe<JsonFilterInput>;
   notContains?: InputMaybe<Scalars['JSON']>;
   notContainsi?: InputMaybe<Scalars['JSON']>;
@@ -798,16 +805,13 @@ export type JsonFilterInput = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  /** Change user password. Confirm with the current password. */
   changePassword?: Maybe<UsersPermissionsLoginPayload>;
   createArticle?: Maybe<ArticleEntityResponse>;
   createClient?: Maybe<ClientEntityResponse>;
   createTag?: Maybe<TagEntityResponse>;
   createUploadFile?: Maybe<UploadFileEntityResponse>;
   createUploadFolder?: Maybe<UploadFolderEntityResponse>;
-  /** Create a new role */
   createUsersPermissionsRole?: Maybe<UsersPermissionsCreateRolePayload>;
-  /** Create a new user */
   createUsersPermissionsUser: UsersPermissionsUserEntityResponse;
   deleteArticle?: Maybe<ArticleEntityResponse>;
   deleteClient?: Maybe<ClientEntityResponse>;
@@ -815,20 +819,14 @@ export type Mutation = {
   deleteTag?: Maybe<TagEntityResponse>;
   deleteUploadFile?: Maybe<UploadFileEntityResponse>;
   deleteUploadFolder?: Maybe<UploadFolderEntityResponse>;
-  /** Delete an existing role */
   deleteUsersPermissionsRole?: Maybe<UsersPermissionsDeleteRolePayload>;
-  /** Delete an existing user */
   deleteUsersPermissionsUser: UsersPermissionsUserEntityResponse;
-  /** Confirm an email users email address */
   emailConfirmation?: Maybe<UsersPermissionsLoginPayload>;
-  /** Request a reset password token */
   forgotPassword?: Maybe<UsersPermissionsPasswordPayload>;
   login: UsersPermissionsLoginPayload;
   multipleUpload: Array<Maybe<UploadFileEntityResponse>>;
-  /** Register a user */
   register: UsersPermissionsLoginPayload;
   removeFile?: Maybe<UploadFileEntityResponse>;
-  /** Reset user password. Confirm with a code (resetToken from forgotPassword) */
   resetPassword?: Maybe<UsersPermissionsLoginPayload>;
   updateArticle?: Maybe<ArticleEntityResponse>;
   updateClient?: Maybe<ClientEntityResponse>;
@@ -837,9 +835,7 @@ export type Mutation = {
   updateTag?: Maybe<TagEntityResponse>;
   updateUploadFile?: Maybe<UploadFileEntityResponse>;
   updateUploadFolder?: Maybe<UploadFolderEntityResponse>;
-  /** Update an existing role */
   updateUsersPermissionsRole?: Maybe<UsersPermissionsUpdateRolePayload>;
-  /** Update an existing user */
   updateUsersPermissionsUser: UsersPermissionsUserEntityResponse;
   upload: UploadFileEntityResponse;
 };
@@ -1052,7 +1048,7 @@ export type Query = {
   i18NLocale?: Maybe<I18NLocaleEntityResponse>;
   i18NLocales?: Maybe<I18NLocaleEntityResponseCollection>;
   me?: Maybe<UsersPermissionsMe>;
-  search?: Maybe<SearchResponse>;
+  searchResults: SearchResults;
   setting?: Maybe<SettingEntityResponse>;
   tag?: Maybe<TagEntityResponse>;
   tags?: Maybe<TagEntityResponseCollection>;
@@ -1105,8 +1101,7 @@ export type QueryI18NLocalesArgs = {
 };
 
 
-export type QuerySearchArgs = {
-  locale?: InputMaybe<Scalars['String']>;
+export type QuerySearchResultsArgs = {
   query: Scalars['String'];
 };
 
@@ -1176,10 +1171,9 @@ export type ResponseCollectionMeta = {
   pagination: Pagination;
 };
 
-export type SearchResponse = {
-  __typename?: 'SearchResponse';
-  articles?: Maybe<ArticleEntityResponseCollection>;
-  tags?: Maybe<TagEntityResponseCollection>;
+export type SearchResults = {
+  __typename?: 'SearchResults';
+  hits?: Maybe<Array<Maybe<Article>>>;
 };
 
 export type Setting = {
@@ -1238,6 +1232,7 @@ export type StringFilterInput = {
   lt?: InputMaybe<Scalars['String']>;
   lte?: InputMaybe<Scalars['String']>;
   ne?: InputMaybe<Scalars['String']>;
+  nei?: InputMaybe<Scalars['String']>;
   not?: InputMaybe<StringFilterInput>;
   notContains?: InputMaybe<Scalars['String']>;
   notContainsi?: InputMaybe<Scalars['String']>;

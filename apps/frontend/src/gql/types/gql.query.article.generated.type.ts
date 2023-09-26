@@ -13,15 +13,14 @@ export type GetArticleQueryVariables = Types.Exact<{
 
 export type GetArticleQuery = { __typename?: 'Query', article?: { __typename?: 'ArticleEntityResponse', data?: { __typename: 'ArticleEntity', id?: string | null, attributes?: { __typename?: 'Article', type: Types.Enum_Article_Type, title: string, createdAt?: any | null, seo: { __typename?: 'ComponentOthersSeo', id: string, title?: string | null, description?: string | null }, cover: { __typename: 'UploadFileEntityResponse', data?: { __typename?: 'UploadFileEntity', id?: string | null, attributes?: { __typename?: 'UploadFile', url: string, caption?: string | null, alternativeText?: string | null, formats?: any | null } | null } | null }, lead: { __typename: 'ComponentContentPartsLead', id: string, lead: string }, tags?: { __typename: 'TagRelationResponseCollection', data: Array<{ __typename?: 'TagEntity', id?: string | null, attributes?: { __typename?: 'Tag', title: string } | null }> } | null, author?: { __typename: 'UsersPermissionsUserEntityResponse', data?: { __typename?: 'UsersPermissionsUserEntity', id?: string | null, attributes?: { __typename?: 'UsersPermissionsUser', username: string, avatar?: { __typename?: 'UploadFileEntityResponse', data?: { __typename?: 'UploadFileEntity', attributes?: { __typename?: 'UploadFile', url: string, caption?: string | null, alternativeText?: string | null, formats?: any | null } | null } | null } | null } | null } | null } | null, views: { __typename: 'ComponentStatsViews', id: string, views: number }, contentparts: Array<{ __typename?: 'ComponentContentPartsMedia', id: string, media: { __typename: 'UploadFileEntityResponse', data?: { __typename?: 'UploadFileEntity', id?: string | null, attributes?: { __typename?: 'UploadFile', url: string, caption?: string | null, alternativeText?: string | null, formats?: any | null } | null } | null } } | { __typename: 'ComponentContentPartsQuote', id: string, quote: string } | { __typename: 'ComponentContentPartsTxt', id: string, txt: string } | { __typename: 'ComponentContentPartsYoutube', id: string, url: string } | { __typename?: 'Error' } | null> } | null } | null } | null };
 
-export type GetArticlesListQueryVariables = Types.Exact<{
+export type GetArticlesQueryVariables = Types.Exact<{
   pageSize: Types.Scalars['Int'];
   page: Types.Scalars['Int'];
   type: Array<Types.InputMaybe<Types.Scalars['String']>> | Types.InputMaybe<Types.Scalars['String']>;
-  idTag?: Types.InputMaybe<Types.Scalars['ID']>;
 }>;
 
 
-export type GetArticlesListQuery = { __typename?: 'Query', articles?: { __typename?: 'ArticleEntityResponseCollection', data: Array<{ __typename: 'ArticleEntity', id?: string | null, attributes?: { __typename?: 'Article', type: Types.Enum_Article_Type, title: string, createdAt?: any | null, cover: { __typename: 'UploadFileEntityResponse', data?: { __typename?: 'UploadFileEntity', id?: string | null, attributes?: { __typename?: 'UploadFile', url: string, caption?: string | null, alternativeText?: string | null, formats?: any | null } | null } | null }, tags?: { __typename: 'TagRelationResponseCollection', data: Array<{ __typename?: 'TagEntity', id?: string | null, attributes?: { __typename?: 'Tag', title: string } | null }> } | null, author?: { __typename: 'UsersPermissionsUserEntityResponse', data?: { __typename?: 'UsersPermissionsUserEntity', id?: string | null, attributes?: { __typename?: 'UsersPermissionsUser', username: string, avatar?: { __typename?: 'UploadFileEntityResponse', data?: { __typename?: 'UploadFileEntity', attributes?: { __typename?: 'UploadFile', url: string, caption?: string | null, alternativeText?: string | null, formats?: any | null } | null } | null } | null } | null } | null } | null, views: { __typename: 'ComponentStatsViews', id: string, views: number } } | null }>, meta: { __typename: 'ResponseCollectionMeta', pagination: { __typename?: 'Pagination', page: number, total: number, pageSize: number, pageCount: number } } } | null };
+export type GetArticlesQuery = { __typename?: 'Query', articles?: { __typename?: 'ArticleEntityResponseCollection', data: Array<{ __typename: 'ArticleEntity', id?: string | null, attributes?: { __typename?: 'Article', type: Types.Enum_Article_Type, title: string, createdAt?: any | null, cover: { __typename: 'UploadFileEntityResponse', data?: { __typename?: 'UploadFileEntity', id?: string | null, attributes?: { __typename?: 'UploadFile', url: string, caption?: string | null, alternativeText?: string | null, formats?: any | null } | null } | null }, tags?: { __typename: 'TagRelationResponseCollection', data: Array<{ __typename?: 'TagEntity', id?: string | null, attributes?: { __typename?: 'Tag', title: string } | null }> } | null, author?: { __typename: 'UsersPermissionsUserEntityResponse', data?: { __typename?: 'UsersPermissionsUserEntity', id?: string | null, attributes?: { __typename?: 'UsersPermissionsUser', username: string, avatar?: { __typename?: 'UploadFileEntityResponse', data?: { __typename?: 'UploadFileEntity', attributes?: { __typename?: 'UploadFile', url: string, caption?: string | null, alternativeText?: string | null, formats?: any | null } | null } | null } | null } | null } | null } | null, views: { __typename: 'ComponentStatsViews', id: string, views: number } } | null }>, meta: { __typename: 'ResponseCollectionMeta', pagination: { __typename?: 'Pagination', page: number, total: number, pageSize: number, pageCount: number } } } | null };
 
 
 export const GetArticleDocument = gql`
@@ -129,11 +128,11 @@ export function useGetArticleLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions
 export type GetArticleQueryHookResult = ReturnType<typeof useGetArticleQuery>;
 export type GetArticleLazyQueryHookResult = ReturnType<typeof useGetArticleLazyQuery>;
 export type GetArticleQueryResult = Apollo.QueryResult<GetArticleQuery, GetArticleQueryVariables>;
-export const GetArticlesListDocument = gql`
-    query GetArticlesList($pageSize: Int!, $page: Int!, $type: [String]!, $idTag: ID) {
+export const GetArticlesDocument = gql`
+    query GetArticles($pageSize: Int!, $page: Int!, $type: [String]!) {
   articles(
     pagination: {pageSize: $pageSize, page: $page}
-    filters: {type: {in: $type}, tags: {id: {eq: $idTag}}}
+    filters: {type: {in: $type}}
     sort: ["createdAt:DESC"]
   ) {
     data {
@@ -202,32 +201,31 @@ export const GetArticlesListDocument = gql`
     ${FragmentDataViewsFragmentDoc}`;
 
 /**
- * __useGetArticlesListQuery__
+ * __useGetArticlesQuery__
  *
- * To run a query within a React component, call `useGetArticlesListQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetArticlesListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useGetArticlesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetArticlesQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetArticlesListQuery({
+ * const { data, loading, error } = useGetArticlesQuery({
  *   variables: {
  *      pageSize: // value for 'pageSize'
  *      page: // value for 'page'
  *      type: // value for 'type'
- *      idTag: // value for 'idTag'
  *   },
  * });
  */
-export function useGetArticlesListQuery(baseOptions: Apollo.QueryHookOptions<GetArticlesListQuery, GetArticlesListQueryVariables>) {
+export function useGetArticlesQuery(baseOptions: Apollo.QueryHookOptions<GetArticlesQuery, GetArticlesQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetArticlesListQuery, GetArticlesListQueryVariables>(GetArticlesListDocument, options);
+        return Apollo.useQuery<GetArticlesQuery, GetArticlesQueryVariables>(GetArticlesDocument, options);
       }
-export function useGetArticlesListLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetArticlesListQuery, GetArticlesListQueryVariables>) {
+export function useGetArticlesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetArticlesQuery, GetArticlesQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetArticlesListQuery, GetArticlesListQueryVariables>(GetArticlesListDocument, options);
+          return Apollo.useLazyQuery<GetArticlesQuery, GetArticlesQueryVariables>(GetArticlesDocument, options);
         }
-export type GetArticlesListQueryHookResult = ReturnType<typeof useGetArticlesListQuery>;
-export type GetArticlesListLazyQueryHookResult = ReturnType<typeof useGetArticlesListLazyQuery>;
-export type GetArticlesListQueryResult = Apollo.QueryResult<GetArticlesListQuery, GetArticlesListQueryVariables>;
+export type GetArticlesQueryHookResult = ReturnType<typeof useGetArticlesQuery>;
+export type GetArticlesLazyQueryHookResult = ReturnType<typeof useGetArticlesLazyQuery>;
+export type GetArticlesQueryResult = Apollo.QueryResult<GetArticlesQuery, GetArticlesQueryVariables>;

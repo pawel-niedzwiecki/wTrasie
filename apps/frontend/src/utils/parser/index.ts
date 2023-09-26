@@ -1,5 +1,4 @@
-export * from './parserApiDataToLayoutData';
-export * from './parserDataFromApiGetArticleListToArticlesListData';
+export * from '../adapters/adapterArticlesData';
 export * from './parserApiDataToArticle';
 export * from './parserDataFromApiGetSearchToArticlesListData';
 export * from './parseArticlesToTitleIdSlug';

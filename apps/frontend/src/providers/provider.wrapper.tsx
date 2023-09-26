@@ -9,12 +9,13 @@ import { ThemeProvider } from 'styled-components';
 type Props = PropsWithChildren<{
   clientLocale: string;
   isMobilePlatform: boolean;
+  osInfo: { isWindows: boolean, isLinux: boolean, isMacOS: boolean };
 }>;
 
 
-export const WrapperProviders = ( {children, clientLocale, isMobilePlatform}: Props ) => {
+export const WrapperProviders = ( { children, clientLocale, isMobilePlatform, osInfo }: Props ) => {
   return (
-    <SiteConfigProvider clientLocale={clientLocale} isMobilePlatform={isMobilePlatform} SITE_CONFIG={SITE_CONFIG}>
+    <SiteConfigProvider clientLocale={clientLocale} isMobilePlatform={isMobilePlatform} osInfo={osInfo} SITE_CONFIG={SITE_CONFIG}>
       <ThemeProvider theme={theme}>
         <SEOProvider>
           <ApolloCLientProvider>{children}</ApolloCLientProvider>

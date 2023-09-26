@@ -2,10 +2,10 @@ import App, { AppProps , AppContext} from 'next/app';
 import { WrapperProviders } from 'providers';
 import 'uxu-utils/libs/design-system/src/lib/style/globalStyle.scss'
 
-function CustomApp({ Component, pageProps, clientLocale, isMobilePlatform  }: AppProps & { clientLocale: string, isMobilePlatform: boolean }) {
+function CustomApp({ Component, pageProps, clientLocale, isMobilePlatform, osInfo }: AppProps & { clientLocale: string, isMobilePlatform: boolean, osInfo: { isWindows: boolean, isLinux: boolean, isMacOS: boolean } }) {
   return (
       <main className='app'>
-        <WrapperProviders clientLocale={clientLocale} isMobilePlatform={isMobilePlatform}>
+        <WrapperProviders clientLocale={clientLocale} isMobilePlatform={isMobilePlatform} osInfo={osInfo}>
           <Component {...pageProps} />
         </WrapperProviders>
       </main>
@@ -19,8 +19,12 @@ CustomApp.getInitialProps = async (appContext: AppContext) => {
   const clientLocale = ctx.req ? ctx.req.headers["accept-language"] : navigator.language;
   const userAgent = ctx.req ? ctx.req.headers['user-agent'] : navigator.userAgent;
   const isMobilePlatform = Boolean(userAgent.match(/Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i));
+  const isWindows = /Windows NT/i.test(userAgent);
+  const isLinux = /Linux/i.test(userAgent) && !/Android/i.test(userAgent);
+  const isMacOS = /Mac OS X/i.test(userAgent);
 
-  return { ...appProps, clientLocale, isMobilePlatform };
+
+  return { ...appProps, clientLocale, isMobilePlatform, osInfo: { isWindows, isLinux, isMacOS } };
 }
 
 export default CustomApp;
