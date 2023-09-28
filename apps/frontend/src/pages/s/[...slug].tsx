@@ -36,9 +36,11 @@ export async function getStaticPaths() {
   const getArticlesQuery = await clientGetArticlesQuery({ pageSize: 25, page: 1, type: ['service'] });
   const data = await connectQueries({
     functionQuery: clientGetArticlesQuery,
-    variablesQuery: { pageSize: getArticlesQuery?.data?.articles?.meta?.pagination?.pageCount || 1, type: ['service']},
-    pageCount: 25
+    variablesQuery: { pageSize: 25, type: ['service']},
+    pageCount: getArticlesQuery?.data?.articles?.meta?.pagination?.pageCount || 1
   });
+
+  console.log(data, 'data')
 
   // eslint-disable-next-line prefer-spread
   const articles = [].concat.apply ([], data.map (pageWithArts => {

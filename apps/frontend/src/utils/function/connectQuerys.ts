@@ -11,7 +11,8 @@ type Props<T, V> = {
 
 export async function connectQueries<T, V>( {functionQuery, variablesQuery, pageCount}: Props<T, V>): Promise<Array<T>> {
   return await Promise.all(new Array(pageCount).fill(null).map(async (_, index) => {
-    const query = await functionQuery ( {...variablesQuery, page: index + 1 } );
+    const query = await functionQuery({...variablesQuery, page: index + 1 });
+    console.log(query, 'query');
     return query.data
   }))
 }
