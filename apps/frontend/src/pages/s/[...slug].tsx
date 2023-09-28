@@ -33,11 +33,11 @@ export default function Service ({ articleData, clientPhone }: ServiceProps ) {
 
 export async function getStaticPaths() {
 
- // const getArticlesQuery = await clientGetArticlesQuery({ pageSize: 10, page: 1, type: ['service'] });
+  const getArticlesQuery = await clientGetArticlesQuery({ pageSize: 10, page: 1, type: ['service'] });
   const data = await connectQueries({
     functionQuery: clientGetArticlesQuery,
     variablesQuery: { pageSize: 10, type: ['service']},
-    pageCount: 12
+    pageCount: getArticlesQuery?.data?.articles?.meta?.pagination?.pageCount || 14
   });
 
   // eslint-disable-next-line prefer-spread
