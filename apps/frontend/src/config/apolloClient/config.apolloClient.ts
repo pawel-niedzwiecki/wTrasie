@@ -8,7 +8,6 @@ export const APOLLO_CLIENT = new ApolloClient({
   cache: CACHE,
   defaultOptions: {
     query: {
-      fetchPolicy: 'no-cache',
       errorPolicy: 'all',
     },
   }
