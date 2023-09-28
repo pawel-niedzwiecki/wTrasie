@@ -1,7 +1,6 @@
 overwrite: true
 schema:
-  - http://localhost:1337/graphql:
-      method: GET
+  - 'apps/frontend/src/gql/stubs/schema.graphql'
 documents: [ "apps/frontend/src/gql/fragments/**/*.ts" ,"apps/frontend/src/gql/query/**/*.ts" ]
 generates:
   ./apps/frontend/src/gql/types/api-gateway.service.generated.ts:

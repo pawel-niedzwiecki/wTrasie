@@ -1,9 +1,9 @@
 import {
-  connectQuerys,
+  connectQueries,
   ParseArticlesToTitleIdSlug,
   ParserDataFromApiGetTagListToListTitleWithId,
 } from 'utils';
-import { clientGetTagListQuery, clientGetArticlesListQuery } from 'gql';
+import { clientGetTagListQuery, clientGetArticlesQuery } from 'gql';
 
 
 const EXTERNAL_DATA_URL = 'https://wtrasie.pl';
@@ -38,9 +38,9 @@ export default function SiteMap() {
 
 export async function getServerSideProps ({res}) {
 
-  const queryListArticles = await clientGetArticlesListQuery ( { pageSize: 25, page: 1, type: ['article', 'service'] } );
-  const dataListArticles = await connectQuerys ( {
-    functionQuery: clientGetArticlesListQuery,
+  const queryListArticles = await clientGetArticlesQuery( { pageSize: 25, page: 1, type: ['article', 'service'] } );
+  const dataListArticles = await connectQueries ( {
+    functionQuery: clientGetArticlesQuery,
     variablesQuery: { pageSize: 25, type: ['article', 'service'] },
     pageCount: queryListArticles?.data?.articles?.meta?.pagination?.pageCount || 1
   } )
@@ -54,7 +54,7 @@ export async function getServerSideProps ({res}) {
 
   // tags query && list
   const queryListTags = await clientGetTagListQuery ( { pageSize: 25, page: 1 } );
-  const dataListTags = await connectQuerys( {
+  const dataListTags = await connectQueries( {
     functionQuery: clientGetTagListQuery,
     variablesQuery: { pageSize: 25 },
     pageCount: queryListTags?.data?.tags?.meta?.pagination?.pageCount || 1
