@@ -1,95 +1,72 @@
-import { LayoutWithTwoColumn } from 'layout';
-import { useRouter } from 'next/router';
-import { SectionArticleFull, createSlug } from 'uxu-utils';
-import type { DataForLayout, DataForSectionArticleFull } from 'utils';
-import {
-  connectQuerys,
-  ParseArticlesToTitleIdSlug,
-  ParserApiDataToArticle,
-  ParserApiDataToLayoutData
-} from 'utils';
-import {
-  clientClientsListWithFiltresShortNameQuery,
-  clientGetArticleQuery,
-  clientGetArticlesListQuery,
-  clientGetSettingPageQuery
-} from 'gql';
+import type { PostViewData } from 'uxu-utils';
+import { createSlug, useSEOConfig, LayoutPostView, PostView, AdPhoneClient } from 'uxu-utils';
+import { adapterArticleData, connectQueries, ParseArticlesToTitleIdSlug } from 'utils';
+import { clientGetArticleQuery, clientGetArticlesQuery, clientClientsListWithFiltresShortNameQuery } from 'gql';
+import { useSearch } from "../../hooks";
+import { defaultSuggestions } from "../../config";
 
-type Props = {
-  dataForLayout: DataForLayout;
-  dataForSectionArticleFull: DataForSectionArticleFull;
+type ServiceProps = {
+  clientPhone?: string;
+  articleData: PostViewData;
 };
 
-export default function Service ( {dataForLayout, dataForSectionArticleFull}: Props ) {
-  const {query} = useRouter ();
-
-  if ( query?.alertTel && query?.alertTitle )
-    dataForLayout[ 'alert' ] = {
-      tel: `+${query.alertTel}`,
-      title: `${query.alertTitle}`,
-    };
+export default function Service ({ articleData, clientPhone }: ServiceProps ) {
+  const onSearchQuery = useSearch();
+  const seo = useSEOConfig({ title: articleData.title, description: articleData.lead, images: [{ url: articleData?.cover?.src }] });
+ const adsWithPhoneClient = clientPhone && {
+   tel: clientPhone,
+   title: articleData.title,
+ }
 
   return (
-    <LayoutWithTwoColumn {...dataForLayout}>
-      <SectionArticleFull {...dataForSectionArticleFull} />
-    </LayoutWithTwoColumn>
+    <LayoutPostView
+      seo={seo}
+      topElement={<AdPhoneClient {...adsWithPhoneClient} />}
+      siteBarLeft={<p>SiteBar left</p>}
+      searchEngine={{ defaultSuggestions, onSearchQuery }}
+      footer={{ brand: "wTrasie", footerColumns: [] }}
+    >
+      <PostView postViewData={articleData} />
+    </LayoutPostView>
   );
 }
 
-export async function getStaticPaths () {
+export async function getStaticPaths() {
 
-  const query = await clientGetArticlesListQuery ( {pageSize: 25, page: 1, type: ['service']} );
-  const data = await connectQuerys ( {
-    functionQuery: clientGetArticlesListQuery,
-    variablesQuery: {pageSize: query?.data?.articles?.meta?.pagination?.pageCount || 1, type: ['service']},
+  const getArticlesQuery = await clientGetArticlesQuery({ pageSize: 25, page: 1, type: ['service'] });
+  const data = await connectQueries({
+    functionQuery: clientGetArticlesQuery,
+    variablesQuery: { pageSize: getArticlesQuery?.data?.articles?.meta?.pagination?.pageCount || 1, type: ['service']},
     pageCount: 25
-  } )
-
+  });
 
   // eslint-disable-next-line prefer-spread
-  const listArticles = [].concat.apply ( [], data.map ( pageWithArts => {
-    return new ParseArticlesToTitleIdSlug ().getData ( pageWithArts )
-  } ) )
+  const articles = [].concat.apply ([], data.map (pageWithArts => {
+    return new ParseArticlesToTitleIdSlug().getData(pageWithArts);
+  }))
 
   return {
-    paths: listArticles.map ( item => ({params: {slug: [item.id, createSlug ( item.title )]}}) ),
+    paths: articles.map(item => ({ params: {slug: [item.id, createSlug ( item.title )]} })),
     fallback: false,
   };
 }
 
-export async function getStaticProps ( context ) {
+export async function getStaticProps (context) {
   const {slug} = context.params;
-  const getId = parseInt ( slug[ 0 ] );
+  const getId = parseInt ( slug[0] );
 
-  const getArticleData = await clientGetArticleQuery ( {id: getId} );
-  const {title, seo, tags} = getArticleData?.data?.article?.data?.attributes || {};
-  const tagIds = tags?.data?.map ( tag => tag.id );
-  const getClientsListData = tagIds?.length ? await clientClientsListWithFiltresShortNameQuery ( {shortname: tagIds} ) : null;
-  const alertPhone = getClientsListData?.data?.clients?.data[ 0 ]?.attributes?.branches[ 0 ]?.phones[ 0 ]?.phone || null;
+  const { data: getArticleQuery } = await clientGetArticleQuery({ id: getId });
+  const articleData: PostViewData = adapterArticleData(getArticleQuery);
 
-  const canonicalURL = `https://wtrasie.pl/s/${slug[ 0 ]}/${slug[ 1 ]}`;
-  const articleData = new ParserApiDataToArticle ( {
-    canonicalURL,
-    getArticleData: getArticleData.data,
-    isLoading: false,
-  } ).getData ();
+  // const getArticleData = await clientGetArticleQuery ( { id: getId } );
+  const tags = articleData?.tags || [];
+  const tagsIds = tags?.map(tag => tag.id);
 
-  const querySettings = await clientGetSettingPageQuery ( {page: 'home'} );
-  const seoData = {
-    title: seo?.title || null,
-    description: seo?.description || null,
-    openGraph: {
-      url: canonicalURL || null,
-      title: seo?.title || null,
-      description: seo?.description || null,
-      type: 'website',
-      locale: 'pl',
-      images: [{url: articleData?.data?.cover?.src || null}],
-    },
-  };
-  const dataForLayout: DataForLayout = new ParserApiDataToLayoutData (querySettings?.data, '/', true, false, seoData).getData ();
+  const getClientsListData = tagsIds?.length ? await clientClientsListWithFiltresShortNameQuery( { shortname: tagsIds }) : null;
+  const clientPhone = getClientsListData?.data?.clients?.data[ 0 ]?.attributes?.branches[ 0 ]?.phones[ 0 ]?.phone || null;
+
 
   return {
-    props: {dataForLayout: {...dataForLayout, alert: { title: alertPhone ? title : null, tel: alertPhone }}, dataForSectionArticleFull: {...articleData}},
+    props: { articleData, clientPhone },
   };
 }

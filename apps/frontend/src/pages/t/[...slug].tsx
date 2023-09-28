@@ -1,68 +1,71 @@
-import { LayoutDefault } from 'layout';
-import { SectionListingArticles, SectionLeadPostWithList } from 'uxu-utils';
-import type { SectionLeadPostWithListProps } from 'uxu-utils';
-import { useHookListingArticles } from "../../hooks";
-import { clientGetArticlesListQuery, clientGetSettingPageQuery, clientGetTagQuery } from 'gql';
-import { DataForLayout, DataForSectionListingArticles, ParserApiDataToLayoutData, TagDataParser } from 'utils';
+import { LayoutListingPost, SectionInfiniteScroll, PostList, useSEOConfig } from 'uxu-utils';
+import { useSearch } from "../../hooks";
+import { useGetArticlesWithTagQuery } from 'gql';
+import { adapterArticlesData } from 'utils';
+import { defaultSuggestions } from "../../config";
 
-type Props = {
-  idTag: number;
-  dataForLayout: DataForLayout;
-  dataForSectionListingArticlesSSR: DataForSectionListingArticles;
-  dataForSectionLeadPostWithList: SectionLeadPostWithListProps;
+type TagProps = {
+  tagID: string;
+  tagName?: string;
 };
 
-export default function Tag ({ idTag, dataForLayout, dataForSectionListingArticlesSSR, dataForSectionLeadPostWithList }: Props ) {
-  const {dataClient} = useHookListingArticles ( {
-    dataSSR: dataForSectionListingArticlesSSR,
-    queryVariables: {pageSize: 12, page: 1, type: ['article', 'service'], idTag: `${idTag}`}
-  } );
+export default function Tag ({ tagID , tagName }: TagProps ) {
+  const onSearchQuery = useSearch();
+  const { data, fetchMore } = useGetArticlesWithTagQuery({
+    variables: {
+      pageSize: 12,
+      page: 1,
+      type: ['article', 'service'],
+      tagID: tagID
+    },
+    ssr: true
+  });
+  const seo = useSEOConfig({ title: tagName });
+
+  const handleScrollEnd = async (page: number): Promise<{ page?: number }> => {
+    try {
+      await fetchMore({
+        variables: {
+          pageSize: 12,
+          page,
+          type: ['article', 'service']
+        }
+      });
+      return { page: page + 1 };
+    } catch (error) {
+      console.error("Błąd podczas ładowania więcej artykułów:", error);
+      throw error;
+    }
+  };
 
   return (
-    <LayoutDefault {...dataForLayout} topElement={<SectionLeadPostWithList {...dataForSectionLeadPostWithList} />}>
-      <SectionListingArticles dataSSR={dataForSectionListingArticlesSSR} dataClient={dataClient}/>
-    </LayoutDefault>
+    <LayoutListingPost
+      seo={seo}
+      siteBarLeft={<p>left</p>}
+      siteBarRight={<p>right</p>}
+      searchEngine={{ defaultSuggestions, onSearchQuery }}
+      footer={{ brand: "wTrasie", footerColumns: [] }}
+    >
+      <SectionInfiniteScroll
+        onScrollEnd={handleScrollEnd}
+        page={1}
+        pageCount={data?.articles?.meta?.pagination?.pageCount || 1}
+      >
+        {adapterArticlesData(data)?.map((article, index) => {
+          return (
+            <PostList {...article} key={index} />
+          )
+        })}
+      </SectionInfiniteScroll>
+    </LayoutListingPost>
   );
 }
 
-export async function getServerSideProps ( {params: {slug}} ) {
-  const idTag = parseInt ( slug[ 0 ] );
-
-  const [getDataTag, articlesList, querySettings] = await Promise.all ( [
-    clientGetTagQuery ( {idTag} ),
-    clientGetArticlesListQuery ( {page: 1, idTag} ),
-    clientGetSettingPageQuery ( {page: 'home'} )
-  ] );
-
-  const {dataForSectionListingArticlesSSR, dataForSectionLeadPostWithList} =
-    new TagDataParser ( {articlesListQuery: articlesList.data, tagQuery: getDataTag.data} ).getData ();
-
-  const dataForLayout = getDataForLayout ( querySettings.data, slug, getDataTag );
+export async function getServerSideProps({ params: { slug }}) {
+  const tagID = slug[ 0 ];
+  const tagName = slug[1];
 
   return {
-    props: {dataForLayout, dataForSectionListingArticlesSSR, idTag, dataForSectionLeadPostWithList},
+    props: { tagID , tagName },
   };
-}
-
-function getDataForLayout ( data, slug, getDataTag ) {
-  const {title, description, cover} = getDataTag?.data?.tag?.data?.attributes?.seo || {};
-  const url = cover?.data?.attributes?.url || null;
-
-  return new ParserApiDataToLayoutData(
-    data,
-    `${slug[ 0 ]}/${slug[ 1 ]}`,
-    true,
-    false,
-    {
-    title,
-    description,
-    openGraph: {
-      url: `https://wtrasie.pl/${slug[ 0 ]}/${slug[ 1 ]}`,
-      title,
-      description,
-      type: 'website',
-      locale: 'pl',
-      images: [{url}],
-    }
-  } ).getData();
 }

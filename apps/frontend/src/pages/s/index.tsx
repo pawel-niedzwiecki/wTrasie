@@ -1,51 +1,59 @@
-import { LayoutDefault } from 'layout';
-import {
-  DataForLayout,
-  DataForSectionListingArticles,
-  ParserDataFromApiGetArticleListToArticlesListData,
-  ParserApiDataToLayoutData,
-} from 'utils';
-import { SectionListingArticles } from 'uxu-utils';
-import { clientGetArticlesListQuery, clientGetSettingPageQuery } from 'gql';
-import { useHookListingArticles } from "../../hooks";
+import { defaultSuggestions } from 'config';
+import { useSearch } from 'hooks';
+import { useGetArticlesQuery } from 'gql';
+import { adapterArticlesData } from 'utils';
+import { SectionInfiniteScroll, LayoutListingPost, useSEOConfig, PostList } from 'uxu-utils';
 
-type Props = {
-  dataForLayout: DataForLayout;
-  dataForSectionListingArticlesSSR: DataForSectionListingArticles;
-};
+function Index() {
+  const onSearchQuery = useSearch();
+  const seo = useSEOConfig({});
 
-function Index({ dataForLayout, dataForSectionListingArticlesSSR }: Props) {
-  const seo = {
-    title: 'Usługi - wTrasie',
-    description: 'Wszystko to co potrzebujesz w trasie, aby bezpiecznie dotrzeć do celu.',
-  };
-
-  const { dataClient } = useHookListingArticles({
-    dataSSR: dataForSectionListingArticlesSSR,
-    queryVariables: { pageSize: 12, page: 1, type: ['service'] }
+  const { data, fetchMore } = useGetArticlesQuery({
+    variables: {
+      pageSize: 12,
+      page: 1,
+      type: ['service']
+    },
+    ssr: true
   });
 
-  return (
-    <LayoutDefault {...dataForLayout} seo={seo}>
-      <SectionListingArticles dataSSR={dataForSectionListingArticlesSSR} dataClient={dataClient} />
-    </LayoutDefault>
-  );
-}
-
-export async function getServerSideProps() {
-  // set data for LayoutDefault
-  const querySettings = await clientGetSettingPageQuery({ page: 'home' });
-  const dataForLayout: DataForLayout = new ParserApiDataToLayoutData(querySettings.data, '/s').getData();
-
-  // set data for SectionListingArticles
-  const articlesList = await clientGetArticlesListQuery({ page: 1, type: ['service'] });
-  const dataForSectionListingArticlesSSR: DataForSectionListingArticles = new ParserDataFromApiGetArticleListToArticlesListData({
-    getArticlesList: articlesList.data
-  }).getData();
-
-  return {
-    props: { dataForSectionListingArticlesSSR, dataForLayout },
+  const handleScrollEnd = async (page: number): Promise<{ page?: number }> => {
+    try {
+      await fetchMore({
+        variables: {
+          pageSize: 12,
+          page,
+          type: ['service']
+        }
+      });
+      return { page: page + 1 };
+    } catch (error) {
+      console.error("Błąd podczas ładowania więcej artykułów:", error);
+      throw error;
+    }
   };
+
+  return (
+    <LayoutListingPost
+      seo={seo}
+      siteBarLeft={<p>left</p>}
+      siteBarRight={<p>right</p>}
+      searchEngine={{ defaultSuggestions, onSearchQuery }}
+      footer={{ brand: "wTrasie", footerColumns: [] }}
+    >
+      <SectionInfiniteScroll
+        onScrollEnd={handleScrollEnd}
+        page={1}
+        pageCount={data?.articles?.meta?.pagination?.pageCount || 1}
+      >
+        {adapterArticlesData(data)?.map((article, index) => {
+          return (
+            <PostList {...article} key={index} />
+          )
+        })}
+      </SectionInfiniteScroll>
+    </LayoutListingPost>
+  );
 }
 
 export default Index;

@@ -1,17 +1,25 @@
-import { DefaultSeo } from 'next-seo';
-import { useRouter } from 'next/router';
-import { DEFAULT_SEO } from 'config';
-import { FC } from 'react';
-import { FunctionComponentDiv } from 'uxu-utils';
+import { DefaultSeo, DefaultSeoProps } from 'next-seo';
+import type { PropsWithChildren } from 'react';
+import { useContext } from 'react';
+import { SEO_CONFIG_DEFAULT } from 'config';
+import { SiteConfigContext } from 'uxu-utils';
 
 
-type Props = FC<FunctionComponentDiv>
-export const SEOProvider: Props = ({ children }) => {
-  const router = useRouter();
+type SEOProviderProps = PropsWithChildren
+export const SEOProvider = ({ children }: SEOProviderProps) => {
+  const siteConfig = useContext(SiteConfigContext);
+
+  const seoConfig: DefaultSeoProps = SEO_CONFIG_DEFAULT({
+    locale: siteConfig?.site?.locale,
+    url: siteConfig?.site?.canonicalUrl,
+    title: siteConfig?.site?.title,
+    description: siteConfig?.site?.description,
+    defaultCover: siteConfig?.site?.defaultCover,
+  });
 
   return (
     <>
-      <DefaultSeo {...DEFAULT_SEO(router)} />
+      <DefaultSeo {...seoConfig} />
       {children}
     </>
   );
