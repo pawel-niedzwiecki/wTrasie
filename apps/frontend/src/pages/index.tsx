@@ -1,8 +1,8 @@
 import { defaultSuggestions } from 'config';
-import { SectionInfiniteScroll, LayoutListingPost, useSEOConfig, PostList } from 'uxu-utils';
 import { useSearch } from 'hooks';
 import { useGetArticlesQuery } from 'gql';
 import { adapterArticlesData } from 'utils';
+import { SectionInfiniteScroll, LayoutListingPost, useSEOConfig, PostList } from 'uxu-utils';
 
 function Index() {
   const onSearchQuery = useSearch();
@@ -13,20 +13,24 @@ function Index() {
       pageSize: 12,
       page: 1,
       type: ['article']
-    }
+    },
+    ssr: true
   });
 
-
-  const test = adapterArticlesData(data)
-
-  console.log(test, 'test')
-
   const handleScrollEnd = async (page: number): Promise<{ page?: number }> => {
-    return new Promise(resolve => {
-      setTimeout(() => {
-        resolve({ page: 2 });
-      }, 10000); // 10 sekund
-    });
+    try {
+      await fetchMore({
+        variables: {
+          pageSize: 12,
+          page,
+          type: ['article']
+        }
+      });
+      return { page: page + 1 };
+    } catch (error) {
+      console.error("Błąd podczas ładowania więcej artykułów:", error);
+      throw error;
+    }
   };
 
   return (
@@ -40,9 +44,13 @@ function Index() {
       <SectionInfiniteScroll
         onScrollEnd={handleScrollEnd}
         page={1}
-        pageCount={2}
+        pageCount={data?.articles?.meta?.pagination?.pageCount || 1}
       >
-        <PostList />
+        {adapterArticlesData(data)?.map((article, index) => {
+          return (
+            <PostList {...article} key={index} />
+          )
+        })}
       </SectionInfiniteScroll>
     </LayoutListingPost>
   );

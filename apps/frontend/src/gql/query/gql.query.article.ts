@@ -1,5 +1,12 @@
 import { gql } from '@apollo/client';
-import { FRAGMENT_DATA_CONTENT_PART_EMBED_YOUTUBE, FRAGMENT_DATA_CONTENT_PART_MEDIA, FRAGMENT_DATA_CONTENT_PART_QUOTE, FRAGMENT_DATA_CONTENT_PART_TXT, FRAGMENT_DATA_LEAD, FRAGMENT_DATA_VIEWS } from './../fragments';
+import {
+  FRAGMENT_DATA_CONTENT_PART_EMBED_YOUTUBE,
+  FRAGMENT_DATA_CONTENT_PART_MEDIA,
+  FRAGMENT_DATA_CONTENT_PART_QUOTE,
+  FRAGMENT_DATA_CONTENT_PART_TXT,
+  FRAGMENT_DATA_LEAD,
+  FRAGMENT_DATA_VIEWS
+} from './../fragments';
 
 export const GET_ARICLE = gql`
   ${FRAGMENT_DATA_LEAD}
@@ -47,8 +54,7 @@ export const GET_ARICLE = gql`
               }
             }
           }
-          author {
-            __typename
+          authors {
             data {
               id
               attributes {
@@ -82,11 +88,9 @@ export const GET_ARICLE = gql`
 `;
 
 export const GET_ARICLES = gql`
-  ${FRAGMENT_DATA_VIEWS}
   query GetArticles($pageSize: Int!, $page: Int!, $type: [String]!) {
     articles(pagination: { pageSize: $pageSize, page: $page }, filters: { type: { in: $type } }, sort: ["createdAt:DESC"]) {
       data {
-        __typename
         id
         attributes {
           type
@@ -104,17 +108,7 @@ export const GET_ARICLES = gql`
               }
             }
           }
-          tags {
-            __typename
-            data {
-              id
-              attributes {
-                title
-              }
-            }
-          }
-          author {
-            __typename
+          authors {
             data {
               id
               attributes {
@@ -132,8 +126,60 @@ export const GET_ARICLES = gql`
               }
             }
           }
-          views {
-            ...FragmentDataViews
+        }
+      }
+      meta {
+        __typename
+        pagination {
+          page
+          total
+          pageSize
+          pageCount
+        }
+      }
+    }
+  }
+`;
+
+
+export const GET_ARICLES_WITH_TAG = gql`
+  query GetArticlesWithTag($pageSize: Int!, $page: Int!, $type: [String]!, $tagID: ID) {
+    articles(pagination: { pageSize: $pageSize, page: $page }, filters: { type: { in: $type }, tags: { id: { eq: $tagID } } }, sort: ["createdAt:DESC"]) {
+      data {
+        id
+        attributes {
+          type
+          title
+          createdAt
+          cover {
+            __typename
+            data {
+              id
+              attributes {
+                url
+                caption
+                alternativeText
+                formats
+              }
+            }
+          }
+          authors {
+            data {
+              id
+              attributes {
+                username
+                avatar {
+                  data {
+                    attributes {
+                      url
+                      caption
+                      alternativeText
+                      formats
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }

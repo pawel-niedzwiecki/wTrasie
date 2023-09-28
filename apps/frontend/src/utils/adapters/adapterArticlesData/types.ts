@@ -1,6 +1,3 @@
-import type { ArticleShortDataType, Pagination } from 'uxu-utils';
+import type { PostListProps } from 'uxu-utils';
 
-export type AdapterArticlesData = {
-  data: ArticleShortDataType[];
-  pagination: Pagination;
-};
+export type AdapterArticlesDataProps = Array<PostListProps>

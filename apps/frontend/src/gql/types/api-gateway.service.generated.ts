@@ -20,7 +20,7 @@ export type Scalars = {
 
 export type Article = {
   __typename?: 'Article';
-  author?: Maybe<UsersPermissionsUserEntityResponse>;
+  authors?: Maybe<UsersPermissionsUserRelationResponseCollection>;
   contentparts: Array<Maybe<ArticleContentpartsDynamicZone>>;
   cover: UploadFileEntityResponse;
   createdAt?: Maybe<Scalars['DateTime']>;
@@ -33,6 +33,13 @@ export type Article = {
   type: Enum_Article_Type;
   updatedAt?: Maybe<Scalars['DateTime']>;
   views: ComponentStatsViews;
+};
+
+
+export type ArticleAuthorsArgs = {
+  filters?: InputMaybe<UsersPermissionsUserFiltersInput>;
+  pagination?: InputMaybe<PaginationArg>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
 };
 
 
@@ -64,7 +71,7 @@ export type ArticleEntityResponseCollection = {
 
 export type ArticleFiltersInput = {
   and?: InputMaybe<Array<InputMaybe<ArticleFiltersInput>>>;
-  author?: InputMaybe<UsersPermissionsUserFiltersInput>;
+  authors?: InputMaybe<UsersPermissionsUserFiltersInput>;
   createdAt?: InputMaybe<DateTimeFilterInput>;
   id?: InputMaybe<IdFilterInput>;
   lead?: InputMaybe<ComponentContentPartsLeadFiltersInput>;
@@ -80,7 +87,7 @@ export type ArticleFiltersInput = {
 };
 
 export type ArticleInput = {
-  author?: InputMaybe<Scalars['ID']>;
+  authors?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
   contentparts?: InputMaybe<Array<Scalars['ArticleContentpartsDynamicZoneInput']>>;
   cover?: InputMaybe<Scalars['ID']>;
   lead?: InputMaybe<ComponentContentPartsLeadInput>;

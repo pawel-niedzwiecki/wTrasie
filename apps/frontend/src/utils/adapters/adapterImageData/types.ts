@@ -12,7 +12,7 @@ export type Format = {
   height?: number | null;
 }
 
-export type ParserDataImgProps = {
+export type AdapterImageDataProps = {
   attributes?: {
     url?: string | null;
     caption?: string | null;

@@ -1,6 +1,8 @@
 import { SiteConfigTypes, SiteIdEnums } from "uxu-utils";
 import { NextRouter } from "next/router";
 
+export const locale = 'pl';
+
 export const SITE_CONFIG = ( clientLocale: string, isMobilePlatform: boolean, router: NextRouter, osInfo: { isWindows: false,  isLinux: false, isMacOS: false } ): SiteConfigTypes => ({
   ads: {
     enabled: true
@@ -12,7 +14,7 @@ export const SITE_CONFIG = ( clientLocale: string, isMobilePlatform: boolean, ro
   projectName: 'wTrasie',
   site: {
     id: SiteIdEnums.WTRASIE,
-    locale: 'pl',
+    locale,
     domain: 'wtrasie.pl',
     slug:   router.asPath,
     defaultCover: 'https://wtrasie.pl/defaultCover.png',

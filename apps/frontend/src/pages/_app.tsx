@@ -16,13 +16,22 @@ CustomApp.getInitialProps = async (appContext: AppContext) => {
   const appProps = await App.getInitialProps(appContext);
 
   const { ctx } = appContext;
-  const clientLocale = ctx.req ? ctx.req.headers["accept-language"] : navigator.language;
-  const userAgent = ctx.req ? ctx.req.headers['user-agent'] : navigator.userAgent;
+
+  let clientLocale = 'default-locale';
+  let userAgent = 'default-user-agent';
+
+  if (ctx.req && ctx.req.headers) {
+    clientLocale = ctx.req.headers["accept-language"] || clientLocale;
+    userAgent = ctx.req.headers['user-agent'] || userAgent;
+  } else if (typeof navigator !== 'undefined') {
+    clientLocale = navigator.language;
+    userAgent = navigator.userAgent;
+  }
+
   const isMobilePlatform = Boolean(userAgent.match(/Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i));
   const isWindows = /Windows NT/i.test(userAgent);
   const isLinux = /Linux/i.test(userAgent) && !/Android/i.test(userAgent);
   const isMacOS = /Mac OS X/i.test(userAgent);
-
 
   return { ...appProps, clientLocale, isMobilePlatform, osInfo: { isWindows, isLinux, isMacOS } };
 }

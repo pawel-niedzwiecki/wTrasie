@@ -620,7 +620,7 @@ input ArticleFiltersInput {
   lead: ComponentContentPartsLeadFiltersInput
   views: ComponentStatsViewsFiltersInput
   tags: TagFiltersInput
-  author: UsersPermissionsUserFiltersInput
+  authors: UsersPermissionsUserFiltersInput
   seo: ComponentOthersSeoFiltersInput
   createdAt: DateTimeFilterInput
   updatedAt: DateTimeFilterInput
@@ -638,7 +638,7 @@ input ArticleInput {
   contentparts: [ArticleContentpartsDynamicZoneInput!]
   views: ComponentStatsViewsInput
   tags: [ID]
-  author: ID
+  authors: [ID]
   seo: ComponentOthersSeoInput
   publishedAt: DateTime
 }
@@ -657,7 +657,11 @@ type Article {
     sort: [String] = []
     publicationState: PublicationState = LIVE
   ): TagRelationResponseCollection
-  author: UsersPermissionsUserEntityResponse
+  authors(
+    filters: UsersPermissionsUserFiltersInput
+    pagination: PaginationArg = {}
+    sort: [String] = []
+  ): UsersPermissionsUserRelationResponseCollection
   seo: ComponentOthersSeo!
   createdAt: DateTime
   updatedAt: DateTime
@@ -1407,7 +1411,6 @@ type Mutation {
   # Confirm an email users email address
   emailConfirmation(confirmation: String!): UsersPermissionsLoginPayload
 }
-
 
 type SearchResults {
   hits: [Article]

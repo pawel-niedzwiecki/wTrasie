@@ -15,6 +15,7 @@
     "@nrwl/nx-cloud": "latest",
     "apollo-link-rest": "^0.9.0",
     "core-js": "^3.6.5",
+    "dayjs": "^1.11.10",
     "disqus-react": "^1.1.5",
     "graphql": "^16.6.0",
     "lodash": "^4.17.21",
