@@ -12,7 +12,7 @@ type ServiceProps = {
 
 export default function Service ({ articleData, clientPhone }: ServiceProps ) {
   const onSearchQuery = useSearch();
-  const seo = useSEOConfig({ title: articleData.title, description: articleData.lead, images: [{ url: articleData?.cover?.src }] });
+  const seo = useSEOConfig({ title: articleData?.title, description: articleData?.lead, images: [{ url: articleData?.cover?.src }] });
  const adsWithPhoneClient = clientPhone && {
    tel: clientPhone,
    title: articleData.title,
@@ -33,14 +33,12 @@ export default function Service ({ articleData, clientPhone }: ServiceProps ) {
 
 export async function getStaticPaths() {
 
-  const getArticlesQuery = await clientGetArticlesQuery({ pageSize: 10, page: 1, type: ['service'] });
+  const getArticlesQuery = await clientGetArticlesQuery({ pageSize: 25, page: 1, type: ['service'] });
   const data = await connectQueries({
     functionQuery: clientGetArticlesQuery,
-    variablesQuery: { pageSize: 10, type: ['service']},
-    pageCount: 14
+    variablesQuery: { pageSize: 25, type: ['service']},
+    pageCount: getArticlesQuery?.data?.articles?.meta?.pagination?.pageCount || 1
   });
-
-  console.log(getArticlesQuery?.data?.articles?.meta?.pagination?.pageCount)
 
   // eslint-disable-next-line prefer-spread
   const articles = [].concat.apply ([], data.map (pageWithArts => {
@@ -48,8 +46,8 @@ export async function getStaticPaths() {
   }))
 
   return {
-    paths: articles.map(item => ({ params: {slug: [item.id, createSlug ( item.title )]} })),
-    fallback: false,
+    paths: articles.map(item => ({ params: {slug: [item.id, createSlug( item.title )]} })),
+    fallback: true,
   };
 }
 
