@@ -13,10 +13,6 @@ function CustomApp({ Component, pageProps, clientLocale, isMobilePlatform, osInf
 }
 
 const detectEnvironment = (userAgent: string) => {
-  const isPageSpeed = /Speed Insights|Lighthouse/i.test(userAgent);
-  if (isPageSpeed) {
-    return { isMobilePlatform: false, osInfo: { isWindows: false, isLinux: false, isMacOS: false } };
-  }
 
   const isMobilePlatform = /Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(userAgent);
   const isWindows = /Windows NT/i.test(userAgent);
