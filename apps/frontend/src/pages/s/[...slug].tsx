@@ -45,6 +45,8 @@ export async function getStaticPaths() {
     return new ParseArticlesToTitleIdSlug().getData(pageWithArts);
   }))
 
+  console.log(articles?.length)
+
   return {
     paths: articles.map(item => ({ params: {slug: [item.id, createSlug ( item.title )]} })),
     fallback: false,
