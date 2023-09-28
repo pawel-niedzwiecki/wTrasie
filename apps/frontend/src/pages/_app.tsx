@@ -1,5 +1,6 @@
 import App, { AppProps , AppContext} from 'next/app';
 import { WrapperProviders } from 'providers';
+import UAParser from 'ua-parser-js';
 import 'uxu-utils/libs/design-system/src/lib/style/globalStyle.scss'
 
 function CustomApp({ Component, pageProps, clientLocale, isMobilePlatform, osInfo }: AppProps & { clientLocale: string, isMobilePlatform: boolean, osInfo: { isWindows: boolean, isLinux: boolean, isMacOS: boolean } }) {
@@ -14,7 +15,6 @@ function CustomApp({ Component, pageProps, clientLocale, isMobilePlatform, osInf
 
 CustomApp.getInitialProps = async (appContext: AppContext) => {
   const appProps = await App.getInitialProps(appContext);
-
   const { ctx } = appContext;
 
   let clientLocale = 'default-locale';
@@ -28,10 +28,12 @@ CustomApp.getInitialProps = async (appContext: AppContext) => {
     userAgent = navigator.userAgent;
   }
 
-  const isMobilePlatform = Boolean(userAgent.match(/Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i));
-  const isWindows = /Windows NT/i.test(userAgent);
-  const isLinux = /Linux/i.test(userAgent) && !/Android/i.test(userAgent);
-  const isMacOS = /Mac OS X/i.test(userAgent);
+  const parser = new UAParser(userAgent);
+  const result = parser.getResult();
+  const isMobilePlatform = result.device.type === 'mobile' || result.device.type === 'tablet';
+  const isWindows = result.os.name === 'Windows';
+  const isLinux = result.os.name === 'Linux';
+  const isMacOS = result.os.name === 'Mac OS';
 
   return { ...appProps, clientLocale, isMobilePlatform, osInfo: { isWindows, isLinux, isMacOS } };
 }
