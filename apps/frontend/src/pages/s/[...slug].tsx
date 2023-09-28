@@ -37,7 +37,7 @@ export async function getStaticPaths() {
   const data = await connectQueries({
     functionQuery: clientGetArticlesQuery,
     variablesQuery: { pageSize: 10, type: ['service']},
-    pageCount: 12
+    pageCount: 14
   });
 
   console.log(getArticlesQuery?.data?.articles?.meta?.pagination?.pageCount)
