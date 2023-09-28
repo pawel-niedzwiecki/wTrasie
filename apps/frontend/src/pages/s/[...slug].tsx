@@ -33,19 +33,17 @@ export default function Service ({ articleData, clientPhone }: ServiceProps ) {
 
 export async function getStaticPaths() {
 
-  const getArticlesQuery = await clientGetArticlesQuery({ pageSize: 25, page: 1, type: ['service'] });
+ // const getArticlesQuery = await clientGetArticlesQuery({ pageSize: 10, page: 1, type: ['service'] });
   const data = await connectQueries({
     functionQuery: clientGetArticlesQuery,
-    variablesQuery: { pageSize: 25, type: ['service']},
-    pageCount: getArticlesQuery?.data?.articles?.meta?.pagination?.pageCount || 1
+    variablesQuery: { pageSize: 10, type: ['service']},
+    pageCount: 12
   });
 
   // eslint-disable-next-line prefer-spread
   const articles = [].concat.apply ([], data.map (pageWithArts => {
     return new ParseArticlesToTitleIdSlug().getData(pageWithArts);
   }))
-
-  console.log(articles?.length)
 
   return {
     paths: articles.map(item => ({ params: {slug: [item.id, createSlug ( item.title )]} })),
