@@ -1,6 +1,6 @@
 import { createSlugForType } from "utils";
 import { createSlug } from "uxu-utils";
-import { GetArticlesListQuery } from 'gql';
+import { GetArticlesQuery } from 'gql';
 import { GetDataTypes, List, ArticleData } from './parseArticlesToTitleIdSlug.types';
 
 
@@ -23,14 +23,14 @@ export class ParseArticlesToTitleIdSlug {
     return null;
   }
 
-  parseToList (getArticlesList: GetArticlesListQuery) {
+  parseToList (getArticlesList: GetArticlesQuery) {
     if (Array.isArray(getArticlesList?.articles?.data)) {
       const parsedData = getArticlesList.articles.data.map(this.parseArticleData).filter(Boolean);
       this.list = [...this.list, ...parsedData];
     }
   }
 
-  getData (getArticlesList: GetArticlesListQuery): GetDataTypes {
+  getData (getArticlesList: GetArticlesQuery): GetDataTypes {
     this.parseToList(getArticlesList);
     return this.list;
   }

@@ -1,6 +1,6 @@
-import { GetArticlesListQuery } from "../../../gql";
+import { GetArticlesQuery } from "../../../gql";
 
-export type ArticleData = GetArticlesListQuery['articles']['data'][number];
+export type ArticleData = GetArticlesQuery['articles']['data'][number];
 
 export type Types = Array<string>;
 

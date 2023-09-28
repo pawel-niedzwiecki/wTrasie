@@ -1,18 +1,26 @@
-import React from 'react';
+import React, { PropsWithChildren } from 'react';
 import { SEOProvider } from './provider.seo';
+import { SiteConfigProvider } from 'uxu-utils';
+import { SITE_CONFIG } from 'config';
 import { ApolloCLientProvider } from './provider.apollo';
 import { theme } from 'uxu-utils';
 import { ThemeProvider } from 'styled-components';
 
-type Props = { children: JSX.Element | JSX.Element[] };
+type Props = PropsWithChildren<{
+  clientLocale: string;
+  isMobilePlatform: boolean;
+  osInfo: { isWindows: boolean, isLinux: boolean, isMacOS: boolean };
+}>;
 
 
-export const WrapperProviders = ({ children }: Props) => {
+export const WrapperProviders = ( { children, clientLocale, isMobilePlatform, osInfo }: Props ) => {
   return (
-    <ThemeProvider theme={theme}>
-      <SEOProvider>
-        <ApolloCLientProvider>{children}</ApolloCLientProvider>
-      </SEOProvider>
-    </ThemeProvider>
+    <SiteConfigProvider clientLocale={clientLocale} isMobilePlatform={isMobilePlatform} osInfo={osInfo} SITE_CONFIG={SITE_CONFIG}>
+      <ThemeProvider theme={theme}>
+        <SEOProvider>
+          <ApolloCLientProvider>{children}</ApolloCLientProvider>
+        </SEOProvider>
+      </ThemeProvider>
+    </SiteConfigProvider>
   );
 };

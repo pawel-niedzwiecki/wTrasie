@@ -1,18 +1,23 @@
 import { DefaultSeoProps } from 'next-seo';
-import { NextRouter } from 'next/router';
 
 
-export const DEFAULT_SEO = (router: NextRouter): DefaultSeoProps => ({
+type SegoConfigDefaultProps = {
+  locale?: string;
+  url?: string;
+  title?: string;
+  description?: string;
+  defaultCover?: string;
+}
+
+export const SEO_CONFIG_DEFAULT = ({locale, url, title, description, defaultCover}: SegoConfigDefaultProps): DefaultSeoProps => ({
   openGraph: {
-    url: `https://wtrasie.pl/${router.asPath}`,
-    title: 'wTrasie - Wszystko co ważne w trasie',
-    description:
-      'wTrasie.pl - W Trasie, informacje prosto z trasy i ulic Twojego miasta. informacje na temat wypadków, wydarzeń oraz firm przydatnych w trasie',
+    url,
+    title,
+    description,
     type: 'website',
-    locale: 'pl',
-    images: [{ url: 'https://wtrasie.pl/ogWTrasie.png' }],
+    locale,
+    images: [{ url: defaultCover }],
   },
-  title: 'wTrasie - Wszystko co ważne w trasie',
-  description:
-    'wTrasie.pl - W Trasie, informacje prosto z trasy i ulic Twojego miasta. Infomracje na temat wypadków, wydarzeń oraz firm przydatnych w trasie',
+  title,
+  description,
 });
