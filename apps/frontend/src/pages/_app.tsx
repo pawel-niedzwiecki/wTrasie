@@ -13,7 +13,6 @@ function CustomApp({ Component, pageProps, clientLocale, isMobilePlatform, osInf
 }
 
 const detectEnvironment = (userAgent: string) => {
-
   const isMobilePlatform = /Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(userAgent);
   const isWindows = /Windows NT/i.test(userAgent);
   const isLinux = /Linux/i.test(userAgent) && !/Android/i.test(userAgent);
